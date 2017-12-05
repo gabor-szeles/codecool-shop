@@ -3,13 +3,17 @@ package com.codecool.shop.model;
 public class LineItem {
 
     Product item;
-    int quantity;
-    int itemPriceSum;
+    float quantity;
+    float itemPriceSum;
 
-    LineItem(Product item, int price) {
+    public LineItem(Product item, float price) {
         this.item = item;
         this.quantity = 1;
         this.itemPriceSum = price;
+    }
+
+    public float getItemPriceSum() {
+        return itemPriceSum;
     }
 
 
