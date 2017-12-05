@@ -5,18 +5,34 @@ import com.codecool.shop.controller.ProductController;
 import com.codecool.shop.dao.*;
 import com.codecool.shop.dao.implementation.*;
 import com.codecool.shop.model.*;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
+
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Map;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        // default server settings
         exception(Exception.class, (e, req, res) -> e.printStackTrace());
-        staticFileLocation("/public");
-        port(8888);
+        staticFiles.location("/public");
+        port(5000);
+
+        before((request, response) -> {
+            if (Arrays.asList("GET", "DELETE").contains(request.requestMethod())) {
+                System.out.println(request.requestMethod() + " @ " + request.url() + " ° " + request.params());
+            } else {
+                System.out.println(request.requestMethod() + " @ " + request.url() + " ° " + request.body());
+            }
+            // check if user logged in
+            // put data to localStorage
+        });
 
         // populate some data for the memory storage
         populateData();
@@ -25,11 +41,7 @@ public class Main {
         get("/hello", (req, res) -> "Hello World");
 
         // Always add generic routes to the end
-        get("/", ProductController::renderProducts, new ThymeleafTemplateEngine());
-        // Equivalent with above
-        get("/index", (Request req, Response res) -> {
-           return new ThymeleafTemplateEngine().render( ProductController.renderProducts(req, res) );
-        });
+        get("/", ProductController::renderProducts);
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
@@ -57,6 +69,5 @@ public class Main {
         productDataStore.add(new Product("Amazon Fire HD 8", 89, "USD", "Amazon's latest Fire HD 8 tablet is a great value for media consumption.", tablet, amazon));
 
     }
-
 
 }
