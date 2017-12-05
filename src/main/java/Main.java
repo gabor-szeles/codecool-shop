@@ -43,11 +43,15 @@ public class Main {
         // Always add generic routes to the end
         get("/", ProductController::renderProducts);
 
+        post("/api/additem", ProductController::handleOrder);
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }
 
     public static void populateData() {
+
+        Order shoppingCart = new Order();
 
         ProductDao productDataStore = ProductDaoMem.getInstance();
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();

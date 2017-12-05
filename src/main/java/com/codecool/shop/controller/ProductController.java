@@ -7,9 +7,7 @@ import com.codecool.shop.dao.SupplierDao;
 import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
 import com.codecool.shop.dao.implementation.ProductDaoMem;
 import com.codecool.shop.dao.implementation.SupplierDaoMem;
-import com.codecool.shop.model.Product;
-import com.codecool.shop.model.ProductCategory;
-import com.codecool.shop.model.Supplier;
+import com.codecool.shop.model.*;
 
 import spark.Request;
 import spark.Response;
@@ -30,6 +28,14 @@ public class ProductController {
         params.put("products", productDataStore.getBy(productCategoryDataStore.find(1)));
         Utils utils = Utils.getInstance();
         return utils.renderTemplate(params, "product/index");
+    }
+
+    public static String handleOrder(Request req, Response res) {
+        Map<String,String> request  = Utils.parseJson(req);
+        Product targetItem = ProductDaoMem.getInstance().find(Integer.parseInt(request.get("productid")));
+        LineItem newLineItem = new LineItem(targetItem, targetItem.getDefaultPrice());
+        Order.getCurrentOrder().add(newLineItem);
+        return Utils.toJson(Order.getCurrentOrder().getAddedItems().size());
     }
 
     private static String renderTemplate(Map model, String template) {
