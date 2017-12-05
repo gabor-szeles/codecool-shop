@@ -1,5 +1,7 @@
 package com.codecool.shop.model;
 
+import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
+
 import java.util.ArrayList;
 
 public class ProductCategory extends BaseModel {
