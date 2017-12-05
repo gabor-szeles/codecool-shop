@@ -24,6 +24,7 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
 
+
     <link rel="stylesheet" type="text/css" href="/css/custom.css" />
 </head>
 
@@ -51,7 +52,7 @@
                             <p class="lead" th:text="${prod.getPrice()}">100 USD</p>
                         </div>
                         <div class="col-xs-12 col-md-6">
-                            <a class="btn btn-success" href="#">Add to cart</a>
+                            <a class="btn btn-success" th:attr="data-prod_id=${prod.getId()}">Add to cart</a>
                         </div>
                     </div>
                 </div>
@@ -63,5 +64,6 @@
 
 <div th:replace="footer :: copy"></div>
 
+<script type="text/javascript" src="/script/dom.js"></script>
 </body>
 </html>
