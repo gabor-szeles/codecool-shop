@@ -7,9 +7,11 @@ public class ProductCategory extends BaseModel {
     private ArrayList<Product> products;
 
     public ProductCategory(String name, String department, String description) {
-        super(name);
+        super(name, description);
+        ProductCategoryDaoMem productCategories = ProductCategoryDaoMem.getInstance();
         this.department = department;
         this.products = new ArrayList<>();
+        productCategories.add(this);
     }
 
     public String getDepartment() {
@@ -20,12 +22,12 @@ public class ProductCategory extends BaseModel {
         this.department = department;
     }
 
-    public void setProducts(ArrayList<Product> products) {
-        this.products = products;
-    }
-
     public ArrayList getProducts() {
         return this.products;
+    }
+
+    public void setProducts(ArrayList<Product> products) {
+        this.products = products;
     }
 
     public void addProduct(Product product) {

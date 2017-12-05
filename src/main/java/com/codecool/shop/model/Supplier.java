@@ -7,16 +7,18 @@ public class Supplier extends BaseModel {
     private ArrayList<Product> products;
 
     public Supplier(String name, String description) {
-        super(name);
+        super(name, description);
+        SupplierDaoMem suppliers = SupplierDaoMem.getInstance();
         this.products = new ArrayList<>();
-    }
-
-    public void setProducts(ArrayList<Product> products) {
-        this.products = products;
+        suppliers.add(this);
     }
 
     public ArrayList getProducts() {
         return this.products;
+    }
+
+    public void setProducts(ArrayList<Product> products) {
+        this.products = products;
     }
 
     public void addProduct(Product product) {

@@ -12,9 +12,11 @@ public class Product extends BaseModel {
 
     public Product(String name, float defaultPrice, String currencyString, String description, ProductCategory productCategory, Supplier supplier) {
         super(name, description);
+        ProductDaoMem products = ProductDaoMem.getInstance();
         this.setPrice(defaultPrice, currencyString);
         this.setSupplier(supplier);
         this.setProductCategory(productCategory);
+        products.add(this);
     }
 
     public float getDefaultPrice() {
