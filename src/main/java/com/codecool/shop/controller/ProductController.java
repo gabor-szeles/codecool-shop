@@ -26,6 +26,7 @@ public class ProductController {
         Map params = new HashMap<>();
         params.put("category", productCategoryDataStore.find(1));
         params.put("products", productDataStore.getBy(productCategoryDataStore.find(1)));
+        params.put("order", Order.getCurrentOrder());
         Utils utils = Utils.getInstance();
         return utils.renderTemplate(params, "product/index");
     }
