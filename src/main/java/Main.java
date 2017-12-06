@@ -35,6 +35,8 @@ public class Main {
         // Always add generic routes to the end
         get("/", ProductController::renderProducts);
 
+        get("/api/get-supplier-products/:id", ProductController::getSupplier);
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }
@@ -50,6 +52,7 @@ public class Main {
         ProductCategory tablet = new ProductCategory("Tablet", "Hardware", "A tablet computer, commonly shortened to tablet, is a thin, flat mobile computer with a touchscreen display.");
         ProductCategory gpu = new ProductCategory("GPU", "Hardware", "A hardware to help you render graphical programs.");
         ProductCategory pc = new ProductCategory("PC", "Hardware", "Personal computer.");
+
         //setting up products and printing it
         new Product("Amazon Fire", 49.9f, "USD", "Fantastic price. Large content ecosystem. Good parental controls. Helpful technical support.", tablet, amazon);
         new Product("Lenovo IdeaPad Miix 700", 479, "USD", "Keyboard cover is included. Fanless Core m5 processor. Full-size USB ports. Adjustable kickstand.", tablet, lenovo);
