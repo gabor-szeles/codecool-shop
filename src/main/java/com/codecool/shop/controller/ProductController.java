@@ -37,8 +37,8 @@ public class ProductController {
         LineItem newLineItem = new LineItem(targetItem, targetItem.getDefaultPrice());
         Order.getCurrentOrder().add(newLineItem);
         Map<String, String> response = new HashMap<>();
-        response.put("items-number", Integer.toString(Order.getCurrentOrder().getAddedItems().size()));
-        response.put("total-price", Float.toString(Order.getCurrentOrder().getTotalPrice()));
+        response.put("itemsNumber", Integer.toString(Order.getCurrentOrder().getAddedItems().size()));
+        response.put("totalPrice", Float.toString(Order.getCurrentOrder().getTotalPrice()));
         return Utils.toJson(response);
     }
 

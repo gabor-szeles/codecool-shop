@@ -25,9 +25,9 @@
 <body>
     <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
         <h1 class="navbar-brand mb-0">Total items</h1>
-        <strong th:text="${order.getAddedItems().size()}">itemz</strong>
+        <strong id="total-items">0</strong>
         <h1 class="navbar-brand mb-0">Total price</h1>
-        <strong th:text="${order.getTotalPrice()}+' USD'">price</strong>
+        <strong id="total-price">0 USD</strong>
     </nav>
 <br />
 
