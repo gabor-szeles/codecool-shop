@@ -53,8 +53,7 @@ public class ProductController {
             productMap.put("price", Float.toString(orderItems.get(i).getItemPriceSum()) );
             mapList.add(productMap);
         }
-        response.put("order", mapList);
-        System.out.println(response);
+        response.put("shoppingCart", mapList);
         return Utils.toJson(response);
 
     }

@@ -31,13 +31,13 @@ public class Main {
         populateData();
 
         // Always start with more specific routes
-        get("/review", ProductController::reviewCart);
 
         // Always add generic routes to the end
         get("/", ProductController::renderProducts);
 
         post("/api/additem", ProductController::handleOrder);
 
+        post("/review", ProductController::reviewCart);
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }
