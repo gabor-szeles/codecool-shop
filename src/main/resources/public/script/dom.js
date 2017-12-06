@@ -11,7 +11,7 @@ const dom = {
                 dataType: "json",
                 contentType: "application/json",
                 success: function (response) {
-                    console.log("Success")
+                    console.log(response)
                 }
             });
         })

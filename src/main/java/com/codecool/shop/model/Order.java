@@ -28,4 +28,7 @@ public class Order {
         return addedItems;
     }
 
+    public float getTotalPrice() {
+        return totalPrice;
+    }
 }

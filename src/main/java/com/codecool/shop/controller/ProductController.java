@@ -35,7 +35,10 @@ public class ProductController {
         Product targetItem = ProductDaoMem.getInstance().find(Integer.parseInt(request.get("productid")));
         LineItem newLineItem = new LineItem(targetItem, targetItem.getDefaultPrice());
         Order.getCurrentOrder().add(newLineItem);
-        return Utils.toJson(Order.getCurrentOrder().getAddedItems().size());
+        Map<String, String> response = new HashMap<>();
+        response.put("items-number", Integer.toString(Order.getCurrentOrder().getAddedItems().size()));
+        response.put("total-price", Float.toString(Order.getCurrentOrder().getTotalPrice()));
+        return Utils.toJson(response);
     }
 
     private static String renderTemplate(Map model, String template) {
