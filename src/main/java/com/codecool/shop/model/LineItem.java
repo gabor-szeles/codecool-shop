@@ -10,6 +10,7 @@ public class LineItem {
         this.item = item;
         this.quantity = 1;
         this.itemPriceSum = price;
+        Order.getCurrentOrder().incrementTotalSize();
     }
 
     public float getItemPriceSum() {
@@ -22,5 +23,15 @@ public class LineItem {
         return  "item: " + item.getName() +
                 ", quantity: " + quantity +
                 ", itemPriceSum: " + itemPriceSum;
+    }
+
+    public Product getItem() {
+        return item;
+    }
+
+    public void incrementQuantity() {
+        this.quantity++;
+        this.itemPriceSum += this.item.getDefaultPrice();
+        Order.getCurrentOrder().incrementTotalPrice(this.item.getDefaultPrice());
     }
 }
