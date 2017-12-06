@@ -32,7 +32,12 @@
 <div class="jumbotron text-center">
     <h1>Codecool Shop</h1>
 </div>
+<!-- Categories -->
+<ul>
+    <li th:each="category,iterStat:${categories}" ><button th:text="${category.name}" th:id="'category'+${category.id}"></button></li>
+</ul>
 
+<!-- Main page -->
 <div class="container" th:each="category:${categories}">
 
     <div class="well well-sm">
