@@ -29,6 +29,10 @@ public class LineItem {
         return item;
     }
 
+    public float getQuantity() {
+        return quantity;
+    }
+
     public void incrementQuantity() {
         this.quantity++;
         this.itemPriceSum += this.item.getDefaultPrice();

@@ -11,7 +11,9 @@ import com.sun.org.apache.xpath.internal.operations.Or;
 import spark.Request;
 import spark.Response;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProductController {
@@ -38,6 +40,23 @@ public class ProductController {
         response.put("totalPrice", Float.toString(Order.getCurrentOrder().getTotalPrice()));
         System.out.println(response);
         return Utils.toJson(response);
+    }
+
+    public static String reviewCart(Request req, Response res) {
+        Map<String, List> response = new HashMap<>();
+        List<Map> mapList = new ArrayList<>();
+        List<LineItem> orderItems = Order.getCurrentOrder().getAddedItems();
+        for (int i = 0; i < orderItems.size(); i++) {
+            Map<String, String> productMap = new HashMap<>();
+            productMap.put("name", orderItems.get(i).getItem().getName() );
+            productMap.put("quantity", Float.toString(orderItems.get(i).getQuantity()) );
+            productMap.put("price", Float.toString(orderItems.get(i).getItemPriceSum()) );
+            mapList.add(productMap);
+        }
+        response.put("order", mapList);
+        System.out.println(response);
+        return Utils.toJson(response);
+
     }
 
     private static boolean isLineItem(Product targetItem) {

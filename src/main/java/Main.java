@@ -31,7 +31,7 @@ public class Main {
         populateData();
 
         // Always start with more specific routes
-        get("/hello", (req, res) -> "Hello World");
+        get("/review", ProductController::reviewCart);
 
         // Always add generic routes to the end
         get("/", ProductController::renderProducts);
