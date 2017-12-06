@@ -28,6 +28,7 @@
         <strong id="total-items">0</strong>
         <h1 class="navbar-brand mb-0">Total price</h1>
         <strong id="total-price">0 USD</strong>
+        <button id="cartbutton" class="btn btn-warning">Cart</button>
     </nav>
 <br />
 
@@ -59,7 +60,7 @@
                             <p class="lead" th:text="${prod.getPrice()}">100 USD</p>
                         </div>
                         <div class="col-xs-12 col-md-6">
-                            <a class="btn btn-success" th:attr="data-prod_id=${prod.getId()}">Add to cart</a>
+                            <a class="btn btn-success addtocart" th:attr="data-prod_id=${prod.getId()}">Add to cart</a>
                         </div>
                     </div>
                 </div>
