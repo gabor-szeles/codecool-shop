@@ -2,17 +2,54 @@ $(document).ready(function() {
 
     const dom = {
 
-        // EVENTS
+        init: function() {
+            eventApplier.addEventToCartButton();
+            eventApplier.addEventsToAddToCartButtons();
+            eventApplier.addEventsToSupplierButtons();
+        }
 
-        addToCartClick: function (event) {
+    };
+
+    const event = {
+
+        addToCart: function (event) {
             let clickedButton = event.target;
             let productId = {"productid" : clickedButton.dataset.prod_id};
-            ajax.postProductToCart(productId, dom.refreshCart);
+            ajax.postProductToCart(productId, responseHandler.updateCart);
         },
-        reviewCart: function () {
+
+        toggleCart: function () {
             $("#cart").slideToggle();
         },
-        refreshCart: function (response) {
+
+        sortBySupplier: function(event) {
+            let id = $(event.target).attr("id");
+            id = id.replace('supplier', '');
+            ajax.getSupplierProducts(id, responseHandler.updateProducts);
+        },
+
+    };
+
+    const eventApplier = {
+
+        addEventsToSupplierButtons: function() {
+            let buttons = $("button[id*='supplier']");
+            buttons.click(event.sortBySupplier);
+        },
+
+        addEventToCartButton: function () {
+            $('#cartButton').click(event.toggleCart);
+        },
+
+        addEventsToAddToCartButtons: function() {
+            $('.addtocart').click(event.addToCart);
+        },
+
+    };
+
+    const responseHandler = {
+
+        updateCart: function (response) {
             let itemsNumber = response.itemsNumber;
             let totalPrice = response.totalPrice;
             $('#total-items').text(itemsNumber);
@@ -32,6 +69,7 @@ $(document).ready(function() {
                     .appendTo(cart);
             }
         },
+
         updateProducts: function(response) {
             $("#collectionName").text(response.collectionName);
             let productDiv = $("#products");
@@ -55,7 +93,7 @@ $(document).ready(function() {
                 let addToCart = $('<a/>', {
                     "class": "btn btn-success addtocart",
                     "data-prod_id": response.collection[i].id,
-                }).text("Add To Cart").click(dom.addToCartClick);
+                }).text("Add To Cart").click(event.addToCart);
                 priceWrapper.append(price);
                 addToCartWrapper.append(addToCart);
                 row.append(priceWrapper).append(addToCartWrapper);
@@ -67,25 +105,7 @@ $(document).ready(function() {
                 outerWrapper.append(wrapper);
                 productDiv.append(outerWrapper);
             }
-            dom.addEventsToAddToCartButtons();
-        },
-        supplierButtonClickHandler: function(event) {
-            let id = $(event.target).attr("id");
-            id = id.replace('supplier', '');
-            ajax.getSupplierProducts(id, dom.updateProducts);
-        },
-
-        // EVENT APPLIERS
-
-        addEventsToSupplierButtons: function() {
-            let buttons = $("button[id*='supplier']");
-            buttons.click(dom.supplierButtonClickHandler);
-        },
-        addEventToCartButton: function () {
-            $('#cartButton').click(dom.reviewCart);
-        },
-        addEventsToAddToCartButtons: function() {
-            $('.addtocart').click(dom.addToCartClick);
+            eventApplier.addEventsToAddToCartButtons();
         },
     };
 
@@ -100,7 +120,7 @@ $(document).ready(function() {
                 success: responseHandler
             });
         },
-
+        // this could be a get
         postProductToCart: function (id, responseHandler) {
             $.ajax({
                 type: "POST",
@@ -113,7 +133,6 @@ $(document).ready(function() {
         },
     };
 
-    dom.addEventToCartButton();
-    dom.addEventsToAddToCartButtons();
-    dom.addEventsToSupplierButtons();
+    dom.init();
+
 });
