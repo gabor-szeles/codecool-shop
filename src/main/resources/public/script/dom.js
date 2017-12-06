@@ -3,7 +3,7 @@ $(document).ready(function() {
     const dom = {
 
         init: function() {
-            eventApplier.addEventToCartButton();
+            eventApplier.addEventToOrderButton();
             eventApplier.addEventsToAddToCartButtons();
             eventApplier.addEventsToSupplierButtons();
         }
@@ -12,13 +12,13 @@ $(document).ready(function() {
 
     const event = {
 
-        addToCart: function (event) {
-            // let clickedButton = event.target;
+        addToOrder: function (event) {
             let productId = $(event.target).data("prod_id");
-            ajax.getProductToCart(productId, responseHandler.updateCart);
+            console.log(productId);
+            ajax.insertProductToOrder(productId, responseHandler.updateOrder);
         },
 
-        toggleCart: function () {
+        toggleOrder: function () {
             $("#cart").slideToggle();
         },
 
@@ -37,19 +37,66 @@ $(document).ready(function() {
             buttons.click(event.sortBySupplier);
         },
 
-        addEventToCartButton: function () {
-            $('#cartButton').click(event.toggleCart);
+        addEventToOrderButton: function () {
+            $('#cartButton').click(event.toggleOrder);
         },
 
         addEventsToAddToCartButtons: function() {
-            $('.addtocart').click(event.addToCart);
+            $('.addtocart').click(event.addToOrder);
         },
 
     };
 
+    const elementBuilder = {
+        
+        productInOrder: function(name, quantity, price) {
+            let wrapper = $('<div/>', {"class": "row"});
+            let nameParagraph = $('<p/>', {}).text(name);
+            let quantityParagraph = $('<p/>', {}).text(quantity);
+            let priceParagraph = $('<p/>', {}).text(price);
+            wrapper
+                .append(nameParagraph)
+                .append(quantityParagraph)
+                .append(priceParagraph);
+
+            return wrapper;
+        },
+
+        productInList: function(name, description, price, id) {
+            let outerWrapper = $('<div/>', {"class": "item col-xs-4 col-lg-4"});
+            let wrapper = $('<div/>', {"class": "thumbnail"});
+            let image = $('<img/>', {
+                "class": "group list-group-image",
+                src: "http://placehold.it/400x250/000/fff",
+            });
+            let innerWrapper = $('<div/>', {"class": "caption"});
+            let productName = $('<h4/>', {"class": "group inner list-group-item-heading"}).text(name);
+            let productDescription = $('<p/>', {"class": "group inner list-group-item-text"}).text(description);
+            let row = $('<div/>', {"class": "row"});
+            let priceWrapper = $('<div/>', {"class": "col-xs-12 col-md-6"});
+            let productPrice = $('<p/>', {"class": "lead"}).text(price);
+            let addToCartWrapper = $('<div/>', {"class": "col-xs-12 col-md-6"});
+            let addToCart = $('<a/>', {
+                "class": "btn btn-success addtocart",
+                "data-prod_id": id,
+            }).text("Add to cart").click(event.addToOrder);
+            priceWrapper.append(productPrice);
+            addToCartWrapper.append(addToCart);
+            row.append(priceWrapper).append(addToCartWrapper);
+            innerWrapper.append(productName);
+            innerWrapper.append(productDescription);
+            innerWrapper.append(row);
+            wrapper.append(image);
+            wrapper.append(innerWrapper);
+            outerWrapper.append(wrapper);
+
+            return outerWrapper;
+        }
+    };
+
     const responseHandler = {
 
-        updateCart: function (response) {
+        updateOrder: function (response) {
             let itemsNumber = response.itemsNumber;
             let totalPrice = response.totalPrice;
             $('#total-items').text(itemsNumber);
@@ -57,16 +104,8 @@ $(document).ready(function() {
             let products = response.shoppingCart;
             let cart = $("#cart");
             cart.empty();
-            for (let i = 0; i<products.length;i++) {
-                let wrapper = $('<div/>', {"class": "row"});
-                let name = $('<p/>', {}).text(products[i].name);
-                let quantity = $('<p/>', {}).text(products[i].quantity);
-                let price = $('<p/>', {}).text(products[i].price);
-                wrapper
-                    .append(name)
-                    .append(quantity)
-                    .append(price)
-                    .appendTo(cart);
+            for (let i = 0; i < products.length;i++) {
+                cart.append(elementBuilder.productInOrder(products[i].name, products[i].quantity, products[i].price));
             }
         },
 
@@ -74,36 +113,10 @@ $(document).ready(function() {
             $("#collectionName").text(response.collectionName);
             let productDiv = $("#products");
             productDiv.empty();
-            for (let i = 0; response.collection.length; i++) {
-                let outerWrapper = $('<div/>', {"class": "item col-xs-4 col-lg-4"});
-                let wrapper = $('<div/>', {"class": "thumbnail"});
-                let image = $('<img/>', {
-                    "class": "group list-group-image",
-                    src: "http://placehold.it/400x250/000/fff",
-                });
-                let innerWrapper = $('<div/>', {"class": "caption"});
-                let productName = $('<h4/>', {"class": "group inner list-group-item-heading"})
-                    .text(response.collection[i].name);
-                let productDescription = $('<p/>', {"class": "group inner list-group-item-text"})
-                    .text(response.collection[i].description);
-                let row = $('<div/>', {"class": "row"});
-                let priceWrapper = $('<div/>', {"class": "col-xs-12 col-md-6"});
-                let price = $('<p/>', {"class": "lead"}).text(response.collection[i].price);
-                let addToCartWrapper = $('<div/>', {"class": "col-xs-12 col-md-6"});
-                let addToCart = $('<a/>', {
-                    "class": "btn btn-success addtocart",
-                    "data-prod_id": response.collection[i].id,
-                }).text("Add To Cart").click(event.addToCart);
-                priceWrapper.append(price);
-                addToCartWrapper.append(addToCart);
-                row.append(priceWrapper).append(addToCartWrapper);
-                innerWrapper.append(productName);
-                innerWrapper.append(productDescription);
-                innerWrapper.append(row);
-                wrapper.append(image);
-                wrapper.append(innerWrapper);
-                outerWrapper.append(wrapper);
-                productDiv.append(outerWrapper);
+            let products = response.collection;
+            for (let i = 0; products.length; i++) {
+                productDiv.append(elementBuilder.productInList(
+                    products[i].name, products[i].description, products[i].price, products[i].id));
             }
             eventApplier.addEventsToAddToCartButtons();
         },
@@ -120,8 +133,8 @@ $(document).ready(function() {
                 success: responseHandler
             });
         },
-        
-        getProductToCart: function (id, responseHandler) {
+
+        insertProductToOrder: function (id, responseHandler) {
             $.ajax({
                 type: "GET",
                 url: "/api/add-product/" + id,
