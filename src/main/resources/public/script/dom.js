@@ -13,9 +13,9 @@ $(document).ready(function() {
     const event = {
 
         addToCart: function (event) {
-            let clickedButton = event.target;
-            let productId = {"productid" : clickedButton.dataset.prod_id};
-            ajax.postProductToCart(productId, responseHandler.updateCart);
+            // let clickedButton = event.target;
+            let productId = $(event.target).data("prod_id");
+            ajax.getProductToCart(productId, responseHandler.updateCart);
         },
 
         toggleCart: function () {
@@ -120,12 +120,11 @@ $(document).ready(function() {
                 success: responseHandler
             });
         },
-        // this could be a get
-        postProductToCart: function (id, responseHandler) {
+        
+        getProductToCart: function (id, responseHandler) {
             $.ajax({
-                type: "POST",
-                url: "/api/additem",
-                data: JSON.stringify(id),
+                type: "GET",
+                url: "/api/add-product/" + id,
                 dataType: "json",
                 contentType: "application/json",
                 success: responseHandler

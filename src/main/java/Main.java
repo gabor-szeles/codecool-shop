@@ -30,16 +30,15 @@ public class Main {
         // populate some data for the memory storage
         populateData();
 
-        // Always start with more specific routes
-
-        // Always add generic routes to the end
+        // routes
         get("/", ProductController::renderProducts);
 
         get("/api/get-supplier-products/:id", ProductController::getSupplier);
 
-        post("/api/additem", ProductController::handleOrder);
+        get("/api/add-product/:id", ProductController::handleOrder);
 
         get("/api/review-cart", ProductController::reviewCart);
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }

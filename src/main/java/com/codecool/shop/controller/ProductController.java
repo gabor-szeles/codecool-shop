@@ -74,8 +74,9 @@ public class ProductController {
     }
 
     public static String handleOrder(Request req, Response res) {
-        Map<String,String> request  = Utils.parseJson(req);
-        Product targetItem = ProductDaoMem.getInstance().find(Integer.parseInt(request.get("productid")));
+        int productId = Integer.parseInt(req.params("id"));
+//        Map<String,String> request  = Utils.parseJson(req);
+        Product targetItem = ProductDaoMem.getInstance().find(productId);
         if (!isLineItem(targetItem)) {
             LineItem newLineItem = new LineItem(targetItem, targetItem.getDefaultPrice());
             Order.getCurrentOrder().add(newLineItem);
