@@ -1,3 +1,43 @@
+#cart {
+    padding: 30px 50px;
+    position: fixed;
+    top: 54px;
+    background-color: white;
+    z-index: 10;
+    float: right;
+    right: 0;
+}
+
+ul {
+    list-style: none;
+}
+
+.jumbotron {
+    z-index: 2;
+    position: relative;
+}
+
+footer {
+    padding: 5px 20px;
+    z-index: 2;
+    position: relative;
+    background-color: dimgray;
+}
+
+nav {
+    background-color: dimgray;
+}
+
+aside {
+    padding-top: 184px;
+    position: fixed !important;
+    float: left;
+    background-color: dimgray;
+    z-index: 1;
+    height: 100%;
+    overflow: hidden !important;
+}
+
 .glyphicon {
     margin-right:5px;
 }

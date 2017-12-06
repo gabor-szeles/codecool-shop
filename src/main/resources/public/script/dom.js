@@ -6,6 +6,8 @@ $(document).ready(function() {
             eventApplier.addEventToOrderButton();
             eventApplier.addEventsToAddToCartButtons();
             eventApplier.addEventsToSupplierButtons();
+            eventApplier.addEventToSupplierToggle();
+            eventApplier.addEventToCategoryToggle();
         }
 
     };
@@ -14,7 +16,6 @@ $(document).ready(function() {
 
         addToOrder: function (event) {
             let productId = $(event.target).data("prod_id");
-            console.log(productId);
             ajax.insertProductToOrder(productId, responseHandler.updateOrder);
         },
 
@@ -27,6 +28,13 @@ $(document).ready(function() {
             id = id.replace('supplier', '');
             ajax.getSupplierProducts(id, responseHandler.updateProducts);
         },
+
+        toggleCategories: function() {
+            $("#categoryButtons").slideToggle();
+        },
+        toggleSuppliers: function() {
+            $("#supplierButtons").slideToggle();
+        }
 
     };
 
@@ -44,16 +52,22 @@ $(document).ready(function() {
         addEventsToAddToCartButtons: function() {
             $('.addtocart').click(event.addToOrder);
         },
+        addEventToSupplierToggle: function() {
+            $("#toggleSupplier").click(event.toggleSuppliers);
+        },
+        addEventToCategoryToggle: function() {
+            $("#toggleCategory").click(event.toggleCategories);
+        }
 
     };
 
     const elementBuilder = {
-        
+
         productInOrder: function(name, quantity, price) {
             let wrapper = $('<div/>', {"class": "row"});
-            let nameParagraph = $('<p/>', {}).text(name);
-            let quantityParagraph = $('<p/>', {}).text(quantity);
-            let priceParagraph = $('<p/>', {}).text(price);
+            let nameParagraph = $('<p/>', {"class": "col-8"}).text(name);
+            let quantityParagraph = $('<p/>', {"class": "col-1"}).text(quantity);
+            let priceParagraph = $('<p/>', {"class": "col-3"}).text(price);
             wrapper
                 .append(nameParagraph)
                 .append(quantityParagraph)
@@ -63,7 +77,7 @@ $(document).ready(function() {
         },
 
         productInList: function(name, description, price, id) {
-            let outerWrapper = $('<div/>', {"class": "item col-xs-4 col-lg-4"});
+            let outerWrapper = $('<div/>', {"class": "offset-2 col-xs-4 col-lg-3"});
             let wrapper = $('<div/>', {"class": "thumbnail"});
             let image = $('<img/>', {
                 "class": "group list-group-image",

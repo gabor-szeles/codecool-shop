@@ -5,7 +5,7 @@
     <meta name="author" content="Codecool" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Codecool Shop</title>
+    <title>Webshop by Lava</title>
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous" />
     <link rel="stylesheet" type="text/css" href="/css/custom.css" />
@@ -17,7 +17,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+    <nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top">
         <h1 class="navbar-brand mb-0">Total items</h1>
         <strong id="total-items">0</strong>
         <h1 class="navbar-brand mb-0">Total price</h1>
@@ -25,31 +25,39 @@
         <button type="button" id="cartButton" class="btn btn-primary">Cart</button>
     </nav>
 
-    <div id="cart" style="display: none"></div>
+    <div id="cart" style="display: none" class="col-10">
+        <p class="col-8">No items in the cart yet.</p>
+    </div>
+
+    <aside class="col-2">
+        <!-- Categories -->
+        <button id="toggleCategory" class="btn btn-primary">Categories</button>
+        <ul id="categoryButtons" style="display: none">
+            <li th:each="category,iterStat:${categories}"><button class="btn btn-secondary" th:text="${category.name}" th:id="'category'+${category.id}"></button></li>
+        </ul>
+        <br />
+        <!--Suppliers-->
+        <button id="toggleSupplier" class="btn btn-primary">Suppliers</button>
+        <ul id="supplierButtons" style="display: none">
+            <li th:each="supplier,iterStat:${suppliers}"><button class="btn btn-secondary" th:text="${supplier.name}" th:id="'supplier'+${supplier.id}"></button></li>
+        </ul>
+    </aside>
 
     <div class="jumbotron text-center">
-        <h1>Codecool Shop</h1>
+        <h1>Webshop</h1>
     </div>
-    <!-- Categories -->
-    <ul>
-        <li th:each="category,iterStat:${categories}"><button th:text="${category.name}" th:id="'category'+${category.id}"></button></li>
-    </ul>
 
-    <!--Suppliers-->
-    <ul>
-        <li th:each="supplier,iterStat:${suppliers}"><button th:text="${supplier.name}" th:id="'supplier'+${supplier.id}"></button></li>
-    </ul>
 
     <!-- Main page -->
     <div id="main" class="container">
 
-        <div class="well well-sm">
+        <div class="well well-sm offset-2 col-10">
             <strong id="collectionName" th:text="${collectionName}">Category Title</strong>
         </div>
 
         <div id="products" class="row">
 
-            <div class="item col-xs-4 col-lg-4" th:each="prod,iterStat : ${collection}">
+            <div class="item offset-2 col-xs-3 col-lg-3" th:each="prod,iterStat : ${collection}">
                 <div class="thumbnail">
                     <img class="group list-group-image" src="http://placehold.it/400x250/000/fff" th:attr="src='/img/product_' + ${prod.id} + '.jpg'" alt="" />
                     <div class="caption">
