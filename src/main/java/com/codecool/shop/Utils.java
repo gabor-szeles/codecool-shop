@@ -12,15 +12,15 @@ import java.util.Map;
 public class Utils {
     private static Utils ourInstance = null;
 
+    private Utils() {
+    }
+
     public static Utils getInstance() {
         if (ourInstance == null) {
             ourInstance = new Utils();
         }
         return ourInstance;
     }
-
-    private Utils() {}
-
 
     public static Map<String, String> parseJson(Request request) {
         Gson gson = new Gson();
