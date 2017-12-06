@@ -39,7 +39,7 @@ public class Main {
 
         post("/api/additem", ProductController::handleOrder);
 
-        get("/review", ProductController::reviewCart);
+        get("/api/review-cart", ProductController::reviewCart);
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }

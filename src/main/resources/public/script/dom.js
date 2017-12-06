@@ -1,23 +1,6 @@
 $(document).ready(function() {
 
     const dom = {
-        deleteModalContent: function () {
-            $('.addedRow').empty();
-        },
-        addEventListeners: function () {
-            $('.addtocart').click(dom.addToCartClick);
-            $('#shoppingCart').on('show.bs.modal', dom.reviewCart);
-            $('#shoppingCart').on('hide.bs.modal', dom.deleteModalContent);
-
-        },
-        refreshHeader: function (response) {
-            var itemsNumber = response.itemsNumber;
-            var totalPrice = response.totalPrice;
-            $('#total-items').text(itemsNumber);
-            $('#total-price').text(totalPrice);
-
-        },
-
         addToCartClick: function (event) {
             var clickedButton = event.target;
             var productId = {"productid" : clickedButton.dataset.prod_id};
@@ -29,35 +12,29 @@ $(document).ready(function() {
                 contentType: "application/json",
                 success: dom.refreshHeader,
             });
-
         },
-
         reviewCart: function () {
-            console.log("running")
-            $.ajax({
-                type: "GET",
-                url: "/review",
-                dataType: "json",
-                contentType: "application/json",
-                success: dom.drawReview,
-                error: function() {
-                    console.log("lulz");
-                }
-            });
+            $("#cart").slideToggle();
         },
-
         drawReview: function (response) {
             var list = response.shoppingCart;
+            let cart = $("#cart");
             for (let i = 0; i<list.length;i++) {
-                console.log("INSIDE")
-                $('#reviewTable').append(`
-                <tr class="addedRow">
-                    <td>${list[i].name}</td>
-                    <td>${list[i].quantity}</td>
-                    <td>${list[i].price}</td>
-                </tr>
-            `);
-
+                let wrapper = $('<div/>', {
+                    "class": "row"
+                });
+                let name = $('<p/>', {}).text(list[i].name);
+                let quantity = $('<p/>', {}).text(list[i].quantity);
+                let price = $('<p/>', {}).text(list[i].price);
+                wrapper
+                    .append(name)
+                    .append(quantity)
+                    .append(price);
+                cart.hide();
+                cart.append(wrapper).slideToggle();
+                cart.click(function(event) {
+                    $(event.target).slideToggle();
+                })
             }
         },
         supplierButtonClickHandler: function(event) {
@@ -112,18 +89,7 @@ $(document).ready(function() {
                         let addToCart = $('<a/>', {
                             "class": "btn btn-success addtocart",
                             "data-prod_id": response.collection[i].id,
-                        }).text("Add To Cart").click(function(event) {
-                            var clickedButton = event.target;
-                            var productId = {"productid" : clickedButton.dataset.prod_id};
-                            $.ajax({
-                                type: "POST",
-                                url: "/api/additem",  // Send the login info to this page
-                                data: JSON.stringify(productId),
-                                dataType: "json",
-                                contentType: "application/json",
-                                success: dom.refreshHeader,
-                            });
-                        });
+                        }).text("Add To Cart").click(dom.addToCartClick);
                         priceWrapper.append(price);
                         addToCartWrapper.append(addToCart);
                         row.append(priceWrapper).append(addToCartWrapper);
@@ -136,7 +102,7 @@ $(document).ready(function() {
                         productDiv.append(outerWrapper);
                         console.log("lul");
                     }
-                    dom.addEventListeners();
+                    dom.addEventListenersToAddToCart();
                 }
             });
         },
@@ -144,28 +110,46 @@ $(document).ready(function() {
             let buttons = $("button[id*='supplier']");
             buttons.click(dom.supplierButtonClickHandler);
         },
-        addEventListeners: function () {
-            $('.addtocart').click(function(event) {
-                var clickedButton = event.target;
-                var productId = {"productid" : clickedButton.dataset.prod_id};
-                $.ajax({
-                    type: "POST",
-                    url: "/api/additem",  // Send the login info to this page
-                    data: JSON.stringify(productId),
-                    dataType: "json",
-                    contentType: "application/json",
-                    success: dom.refreshHeader,
-                });
-            })
-        },
         refreshHeader: function (response) {
+            console.log(response);
             var itemsNumber = response.itemsNumber;
             var totalPrice = response.totalPrice;
             $('#total-items').text(itemsNumber);
             $('#total-price').text(totalPrice);
-        }
+            var list = response.shoppingCart;
+            console.log("list " + list);
+            let cart = $("#cart");
+            cart.empty();
+            for (let i = 0; i<list.length;i++) {
+                let wrapper = $('<div/>', {
+                    "class": "row"
+                });
+                let name = $('<p/>', {}).text(list[i].name);
+                let quantity = $('<p/>', {}).text(list[i].quantity);
+                let price = $('<p/>', {}).text(list[i].price);
+                wrapper
+                    .append(name)
+                    .append(quantity)
+                    .append(price);
+                cart.append(wrapper);
+                // cart.hide();
+                // cart.append(wrapper).slideToggle();
+                // cart.click(function(event) {
+                //     $(event.target).slideToggle();
+                // })
+            }
+        },
+        addEventListenersToHeader: function () {
+            $('#cartButton').click(dom.reviewCart);
+        },
+        addEventListenersToAddToCart: function() {
+            $('.addtocart').click(dom.addToCartClick);
+        },
+
+
     };
 
-    dom.addEventListeners();
+    dom.addEventListenersToHeader();
+    dom.addEventListenersToAddToCart();
     dom.addEventsToSupplierButtons();
 });

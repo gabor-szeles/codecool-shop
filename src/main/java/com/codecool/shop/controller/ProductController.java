@@ -80,9 +80,19 @@ public class ProductController {
             LineItem newLineItem = new LineItem(targetItem, targetItem.getDefaultPrice());
             Order.getCurrentOrder().add(newLineItem);
         }
-        Map<String, String> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
+        List<Map> orders = new ArrayList<>();
+        List<LineItem> orderItems = Order.getCurrentOrder().getAddedItems();
+        for (int i = 0; i < orderItems.size(); i++) {
+            Map<String, String> productMap = new HashMap<>();
+            productMap.put("name", orderItems.get(i).getItem().getName() );
+            productMap.put("quantity", Integer.toString(orderItems.get(i).getQuantity()) );
+            productMap.put("price", Float.toString(orderItems.get(i).getItemPriceSum()) );
+            orders.add(productMap);
+        }
         response.put("itemsNumber", Integer.toString(Order.getCurrentOrder().getTotalSize()));
         response.put("totalPrice", Float.toString(Order.getCurrentOrder().getTotalPrice()));
+        response.put("shoppingCart", orders);
         System.out.println(response);
         return Utils.toJson(response);
     }
