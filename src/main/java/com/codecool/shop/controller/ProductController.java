@@ -7,6 +7,8 @@ import com.codecool.shop.dao.implementation.ProductDaoMem;
 import com.codecool.shop.dao.implementation.SupplierDaoMem;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.Supplier;
+import com.codecool.shop.model.*;
+
 import spark.Request;
 import spark.Response;
 
@@ -65,10 +67,20 @@ public class ProductController {
         Map<String, Object> data = new HashMap<>();
         data.put("collection", collection);
         data.put("collectionName", targetSupplier.getName());
-//        ProductDaoMem productDataStore = ProductDaoMem.getInstance();
-//        List<Product> products = productDataStore.getBy(targetSupplier);
 
         Utils utils = Utils.getInstance();
         return utils.toJson(data);
     }
+
+    public static String handleOrder(Request req, Response res) {
+        Map<String,String> request  = Utils.parseJson(req);
+        Product targetItem = ProductDaoMem.getInstance().find(Integer.parseInt(request.get("productid")));
+        LineItem newLineItem = new LineItem(targetItem, targetItem.getDefaultPrice());
+        Order.getCurrentOrder().add(newLineItem);
+        Map<String, String> response = new HashMap<>();
+        response.put("itemsNumber", Integer.toString(Order.getCurrentOrder().getAddedItems().size()));
+        response.put("totalPrice", Float.toString(Order.getCurrentOrder().getTotalPrice()));
+        return Utils.toJson(response);
+    }
+
 }

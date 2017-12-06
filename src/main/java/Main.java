@@ -1,4 +1,11 @@
 import com.codecool.shop.controller.ProductController;
+import com.codecool.shop.dao.ProductCategoryDao;
+import com.codecool.shop.dao.ProductDao;
+import com.codecool.shop.dao.SupplierDao;
+import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
+import com.codecool.shop.dao.implementation.ProductDaoMem;
+import com.codecool.shop.dao.implementation.SupplierDaoMem;
+import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
@@ -37,11 +44,19 @@ public class Main {
 
         get("/api/get-supplier-products/:id", ProductController::getSupplier);
 
+        post("/api/additem", ProductController::handleOrder);
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }
 
     private static void populateData() {
+
+        Order shoppingCart = new Order();
+
+        ProductDao productDataStore = ProductDaoMem.getInstance();
+        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
+        SupplierDao supplierDataStore = SupplierDaoMem.getInstance();
 
         //setting up a new supplier
         Supplier amazon = new Supplier("Amazon", "Digital content and services");

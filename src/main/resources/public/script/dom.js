@@ -1,4 +1,3 @@
-// $(function () {
 $(document).ready(function() {
 
     const dom = {
@@ -52,31 +51,63 @@ $(document).ready(function() {
                             "class": "col-xs-12 col-md-6",
                         });
                         let addToCart = $('<a/>', {
-                            "class": "btn btn-success addtocart"
-                        }).text("Add To Cart");
+                            "class": "btn btn-success addtocart",
+                            "data-prod_id": response.collection[i].id,
+                        }).text("Add To Cart").click(function(event) {
+                            var clickedButton = event.target;
+                            var productId = {"productid" : clickedButton.dataset.prod_id};
+                            $.ajax({
+                                type: "POST",
+                                url: "/api/additem",  // Send the login info to this page
+                                data: JSON.stringify(productId),
+                                dataType: "json",
+                                contentType: "application/json",
+                                success: dom.refreshHeader,
+                            });
+                        });
                         priceWrapper.append(price);
                         addToCartWrapper.append(addToCart);
                         row.append(priceWrapper).append(addToCartWrapper);
-
-                        outerWrapper
-                            .append(wrapper)
-                            .append(image)
-                            .append(innerWrapper)
-                            .append(productName)
-                            .append(productDescription)
-                            .append(row);
+                        innerWrapper.append(productName);
+                        innerWrapper.append(productDescription);
+                        innerWrapper.append(row);
+                        wrapper.append(image);
+                        wrapper.append(innerWrapper);
+                        outerWrapper.append(wrapper);
                         productDiv.append(outerWrapper);
+                        console.log("lul");
                     }
+                    dom.addEventListeners();
                 }
             });
         },
         addEventsToSupplierButtons: function() {
             let buttons = $("button[id*='supplier']");
             buttons.click(dom.supplierButtonClickHandler);
+        },
+        addEventListeners: function () {
+            $('.addtocart').click(function(event) {
+                var clickedButton = event.target;
+                var productId = {"productid" : clickedButton.dataset.prod_id};
+                $.ajax({
+                    type: "POST",
+                    url: "/api/additem",  // Send the login info to this page
+                    data: JSON.stringify(productId),
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: dom.refreshHeader,
+
+                });
+            })
+        },
+        refreshHeader: function (response) {
+            var itemsNumber = response.itemsNumber;
+            var totalPrice = response.totalPrice;
+            $('#total-items').text(itemsNumber);
+            $('#total-price').text(totalPrice);
         }
     };
 
     dom.addEventsToSupplierButtons();
+    dom.addEventListeners();
 });
-
-// });
