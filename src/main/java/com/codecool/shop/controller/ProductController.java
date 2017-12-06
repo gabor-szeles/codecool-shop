@@ -49,7 +49,7 @@ public class ProductController {
         for (int i = 0; i < orderItems.size(); i++) {
             Map<String, String> productMap = new HashMap<>();
             productMap.put("name", orderItems.get(i).getItem().getName() );
-            productMap.put("quantity", Float.toString(orderItems.get(i).getQuantity()) );
+            productMap.put("quantity", Integer.toString(orderItems.get(i).getQuantity()) );
             productMap.put("price", Float.toString(orderItems.get(i).getItemPriceSum()) );
             mapList.add(productMap);
         }

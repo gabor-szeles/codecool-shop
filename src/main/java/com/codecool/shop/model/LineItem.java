@@ -3,7 +3,7 @@ package com.codecool.shop.model;
 public class LineItem {
 
     Product item;
-    float quantity;
+    int quantity;
     float itemPriceSum;
 
     public LineItem(Product item, float price) {
@@ -29,7 +29,7 @@ public class LineItem {
         return item;
     }
 
-    public float getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
