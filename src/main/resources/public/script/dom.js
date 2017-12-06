@@ -1,47 +1,56 @@
-const dom = {
+$(document).ready(function() {
 
-    addEventListeners: function () {
-        $('.addtocart').click(dom.addToCartClick);
-        $('#shoppingCart').on('show.bs.modal', dom.reviewCart);
-        $('#shoppingCart').on('hide.bs.modal', dom.deleteModalContent);
+    const dom = {
+        deleteModalContent: function () {
+            $('.addedRow').empty();
+        },
+        addEventListeners: function () {
+            $('.addtocart').click(dom.addToCartClick);
+            $('#shoppingCart').on('show.bs.modal', dom.reviewCart);
+            $('#shoppingCart').on('hide.bs.modal', dom.deleteModalContent);
 
-    },
+        },
+        refreshHeader: function (response) {
+            var itemsNumber = response.itemsNumber;
+            var totalPrice = response.totalPrice;
+            $('#total-items').text(itemsNumber);
+            $('#total-price').text(totalPrice);
 
-    refreshHeader: function (response) {
-        var itemsNumber = response.itemsNumber;
-        var totalPrice = response.totalPrice;
-        $('#total-items').text(itemsNumber);
-        $('#total-price').text(totalPrice);
+        },
 
-    },
+        addToCartClick: function (event) {
+            var clickedButton = event.target;
+            var productId = {"productid" : clickedButton.dataset.prod_id};
+            $.ajax({
+                type: "POST",
+                url: "/api/additem",  // Send the login info to this page
+                data: JSON.stringify(productId),
+                dataType: "json",
+                contentType: "application/json",
+                success: dom.refreshHeader,
+            });
 
-    addToCartClick: function (event) {
-        var clickedButton = event.target;
-        var productId = {"productid" : clickedButton.dataset.prod_id};
-        $.ajax({
-            type: "POST",
-            url: "/api/additem",  // Send the login info to this page
-            data: JSON.stringify(productId),
-            dataType: "json",
-            contentType: "application/json",
-            success: dom.refreshHeader,
-        });
+        },
 
-    },
+        reviewCart: function () {
+            console.log("running")
+            $.ajax({
+                type: "GET",
+                url: "/review",
+                dataType: "json",
+                contentType: "application/json",
+                success: dom.drawReview,
+                error: function() {
+                    console.log("lulz");
+                }
+            });
+        },
 
-    reviewCart: function () {
-        $.ajax({
-            type: "POST",
-            url: "/review",
-            success: dom.drawReview,
-        });
-    },
-
-    drawReview: function (response) {
-        var list = JSON.parse(response).shoppingCart;
-        for (let i = 0; i<list.length;i++) {
-            console.log("INSIDE")
-            $('#reviewTable').append(`
+        drawReview: function (response) {
+            var list = response.shoppingCart;
+            for (let i = 0; i<list.length;i++) {
+                console.log("INSIDE")
+                $('#reviewTable').append(`
                 <tr class="addedRow">
                     <td>${list[i].name}</td>
                     <td>${list[i].quantity}</td>
@@ -49,13 +58,114 @@ const dom = {
                 </tr>
             `);
 
+            }
+        },
+        supplierButtonClickHandler: function(event) {
+            let id = $(event.target).attr("id");
+
+            id = id.replace('supplier', '');
+            console.log("id: " + id);
+            let data = {"id": id};
+            $.ajax({
+                type: "GET",
+                url: "/api/get-supplier-products/" + id,
+                dataType: "json",
+                contentType: "application/json",
+                success: function(response) {
+                    console.log(response);
+                    $("#collectionName").text(response.collectionName);
+                    let productDiv = $("#products");
+                    productDiv.empty();
+                    console.log(response.collection);
+                    for (let i = 0; response.collection.length; i++) {
+                        let outerWrapper = $('<div/>', {
+                            "class": "item col-xs-4 col-lg-4",
+                        });
+                        let wrapper = $('<div/>', {
+                            "class": "thumbnail",
+                        });
+                        let image = $('<img/>', {
+                            "class": "group list-group-image",
+                            src: "http://placehold.it/400x250/000/fff",
+                        });
+                        let innerWrapper = $('<div/>', {
+                            "class": "caption",
+                        });
+                        let productName = $('<h4/>', {
+                            "class": "group inner list-group-item-heading"
+                        }).text(response.collection[i].name);
+                        let productDescription = $('<p/>', {
+                            "class": "group inner list-group-item-text",
+                        }).text(response.collection[i].description);
+                        let row = $('<div/>', {
+                            "class": "row"
+                        });
+                        let priceWrapper = $('<div/>', {
+                            "class": "col-xs-12 col-md-6"
+                        });
+                        let price = $('<p/>', {
+                            "class": "lead"
+                        }).text(response.collection[i].price);
+                        let addToCartWrapper = $('<div/>', {
+                            "class": "col-xs-12 col-md-6",
+                        });
+                        let addToCart = $('<a/>', {
+                            "class": "btn btn-success addtocart",
+                            "data-prod_id": response.collection[i].id,
+                        }).text("Add To Cart").click(function(event) {
+                            var clickedButton = event.target;
+                            var productId = {"productid" : clickedButton.dataset.prod_id};
+                            $.ajax({
+                                type: "POST",
+                                url: "/api/additem",  // Send the login info to this page
+                                data: JSON.stringify(productId),
+                                dataType: "json",
+                                contentType: "application/json",
+                                success: dom.refreshHeader,
+                            });
+                        });
+                        priceWrapper.append(price);
+                        addToCartWrapper.append(addToCart);
+                        row.append(priceWrapper).append(addToCartWrapper);
+                        innerWrapper.append(productName);
+                        innerWrapper.append(productDescription);
+                        innerWrapper.append(row);
+                        wrapper.append(image);
+                        wrapper.append(innerWrapper);
+                        outerWrapper.append(wrapper);
+                        productDiv.append(outerWrapper);
+                        console.log("lul");
+                    }
+                    dom.addEventListeners();
+                }
+            });
+        },
+        addEventsToSupplierButtons: function() {
+            let buttons = $("button[id*='supplier']");
+            buttons.click(dom.supplierButtonClickHandler);
+        },
+        addEventListeners: function () {
+            $('.addtocart').click(function(event) {
+                var clickedButton = event.target;
+                var productId = {"productid" : clickedButton.dataset.prod_id};
+                $.ajax({
+                    type: "POST",
+                    url: "/api/additem",  // Send the login info to this page
+                    data: JSON.stringify(productId),
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: dom.refreshHeader,
+                });
+            })
+        },
+        refreshHeader: function (response) {
+            var itemsNumber = response.itemsNumber;
+            var totalPrice = response.totalPrice;
+            $('#total-items').text(itemsNumber);
+            $('#total-price').text(totalPrice);
         }
-    },
+    };
 
-    deleteModalContent: function () {
-        $('.addedRow').empty();
-    }
-
-}
-
-dom.addEventListeners();
+    dom.addEventListeners();
+    dom.addEventsToSupplierButtons();
+});

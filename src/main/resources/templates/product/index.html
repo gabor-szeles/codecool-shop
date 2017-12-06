@@ -22,6 +22,7 @@
 
 
     <link rel="stylesheet" type="text/css" href="/css/custom.css" />
+    <script src="/script/dom.js"></script>
 </head>
 
 <body>
@@ -30,7 +31,7 @@
         <strong id="total-items">0</strong>
         <h1 class="navbar-brand mb-0">Total price</h1>
         <strong id="total-price">0 USD</strong>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#shoppingCart">Cart</button>
+        <button type="button" id="cartButton" class="btn btn-primary" data-toggle="modal" data-target="#shoppingCart">Cart</button>
     </nav>
 <br />
 
@@ -39,19 +40,24 @@
 </div>
 <!-- Categories -->
 <ul>
-    <li th:each="category,iterStat:${categories}" ><button th:text="${category.name}" th:id="'category'+${category.id}"></button></li>
+    <li th:each="category,iterStat:${categories}"><button th:text="${category.name}" th:id="'category'+${category.id}"></button></li>
+</ul>
+
+<!--Suppliers-->
+<ul>
+    <li th:each="supplier,iterStat:${suppliers}"><button th:text="${supplier.name}" th:id="'supplier'+${supplier.id}"></button></li>
 </ul>
 
 <!-- Main page -->
-<div class="container" th:each="category:${categories}">
+<div id="main" class="container">
 
     <div class="well well-sm">
-        <strong th:text="${category.name}">Category Title</strong>
+        <strong id="collectionName" th:text="${collectionName}">Category Title</strong>
     </div>
 
     <div id="products" class="row">
 
-        <div class="item col-xs-4 col-lg-4" th:each="prod,iterStat : ${category.getProducts()}" th:if="${category.id == 1}">
+        <div class="item col-xs-4 col-lg-4" th:each="prod,iterStat : ${collection}">
             <div class="thumbnail">
                 <img class="group list-group-image" src="http://placehold.it/400x250/000/fff" th:attr="src='/img/product_' + ${prod.id} + '.jpg'" alt="" />
                 <div class="caption">
@@ -59,10 +65,10 @@
                     <p class="group inner list-group-item-text" th:text="${prod.description}">Product description... </p>
                     <div class="row">
                         <div class="col-xs-12 col-md-6">
-                            <p class="lead" th:text="${prod.getPrice()}">100 USD</p>
+                            <p class="lead" th:text="${prod.price}">100 USD</p>
                         </div>
                         <div class="col-xs-12 col-md-6">
-                            <a class="btn btn-success addtocart" th:attr="data-prod_id=${prod.getId()}">Add to cart</a>
+                            <a class="btn btn-success addtocart" th:attr="data-prod_id=${prod.id}">Add to cart</a>
                         </div>
                     </div>
                 </div>
@@ -99,6 +105,6 @@
 </div>
 <div th:replace="footer :: copy"></div>
 
-<script type="text/javascript" src="/script/dom.js"></script>
+<!--<script type="text/javascript" src="/script/dom.js"></script>-->
 </body>
 </html>
