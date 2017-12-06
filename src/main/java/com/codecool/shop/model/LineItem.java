@@ -17,4 +17,10 @@ public class LineItem {
     }
 
 
+    @Override
+    public String toString() {
+        return  "item: " + item.getName() +
+                ", quantity: " + quantity +
+                ", itemPriceSum: " + itemPriceSum;
+    }
 }

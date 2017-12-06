@@ -1,5 +1,7 @@
 package com.codecool.shop.model;
 
+import com.codecool.shop.dao.implementation.OrderDaoMem;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +12,10 @@ public class Order {
     private static Order currentOrder;
 
     public Order() {
+        OrderDaoMem orderData = OrderDaoMem.getInstance();
         this.addedItems = new ArrayList<>();
         totalPrice = 0;
+        orderData.add(this);
         currentOrder = this;
     }
 
@@ -38,5 +42,10 @@ public class Order {
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return "id: " + id + ", addedItems: " + addedItems + ", totalPrice :" + totalPrice;
     }
 }
