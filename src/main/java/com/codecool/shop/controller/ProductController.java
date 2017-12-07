@@ -92,6 +92,16 @@ public class ProductController {
         return Utils.toJson(response);
     }
 
+    public static String addUserData(Request request, Response response) {
+        Map<String, String> userData = Utils.parseJson(request);
+        System.out.println(userData.get("userName"));
+        Order.getCurrentOrder().setUserData(userData);
+
+        String res = "order updated with user data";
+        System.out.println(Order.getCurrentOrder().getUserData());
+        return Utils.toJson(res);
+    }
+
     private static boolean isLineItem(Product targetItem) {
         for (LineItem lineItem: Order.getCurrentOrder().getAddedItems()) {
             if (lineItem.getItem().equals(targetItem)){

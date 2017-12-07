@@ -39,6 +39,8 @@ public class Main {
 
         get("/api/add-product/:id", ProductController::handleOrder);
 
+        post("/api/add-user-data", ProductController::addUserData);
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }

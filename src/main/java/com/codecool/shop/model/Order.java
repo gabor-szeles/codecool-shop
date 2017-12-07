@@ -5,6 +5,7 @@ import com.codecool.shop.dao.implementation.OrderDaoMem;
 import javax.sound.sampled.Line;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Order {
     protected int id;
@@ -12,6 +13,7 @@ public class Order {
     private float totalPrice;
     private static Order currentOrder;
     private int totalSize;
+    private Map<String, String> userData;
 
     public Order() {
         OrderDaoMem orderData = OrderDaoMem.getInstance();
@@ -67,5 +69,13 @@ public class Order {
     @Override
     public String toString() {
         return "id: " + id + ", addedItems: " + addedItems + ", totalPrice :" + totalPrice;
+    }
+
+    public Map<String, String> getUserData() {
+        return userData;
+    }
+
+    public void setUserData(Map<String, String> userData) {
+        this.userData = userData;
     }
 }

@@ -16,6 +16,12 @@ $(document).ready(function() {
 
     const event = {
 
+        proceedToPayment: function() {
+            let userName = $('#userName').val();
+            let data = {"userName": userName};
+            ajax.insertUserData(data, responseHandler.initializePaymentPage);
+        },
+
         addToOrder: function (event) {
             let productId = $(event.target).data("prod_id");
             ajax.insertProductToOrder(productId, responseHandler.updateOrder);
@@ -32,7 +38,6 @@ $(document).ready(function() {
         },
 
         sortByCategory: function(event) {
-            console.log("run");
             let id = $(event.target).attr("id");
             id = id.replace('category', '');
             ajax.getCategoryProducts(id, responseHandler.updateProducts);
@@ -41,8 +46,24 @@ $(document).ready(function() {
         toggleCategories: function() {
             $("#categoryButtons").slideToggle();
         },
+
         toggleSuppliers: function() {
             $("#supplierButtons").slideToggle();
+        },
+
+        addCheckoutForm: function() {
+            let form = $('<form/>', {});
+            let nameInput = $('<input/>', {
+                id: "userName",
+                name: "name",
+                placeholder: "Name",
+            });
+            let paymentButton = $('<button/>', {id: "checkout", "class": "btn btn-primary"})
+                .text("Pay")
+                .click(event.proceedToPayment);
+                // add event here
+            $('#cart').empty();
+            $('#cart').append(form).append(nameInput).append(paymentButton);
         }
 
     };
@@ -91,6 +112,12 @@ $(document).ready(function() {
             return wrapper;
         },
 
+        checkoutButton: function() {
+            return $('<button/>', {id: "checkout", "class": "btn btn-primary"})
+                .text("Checkout")
+                .click(event.addCheckoutForm);
+        },
+
         productInList: function(name, description, price, id) {
             let outerWrapper = $('<div/>', {"class": "offset-2 col-xs-4 col-lg-3"});
             let wrapper = $('<div/>', {"class": "thumbnail"});
@@ -136,6 +163,7 @@ $(document).ready(function() {
             for (let i = 0; i < products.length;i++) {
                 cart.append(elementBuilder.productInOrder(products[i].name, products[i].quantity, products[i].price));
             }
+            cart.append(elementBuilder.checkoutButton());
         },
 
         updateProducts: function(response) {
@@ -149,6 +177,10 @@ $(document).ready(function() {
             }
             eventApplier.addEventsToAddToCartButtons();
         },
+
+        initializePaymentPage: function(response) {
+            console.log(response);
+        }
     };
 
     const ajax = {
@@ -182,6 +214,17 @@ $(document).ready(function() {
                 success: responseHandler
             });
         },
+
+        insertUserData: function(data, responseHandler) {
+            $.ajax({
+                type: "POST",
+                url: "/api/add-user-data",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json",
+                success: responseHandler
+            });
+        }
     };
 
     dom.init();
