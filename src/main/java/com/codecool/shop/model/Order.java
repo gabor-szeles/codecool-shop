@@ -14,6 +14,7 @@ public class Order {
     private static Order currentOrder;
     private int totalSize;
     private Map<String, String> userData;
+    private Map<String, String> paymentData;
 
     public Order() {
         OrderDaoMem orderData = OrderDaoMem.getInstance();
@@ -77,5 +78,13 @@ public class Order {
 
     public void setUserData(Map<String, String> userData) {
         this.userData = userData;
+    }
+
+    public Map<String, String> getPaymentData() {
+        return paymentData;
+    }
+
+    public void setPaymentData(Map<String, String> paymentData) {
+        this.paymentData = paymentData;
     }
 }

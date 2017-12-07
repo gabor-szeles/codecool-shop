@@ -9,7 +9,6 @@ $(document).ready(function() {
             eventApplier.addEventsToCategoryButtons();
             eventApplier.addEventToSupplierToggle();
             eventApplier.addEventToCategoryToggle();
-
         }
 
     };
@@ -61,7 +60,6 @@ $(document).ready(function() {
             let paymentButton = $('<button/>', {id: "checkout", "class": "btn btn-primary"})
                 .text("Pay")
                 .click(event.proceedToPayment);
-                // add event here
             $('#cart').empty();
             $('#cart').append(form).append(nameInput).append(paymentButton);
         }
@@ -179,7 +177,56 @@ $(document).ready(function() {
         },
 
         initializePaymentPage: function(response) {
-            console.log(response);
+            $('#cart').empty();
+
+            let paymentOptionText = $('<p/>', {"class": "offset-1"}).text("Please choose your payment method you prick!");
+            let creditCardPaymentButton = $('<button/>', {id: "creditCardPayment", "class": "btn btn-primary col-4 offset-1"})
+                .text("Credit Card");
+            creditCardPaymentButton.click( function() {
+                let form = $('<form/>', {});
+                let nameInput = $('<input/>', {
+                    id: "cardHoledName",
+                    name: "cardHoler",
+                    placeholder: "Enter Card Holer Name",
+                });
+                let creditCardconfirmationButton = $('<button/>', {id: "creditCardPayment", "class": "btn btn-primary"})
+                    .text("Confirm Credit Card Credentials");
+                creditCardconfirmationButton.click( function () {
+                        let cardHolderName = $('#cardHolderName').val();
+                        let data = {"cardHolderName": cardHolderName};
+                        ajax.insertCreditCardData(data, function () {
+                            $('#cart').empty();
+                            let paymentConfirmationText = $('<p/>', {"class": "offset-1"}).text("Thank you for your purchase");
+                            $('#cart').append(paymentConfirmationText)
+                        });
+                });
+                $('#cart').empty();
+                $('#cart').append(form).append(nameInput).append(creditCardconfirmationButton);
+            });
+            let payPalPaymentButton = $('<button/>', {id: "payPalPayment", "class": "btn btn-primary col-4 offset-1"})
+                .text("Pay Pal");
+            payPalPaymentButton.click( function() {
+                let form = $('<form/>', {});
+                let nameInput = $('<input/>', {
+                    id: "payPalUserName",
+                    name: "payPalName",
+                    placeholder: "Enter Pay Pal User Name",
+                });
+                let payPalconfirmationButton = $('<button/>', {id: "payPalPayment", "class": "btn btn-primary"})
+                    .text("Confirm PayPal Credentials")
+                payPalconfirmationButton.click( function () {
+                    let cardHolderName = $('#cardHolderName').val();
+                    let data = {"cardHolderName": cardHolderName};
+                    ajax.insertPayPalData(data, function () {
+                        $('#cart').empty();
+                        let paymentConfirmationText = $('<p/>', {"class": "offset-1"}).text("Thank you for your purchase");
+                        $('#cart').append(paymentConfirmationText)
+                    });
+                });
+                $('#cart').empty();
+                $('#cart').append(form).append(nameInput).append(payPalconfirmationButton);
+            });
+            $('#cart').append(paymentOptionText).append(creditCardPaymentButton).append(payPalPaymentButton);
         }
     };
 
@@ -219,6 +266,28 @@ $(document).ready(function() {
             $.ajax({
                 type: "POST",
                 url: "/api/add-user-data",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json",
+                success: responseHandler
+            });
+        },
+
+        insertCreditCardData: function(data, responseHandler) {
+            $.ajax({
+                type: "POST",
+                url: "/api/add-credit-card-data",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json",
+                success: responseHandler
+            });
+        },
+
+        insertPayPalData: function(data, responseHandler) {
+            $.ajax({
+                type: "POST",
+                url: "/api/add-pay-pal-data",
                 data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json",
