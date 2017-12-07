@@ -264,7 +264,15 @@ $(document).ready(function() {
                     .text("Confirm Credit Card Credentials");
                 creditCardconfirmationButton.click( function () {
                         let cardHolderName = $('#cardHolderName').val();
-                        let data = {"cardHolderName": cardHolderName};
+                        let cardNumberData = $('#cardNumber').val();
+                        let expMonth = $('#expirationMonth').val();
+                        let expYear = $('#expirationYear').val();
+                        let cscNum = $('#cscNumber').val();
+                        let data = {"cardHolderName": cardHolderName,
+                                    "cardNumber": cardNumberData,
+                                    "expMonth": expMonth,
+                                    "expYear": expYear,
+                                    "cscNumber": cscNum};
                         ajax.insertCreditCardData(data, function () {
                             $('#cart').empty();
                             let paymentConfirmationText = $('<p/>', {"class": "offset-1"}).text("Thank you for your purchase");
