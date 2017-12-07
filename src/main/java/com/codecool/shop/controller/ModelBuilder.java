@@ -1,10 +1,7 @@
 package com.codecool.shop.controller;
 
-import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
-import com.codecool.shop.model.BaseModel;
 import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Product;
-import com.codecool.shop.model.ProductCategory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
