@@ -68,6 +68,10 @@ public class Order {
         this.totalSize++;
     }
 
+    public void decrementTotalSize() {
+        this.totalSize--;
+    }
+
     @Override
     public String toString() {
         return "id: " + id + ", addedItems: " + addedItems + ", totalPrice :" + totalPrice;

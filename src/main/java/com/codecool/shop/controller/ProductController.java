@@ -73,7 +73,6 @@ public class ProductController {
         for (LineItem lineItem: Order.getCurrentOrder().getAddedItems()) {
             if (lineItem.getItem().equals(targetItem)){
                 lineItem.incrementQuantity();
-                Order.getCurrentOrder().incrementTotalSize();
                 return true;
             }
         }

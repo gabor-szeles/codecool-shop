@@ -37,11 +37,15 @@ public class LineItem {
         this.quantity++;
         this.itemPriceSum += this.item.getDefaultPrice();
         Order.getCurrentOrder().incrementTotalPrice(this.item.getDefaultPrice());
+        Order.getCurrentOrder().incrementTotalSize();
     }
 
     public void decrementQuantity() {
-        this.quantity--;
-        this.itemPriceSum -= this.item.getDefaultPrice();
-        Order.getCurrentOrder().decrementTotalPrice(this.item.getDefaultPrice());
+        if (this.quantity > 0) {
+            this.quantity--;
+            this.itemPriceSum -= this.item.getDefaultPrice();
+            Order.getCurrentOrder().decrementTotalPrice(this.item.getDefaultPrice());
+            Order.getCurrentOrder().decrementTotalSize();
+        }
     }
 }
