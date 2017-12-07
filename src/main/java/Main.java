@@ -37,6 +37,7 @@ public class Main {
 
         get("/api/add-product/:id", ProductController::handleOrder);
 
+        post("/api/change-quantity/", ProductController::changeQuantity);
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }
