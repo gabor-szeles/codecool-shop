@@ -1,11 +1,38 @@
+
+:root  {
+    --color-smokewhite: #dedede;
+    --color-lightgrey: #c6c6c6;
+    --color-grey: #9c9c9c;
+    --color-teal: #3bbd8c;
+    --color-darkteal: #33976d;
+}
+
 #cart {
     padding: 30px 50px;
     position: fixed;
     top: 54px;
-    background-color: white;
+    background-color: var(--color-smokewhite);
     z-index: 10;
     float: right;
     right: 0;
+}
+
+.btn:focus,.btn:active, .btn {
+    outline: none !important;
+    box-shadow: none;
+    border: none;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.51), 0 1px 0 rgba(0, 0, 0, 0.51);
+    white-space: normal !important;
+    color: white !important;
+}
+
+.addtocart,
+.btn-primary {
+    background-color: var(--color-teal);
+}
+
+.btn:hover {
+    background-color: var(--color-darkteal);
 }
 
 ul {
@@ -15,24 +42,25 @@ ul {
 .jumbotron {
     z-index: 2;
     position: relative;
+    background-color: var(--color-teal);
 }
 
 footer {
     padding: 5px 20px;
     z-index: 2;
     position: relative;
-    background-color: dimgray;
+    background-color: var(--color-grey);
 }
 
 nav {
-    background-color: dimgray;
+    background-color: var(--color-lightgrey);
 }
 
 aside {
-    padding-top: 184px;
+    padding-top: 200px;
     position: fixed !important;
     float: left;
-    background-color: dimgray;
+    background-color: var(--color-lightgrey);
     z-index: 1;
     height: 100%;
     overflow: hidden !important;
