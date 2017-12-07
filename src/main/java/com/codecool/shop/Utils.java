@@ -7,6 +7,7 @@ import spark.Request;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Utils {
@@ -36,5 +37,15 @@ public class Utils {
 
     public static String renderTemplate(Map model, String template) {
         return new ThymeleafTemplateEngine().render(new ModelAndView(model, template));
+    }
+
+    public static Map<String, String> JSONBodyToMap(Request request){
+        Map<String, String> data = new HashMap<>();
+        String[] requestBody = request.body().split("&");
+        for ( String whatever: requestBody ){
+            String[] part = whatever.split("=");
+            data.put(part[0], part[1]);
+        }
+        return data;
     }
 }
