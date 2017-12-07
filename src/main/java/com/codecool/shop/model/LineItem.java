@@ -35,7 +35,15 @@ public class LineItem {
 
     public void incrementQuantity() {
         this.quantity++;
-        this.itemPriceSum += this.item.getDefaultPrice();
-        Order.getCurrentOrder().incrementTotalPrice(this.item.getDefaultPrice());
+        this.itemPriceSum = this.item.getDefaultPrice() * quantity;
+        Order.getCurrentOrder().changeTotalPrice();
+        Order.getCurrentOrder().incrementTotalSize();
+    }
+
+    public void decrementQuantity() {
+            this.quantity--;
+            this.itemPriceSum = this.item.getDefaultPrice() * quantity;
+            Order.getCurrentOrder().changeTotalPrice();
+            Order.getCurrentOrder().decrementTotalSize();
     }
 }

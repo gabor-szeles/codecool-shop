@@ -47,9 +47,13 @@ public class Order {
         return totalPrice;
     }
 
-    public void incrementTotalPrice(float price) {
-        this.totalPrice += price;
+    public void changeTotalPrice() {
+        totalPrice = 0;
+        for (LineItem lineItem : this.addedItems){
+            totalPrice += lineItem.getItemPriceSum();
+        }
     }
+
 
     public void setId(int id) {
         this.id = id;
@@ -65,6 +69,10 @@ public class Order {
 
     public void incrementTotalSize() {
         this.totalSize++;
+    }
+
+    public void decrementTotalSize() {
+        this.totalSize--;
     }
 
     @Override
