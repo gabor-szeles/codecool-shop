@@ -40,6 +40,13 @@ public class Main {
         get("/api/add-product/:id", ProductController::handleOrder);
 
         post("/api/change-quantity/", ProductController::changeQuantity);
+
+        post("/api/add-user-data", ProductController::addUserData);
+
+        post("/api/add-credit-card-data", ProductController::addCreditCardData);
+
+        post("/api/add-pay-pal-data", ProductController::addPayPalData);
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }
