@@ -6,8 +6,10 @@ $(document).ready(function() {
             eventApplier.addEventToOrderButton();
             eventApplier.addEventsToAddToCartButtons();
             eventApplier.addEventsToSupplierButtons();
+            eventApplier.addEventsToCategoryButtons();
             eventApplier.addEventToSupplierToggle();
             eventApplier.addEventToCategoryToggle();
+
         }
 
     };
@@ -27,6 +29,13 @@ $(document).ready(function() {
             let id = $(event.target).attr("id");
             id = id.replace('supplier', '');
             ajax.getSupplierProducts(id, responseHandler.updateProducts);
+        },
+
+        sortByCategory: function(event) {
+            console.log("run");
+            let id = $(event.target).attr("id");
+            id = id.replace('category', '');
+            ajax.getCategoryProducts(id, responseHandler.updateProducts);
         },
 
         toggleCategories: function() {
@@ -51,6 +60,13 @@ $(document).ready(function() {
             let buttons = $("button[id*='supplier']");
             buttons.click(event.sortBySupplier);
         },
+
+        addEventsToCategoryButtons: function() {
+            let buttons = $("button[id*='category']");
+            console.log(buttons);
+            buttons.click(event.sortByCategory);
+        },
+
         addEventToOrderButton: function () {
             $('#cartButton').click(event.toggleOrder);
         },
@@ -156,6 +172,16 @@ $(document).ready(function() {
             $.ajax({
                 type: "GET",
                 url: "/api/get-supplier-products/" + id,
+                dataType: "json",
+                contentType: "application/json",
+                success: responseHandler
+            });
+        },
+
+        getCategoryProducts: function(id, responseHandler) {
+            $.ajax({
+                type: "GET",
+                url: "/api/get-category-products/" + id,
                 dataType: "json",
                 contentType: "application/json",
                 success: responseHandler

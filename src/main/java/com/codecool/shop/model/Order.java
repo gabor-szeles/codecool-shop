@@ -44,13 +44,13 @@ public class Order {
         return totalPrice;
     }
 
-    public void incrementTotalPrice(float price) {
-        this.totalPrice += price;
+    public void changeTotalPrice() {
+        totalPrice = 0;
+        for (LineItem lineItem : this.addedItems){
+            totalPrice += lineItem.getItemPriceSum();
+        }
     }
 
-    public void decrementTotalPrice(float price) {
-        this.totalPrice -= price;
-    }
 
     public void setId(int id) {
         this.id = id;
