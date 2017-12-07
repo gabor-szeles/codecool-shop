@@ -45,10 +45,11 @@ $(document).ready(function() {
             $("#supplierButtons").slideToggle();
         },
         changeQuantity: function (event) {
-            let productId = event.target.parentNode.dataset.prodId;
-            let change = event.target.dataset.change;
-            let data = {Id: productId, change: change};
-            JSON.stringify(data);
+            let productId = $(event.target).parent().data("prodId")
+            // let productId = event.target.parentNode.dataset.prodId;
+            // let change = event.target.dataset.change;
+            let change = $(event.target).data("change");
+            let data = {"Id": productId, "change": change};
             ajax.changeQuantityAjax(data, responseHandler.updateOrder);
         }
 
@@ -201,7 +202,7 @@ $(document).ready(function() {
             $.ajax({
                 type: "POST",
                 url: "/api/change-quantity/",
-                data: data,
+                data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json",
                 success: responseHandler

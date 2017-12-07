@@ -94,37 +94,51 @@ public class ProductController {
     }
 
     public static String changeQuantity(Request req, Response res) {
-        Map<String, String> data = Utils.JSONBodyToMap(req);
+        System.out.println("ide bement");
+        Map<String, String> data = Utils.parseJson(req);
         List<LineItem> lineItems = Order.getCurrentOrder().getAddedItems();
-        for (LineItem lineItem : lineItems ){
-            if (lineItem.getItem().getId() == Integer.parseInt(data.get("Id"))){
-                if (Objects.equals(data.get("change"), "plus")){
-                    lineItem.incrementQuantity();
-                    Order.getCurrentOrder().changeTotalPrice();
-                }
-                else {
-                    if (lineItem.getQuantity() > 0) lineItem.decrementQuantity();
-                    else {
-                        Order.getCurrentOrder().getAddedItems().remove(lineItem);
-                    }
-                    Order.getCurrentOrder().changeTotalPrice();
-                }
+        LineItem targetLineItem = null;
+        for (LineItem lineItem : lineItems ) {
+            if (lineItem.getItem().getId() == Integer.parseInt(data.get("Id"))) {
+                targetLineItem = lineItem;
+                break;
             }
         }
+        if (Objects.equals(data.get("change"), "plus")){
+            targetLineItem.incrementQuantity();
+            Order.getCurrentOrder().changeTotalPrice();
+        }
+        else {
+            if (targetLineItem.getQuantity() > 0) {
+                targetLineItem.decrementQuantity();
+                if (targetLineItem.getQuantity() == 0) {
+                    Order.getCurrentOrder().getAddedItems().remove(targetLineItem);
+                }
+
+            }
+            Order.getCurrentOrder().changeTotalPrice();
+        }
         Map<String, Object> response = getShoppingCartData();
+        System.out.println("response here");
         System.out.println((response.get("shoppingCart")));
         return Utils.toJson(response);
     }
 
     private static Map<String, Object> getShoppingCartData() {
         ModelBuilder modelBuilder = ModelBuilder.getInstance();
+        System.out.println("itt még van");
         List<LineItem> orderItems = Order.getCurrentOrder().getAddedItems();
+        System.out.println(orderItems);
         List<Map> orders = modelBuilder.lineItemModel(orderItems);
-
+        System.out.println(orders);
         Map<String, Object> response = new HashMap<>();
         response.put("itemsNumber", Integer.toString(Order.getCurrentOrder().getTotalSize()));
         response.put("totalPrice", Float.toString(Order.getCurrentOrder().getTotalPrice()));
         response.put("shoppingCart", orders);
+
+        System.out.println("response");
+        System.out.println(orders);
+//        System.out.println(response);
         return response;
     }
 }
