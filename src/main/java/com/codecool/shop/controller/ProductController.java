@@ -9,14 +9,13 @@ import com.codecool.shop.model.Product;
 import com.codecool.shop.model.Supplier;
 import com.codecool.shop.model.*;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
 import spark.Request;
 import spark.Response;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ProductController {
 
@@ -66,15 +65,7 @@ public class ProductController {
             Order.getCurrentOrder().add(newLineItem);
         }
 
-        ModelBuilder modelBuilder = ModelBuilder.getInstance();
-        List<LineItem> orderItems = Order.getCurrentOrder().getAddedItems();
-        List<Map> orders = modelBuilder.lineItemModel(orderItems);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("itemsNumber", Integer.toString(Order.getCurrentOrder().getTotalSize()));
-        response.put("totalPrice", Float.toString(Order.getCurrentOrder().getTotalPrice()));
-        response.put("shoppingCart", orders);
-
+        Map<String, Object> response = getShoppingCartData();
         return Utils.toJson(response);
     }
 
@@ -89,4 +80,32 @@ public class ProductController {
         return false;
     }
 
+    public static String changeQuantity(Request req, Response res) {
+        Map<String, String> data = Utils.JSONBodyToMap(req);
+        List<LineItem> lineItems = Order.getCurrentOrder().getAddedItems();
+        for (LineItem lineItem : lineItems ){
+            if (lineItem.getItem().getId() == Integer.parseInt(data.get("Id"))){
+                if (Objects.equals(data.get("change"), "plus")){
+                    lineItem.incrementQuantity();
+                }
+                else {
+                    lineItem.decrementQuantity();
+                }
+            }
+        }
+        Map<String, Object> response = getShoppingCartData();
+        return Utils.toJson(response);
+    }
+
+    private static Map<String, Object> getShoppingCartData() {
+        ModelBuilder modelBuilder = ModelBuilder.getInstance();
+        List<LineItem> orderItems = Order.getCurrentOrder().getAddedItems();
+        List<Map> orders = modelBuilder.lineItemModel(orderItems);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("itemsNumber", Integer.toString(Order.getCurrentOrder().getTotalSize()));
+        response.put("totalPrice", Float.toString(Order.getCurrentOrder().getTotalPrice()));
+        response.put("shoppingCart", orders);
+        return response;
+    }
 }

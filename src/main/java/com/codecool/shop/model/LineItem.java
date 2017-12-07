@@ -38,4 +38,10 @@ public class LineItem {
         this.itemPriceSum += this.item.getDefaultPrice();
         Order.getCurrentOrder().incrementTotalPrice(this.item.getDefaultPrice());
     }
+
+    public void decrementQuantity() {
+        this.quantity--;
+        this.itemPriceSum -= this.item.getDefaultPrice();
+        Order.getCurrentOrder().decrementTotalPrice(this.item.getDefaultPrice());
+    }
 }

@@ -48,6 +48,10 @@ public class Order {
         this.totalPrice += price;
     }
 
+    public void decrementTotalPrice(float price) {
+        this.totalPrice -= price;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
