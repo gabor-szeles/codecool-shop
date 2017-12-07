@@ -15,7 +15,8 @@ $(document).ready(function() {
 
     const event = {
 
-        proceedToPayment: function() {
+        proceedToPayment: function(event) {
+            event.preventDefault();
             let userName = $('#userName').val();
             let data = {"userName": userName};
             ajax.insertUserData(data, responseHandler.initializePaymentPage);
@@ -57,11 +58,47 @@ $(document).ready(function() {
                 name: "name",
                 placeholder: "Name",
             });
-            let paymentButton = $('<button/>', {id: "checkout", "class": "btn btn-primary"})
+            let countryName = $('<input/>', {
+                id: "countryName",
+                name: "country",
+                placeholder: "Country",
+            });
+            let zipCode = $('<input/>', {
+                id: "zipCode",
+                name: "zipcode",
+                placeholder: "Zip-code",
+                pattern: "[0-9]{4,}"
+            });
+            let address = $('<input/>', {
+                id: "address",
+                name: "address",
+                placeholder: "Address",
+            });
+            let phoneNumber = $('<input/>', {
+                id: "phoneNumber",
+                name: "phoneNumber",
+                placeholder: "Telephone Number",
+                pattern: "[0+]+[0-9]{9,}",
+            });
+            let emailAddress = $('<input/>', {
+                id: "emailAddress",
+                name: "emailAddress",
+                placeholder: "E-mail",
+                pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$",
+            });
+            let paymentButton = $('<button/>', {id: "checkout", "class": "btn btn-primary", type: "submit"})
                 .text("Pay")
                 .click(event.proceedToPayment);
             $('#cart').empty();
-            $('#cart').append(form).append(nameInput).append(paymentButton);
+            form
+                .append(nameInput).append("<br>")
+                .append(countryName).append("<br>")
+                .append(zipCode).append("<br>")
+                .append(address).append("<br>")
+                .append(phoneNumber).append("<br>")
+                .append(emailAddress).append("<br>")
+                .append(paymentButton);
+            $('#cart').append(form);
         }
 
     };
