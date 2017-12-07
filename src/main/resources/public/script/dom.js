@@ -61,6 +61,15 @@ $(document).ready(function() {
             $("#supplierButtons").slideToggle();
         },
 
+        changeQuantity: function (event) {
+            let productId = $(event.target).parent().data("prodId")
+            // let productId = event.target.parentNode.dataset.prodId;
+            // let change = event.target.dataset.change;
+            let change = $(event.target).data("change");
+            let data = {"Id": productId, "change": change};
+            ajax.changeQuantityAjax(data, responseHandler.updateOrder);
+        },
+
         addCheckoutForm: function() {
             let form = $('<form/>', {});
             let nameInput = $('<input/>', {
@@ -110,7 +119,6 @@ $(document).ready(function() {
                 .append(paymentButton);
             $('#cart').append(form);
         }
-
     };
 
     const eventApplier = {
@@ -138,20 +146,27 @@ $(document).ready(function() {
         },
         addEventToCategoryToggle: function() {
             $("#toggleCategory").click(event.toggleCategories);
+        },
+        addEventToChangeQuantity: function () {
+            $(".quantity-changer").click(event.changeQuantity);
         }
 
     };
 
     const elementBuilder = {
 
-        productInOrder: function(name, quantity, price) {
-            let wrapper = $('<div/>', {"class": "row"});
+        productInOrder: function(name, quantity, price, prodId) {
+            let wrapper = $('<div/>', {"class": "row", "data-prod-id": prodId});
             let nameParagraph = $('<p/>', {"class": "col-8"}).text(name);
+            let minusBtn = $('<button>', {"class": "quantity-changer", "data-change": "minus"}).text("-");
             let quantityParagraph = $('<p/>', {"class": "col-1"}).text(quantity);
+            let plusBtn = $('<button>', {"class": "quantity-changer", "data-change": "plus"}).text("+");
             let priceParagraph = $('<p/>', {"class": "col-3"}).text(price);
             wrapper
                 .append(nameParagraph)
+                .append(minusBtn)
                 .append(quantityParagraph)
+                .append(plusBtn)
                 .append(priceParagraph);
 
             return wrapper;
@@ -206,9 +221,11 @@ $(document).ready(function() {
             let cart = $("#cart");
             cart.empty();
             for (let i = 0; i < products.length;i++) {
-                cart.append(elementBuilder.productInOrder(products[i].name, products[i].quantity, products[i].price));
+                cart.append(elementBuilder.productInOrder(products[i].name, products[i].quantity, products[i].price, products[i].prodId));
             }
+
             cart.append(elementBuilder.checkoutButton());
+            eventApplier.addEventToChangeQuantity();
         },
 
         updateProducts: function(response) {
@@ -353,6 +370,17 @@ $(document).ready(function() {
             $.ajax({
                 type: "GET",
                 url: "/api/add-product/" + id,
+                dataType: "json",
+                contentType: "application/json",
+                success: responseHandler
+            });
+        },
+
+        changeQuantityAjax: function (data, responseHandler) {
+            $.ajax({
+                type: "POST",
+                url: "/api/change-quantity/",
+                data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json",
                 success: responseHandler

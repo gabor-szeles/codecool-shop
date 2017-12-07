@@ -7,6 +7,7 @@ import spark.Request;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Utils {
@@ -37,4 +38,5 @@ public class Utils {
     public static String renderTemplate(Map model, String template) {
         return new ThymeleafTemplateEngine().render(new ModelAndView(model, template));
     }
+
 }

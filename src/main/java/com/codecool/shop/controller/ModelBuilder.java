@@ -43,6 +43,7 @@ public class ModelBuilder {
             currentLineItem.put("name", lineItem.getItem().getName() );
             currentLineItem.put("quantity", Integer.toString(lineItem.getQuantity()) );
             currentLineItem.put("price", Float.toString(lineItem.getItemPriceSum()) );
+            currentLineItem.put("prodId", Integer.toString(lineItem.getItem().getId()));
             model.add(currentLineItem);
         }
 
