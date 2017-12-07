@@ -1,10 +1,4 @@
 import com.codecool.shop.controller.ProductController;
-import com.codecool.shop.dao.ProductCategoryDao;
-import com.codecool.shop.dao.ProductDao;
-import com.codecool.shop.dao.SupplierDao;
-import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
-import com.codecool.shop.dao.implementation.ProductDaoMem;
-import com.codecool.shop.dao.implementation.SupplierDaoMem;
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
@@ -36,15 +30,12 @@ public class Main {
         // populate some data for the memory storage
         populateData();
 
-        // Always start with more specific routes
-        get("/hello", (req, res) -> "Hello World");
-
-        // Always add generic routes to the end
+        // routes
         get("/", ProductController::renderProducts);
 
         get("/api/get-supplier-products/:id", ProductController::getSupplier);
 
-        post("/api/additem", ProductController::handleOrder);
+        get("/api/add-product/:id", ProductController::handleOrder);
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
@@ -53,10 +44,6 @@ public class Main {
     private static void populateData() {
 
         Order shoppingCart = new Order();
-
-        ProductDao productDataStore = ProductDaoMem.getInstance();
-        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
-        SupplierDao supplierDataStore = SupplierDaoMem.getInstance();
 
         //setting up a new supplier
         Supplier amazon = new Supplier("Amazon", "Digital content and services");

@@ -2,6 +2,7 @@ package com.codecool.shop.model;
 
 import com.codecool.shop.dao.implementation.OrderDaoMem;
 
+import javax.sound.sampled.Line;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,11 +11,13 @@ public class Order {
     private List<LineItem> addedItems;
     private float totalPrice;
     private static Order currentOrder;
+    private int totalSize;
 
     public Order() {
         OrderDaoMem orderData = OrderDaoMem.getInstance();
         this.addedItems = new ArrayList<>();
         totalPrice = 0;
+        totalSize = 0;
         orderData.add(this);
         currentOrder = this;
     }
@@ -25,6 +28,11 @@ public class Order {
 
     public void add (LineItem lineItem) {
         this.addedItems.add(lineItem);
+        addItem(lineItem);
+
+    }
+
+    public void addItem(LineItem lineItem) {
         this.totalPrice += lineItem.getItemPriceSum();
     }
 
@@ -36,12 +44,24 @@ public class Order {
         return totalPrice;
     }
 
+    public void incrementTotalPrice(float price) {
+        this.totalPrice += price;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
 
     public int getId() {
         return id;
+    }
+
+    public int getTotalSize() {
+        return totalSize;
+    }
+
+    public void incrementTotalSize() {
+        this.totalSize++;
     }
 
     @Override
