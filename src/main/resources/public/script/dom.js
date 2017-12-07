@@ -18,7 +18,17 @@ $(document).ready(function() {
         proceedToPayment: function(event) {
             event.preventDefault();
             let userName = $('#userName').val();
-            let data = {"userName": userName};
+            let country = $('#countryName').val();
+            let zipCode = $('#zipCode').val();
+            let address = $('#address').val();
+            let phoneNumber = $('#phoneNumber').val();
+            let emailAddress = $('#emailAddress').val();
+            let data = {"userName": userName,
+                        "country": country,
+                        "zipcode": zipCode,
+                        "address": address,
+                        "phoneNumber": phoneNumber,
+                        "emailAddress": emailAddress};
             ajax.insertUserData(data, responseHandler.initializePaymentPage);
         },
 

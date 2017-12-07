@@ -94,7 +94,7 @@ public class ProductController {
 
     public static String addUserData(Request request, Response response) {
         Map<String, String> userData = Utils.parseJson(request);
-        System.out.println(userData.get("userName"));
+
         Order.getCurrentOrder().setUserData(userData);
 
         String res = "order updated with user data";
