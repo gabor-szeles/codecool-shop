@@ -13,10 +13,7 @@ import com.sun.org.apache.xpath.internal.operations.Or;
 import spark.Request;
 import spark.Response;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ProductController {
 
@@ -41,7 +38,7 @@ public class ProductController {
         return utils.renderTemplate(data, "product/index");
     }
 
-    public static String getSupplier(Request request, Response response) {
+    public static String getProductsBySupplier(Request request, Response response) {
         int supplierId = Integer.parseInt(request.params("id"));
         SupplierDaoMem supplierDataStore = SupplierDaoMem.getInstance();
         Supplier targetSupplier = supplierDataStore.find(supplierId);
@@ -53,6 +50,23 @@ public class ProductController {
         Map<String, Object> data = new HashMap<>();
         data.put("collection", collection);
         data.put("collectionName", targetSupplier.getName());
+
+        Utils utils = Utils.getInstance();
+        return utils.toJson(data);
+    }
+
+    public static String getProductsByCategory(Request request, Response response) {
+        int categoryId = Integer.parseInt(request.params("id"));
+        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
+        ProductCategory targetCategory = productCategoryDataStore.find(categoryId);
+        List<Product> products = targetCategory.getProducts();
+
+        ModelBuilder modelBuilder = ModelBuilder.getInstance();
+        List<Map> collection = modelBuilder.productModel(products);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("collection", collection);
+        data.put("collectionName", targetCategory.getName());
 
         Utils utils = Utils.getInstance();
         return utils.toJson(data);

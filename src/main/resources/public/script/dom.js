@@ -6,8 +6,10 @@ $(document).ready(function() {
             eventApplier.addEventToOrderButton();
             eventApplier.addEventsToAddToCartButtons();
             eventApplier.addEventsToSupplierButtons();
+            eventApplier.addEventsToCategoryButtons();
             eventApplier.addEventToSupplierToggle();
             eventApplier.addEventToCategoryToggle();
+
         }
 
     };
@@ -29,6 +31,13 @@ $(document).ready(function() {
             ajax.getSupplierProducts(id, responseHandler.updateProducts);
         },
 
+        sortByCategory: function(event) {
+            console.log("run");
+            let id = $(event.target).attr("id");
+            id = id.replace('category', '');
+            ajax.getCategoryProducts(id, responseHandler.updateProducts);
+        },
+
         toggleCategories: function() {
             $("#categoryButtons").slideToggle();
         },
@@ -43,6 +52,12 @@ $(document).ready(function() {
         addEventsToSupplierButtons: function() {
             let buttons = $("button[id*='supplier']");
             buttons.click(event.sortBySupplier);
+        },
+
+        addEventsToCategoryButtons: function() {
+            let buttons = $("button[id*='category']");
+            console.log(buttons);
+            buttons.click(event.sortByCategory);
         },
 
         addEventToOrderButton: function () {
@@ -142,6 +157,16 @@ $(document).ready(function() {
             $.ajax({
                 type: "GET",
                 url: "/api/get-supplier-products/" + id,
+                dataType: "json",
+                contentType: "application/json",
+                success: responseHandler
+            });
+        },
+
+        getCategoryProducts: function(id, responseHandler) {
+            $.ajax({
+                type: "GET",
+                url: "/api/get-category-products/" + id,
                 dataType: "json",
                 contentType: "application/json",
                 success: responseHandler

@@ -33,7 +33,9 @@ public class Main {
         // routes
         get("/", ProductController::renderProducts);
 
-        get("/api/get-supplier-products/:id", ProductController::getSupplier);
+        get("/api/get-supplier-products/:id", ProductController::getProductsBySupplier);
+
+        get("/api/get-category-products/:id", ProductController::getProductsByCategory);
 
         get("/api/add-product/:id", ProductController::handleOrder);
 
