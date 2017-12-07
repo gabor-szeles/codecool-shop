@@ -1,10 +1,7 @@
 package com.codecool.shop.controller;
 
-import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
-import com.codecool.shop.model.BaseModel;
 import com.codecool.shop.model.LineItem;
 import com.codecool.shop.model.Product;
-import com.codecool.shop.model.ProductCategory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +43,7 @@ public class ModelBuilder {
             currentLineItem.put("name", lineItem.getItem().getName() );
             currentLineItem.put("quantity", Integer.toString(lineItem.getQuantity()) );
             currentLineItem.put("price", Float.toString(lineItem.getItemPriceSum()) );
+            currentLineItem.put("prodId", Integer.toString(lineItem.getItem().getId()));
             model.add(currentLineItem);
         }
 
