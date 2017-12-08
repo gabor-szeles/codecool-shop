@@ -181,7 +181,7 @@ $(document).ready(function() {
             let wrapper = $('<div/>', {"class": "thumbnail"});
             let image = $('<img/>', {
                 "class": "group list-group-image",
-                src: "http://placehold.it/400x250/000/fff",
+                src: "/img/product_" + id + ".jpg",
             });
             let innerWrapper = $('<div/>', {"class": "caption"});
             let productName = $('<h4/>', {"class": "group inner list-group-item-heading"}).text(name);
