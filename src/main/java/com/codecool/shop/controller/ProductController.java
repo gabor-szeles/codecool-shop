@@ -89,7 +89,6 @@ public class ProductController {
         Order.getCurrentOrder().setUserData(userData);
 
         String res = "order updated with user data";
-        System.out.println(Order.getCurrentOrder().getUserData());
         return Utils.toJson(res);
     }
 
@@ -98,7 +97,6 @@ public class ProductController {
         Order.getCurrentOrder().setPaymentData(userData);
 
         String res = "order updated with credit card data";
-        System.out.println(Order.getCurrentOrder().getUserData());
         return Utils.toJson(res);
     }
 
@@ -107,7 +105,6 @@ public class ProductController {
         Order.getCurrentOrder().setPaymentData(userData);
 
         String res = "order updated with credit card data";
-        System.out.println(Order.getCurrentOrder().getUserData());
         return Utils.toJson(res);
     }
 
@@ -122,7 +119,6 @@ public class ProductController {
     }
 
     public static String changeQuantity(Request req, Response res) {
-        System.out.println("ide bement");
         Map<String, String> data = Utils.parseJson(req);
         List<LineItem> lineItems = Order.getCurrentOrder().getAddedItems();
         LineItem targetLineItem = null;
@@ -147,26 +143,18 @@ public class ProductController {
             Order.getCurrentOrder().changeTotalPrice();
         }
         Map<String, Object> response = getShoppingCartData();
-        System.out.println("response here");
-        System.out.println((response.get("shoppingCart")));
         return Utils.toJson(response);
     }
 
     private static Map<String, Object> getShoppingCartData() {
         ModelBuilder modelBuilder = ModelBuilder.getInstance();
-        System.out.println("itt még van");
         List<LineItem> orderItems = Order.getCurrentOrder().getAddedItems();
-        System.out.println(orderItems);
         List<Map> orders = modelBuilder.lineItemModel(orderItems);
-        System.out.println(orders);
         Map<String, Object> response = new HashMap<>();
         response.put("itemsNumber", Integer.toString(Order.getCurrentOrder().getTotalSize()));
         response.put("totalPrice", Float.toString(Order.getCurrentOrder().getTotalPrice()));
         response.put("shoppingCart", orders);
 
-        System.out.println("response");
-        System.out.println(orders);
-//        System.out.println(response);
         return response;
     }
 }
