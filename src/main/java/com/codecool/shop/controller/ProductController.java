@@ -92,19 +92,12 @@ public class ProductController {
         return Utils.toJson(res);
     }
 
-    public static String addCreditCardData(Request request, Response response) {
+    public static String addPaymentData(Request request, Response response) {
         Map<String, String> userData = Utils.parseJson(request);
         Order.getCurrentOrder().setPaymentData(userData);
 
-        String res = "order updated with credit card data";
-        return Utils.toJson(res);
-    }
-
-    public static String addPayPalData(Request request, Response response) {
-        Map<String, String> userData = Utils.parseJson(request);
-        Order.getCurrentOrder().setPaymentData(userData);
-
-        String res = "order updated with credit card data";
+        String res = "order updated with payment data";
+        new Order();
         return Utils.toJson(res);
     }
 
