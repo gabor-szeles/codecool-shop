@@ -5,6 +5,8 @@ import com.codecool.shop.Db_handler;
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.model.ProductCategory;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,22 @@ public class ProductCategoryDaoDb implements ProductCategoryDao {
 
     @Override
     public ProductCategory find(int id) {
-        return new ProductCategory("def", "def", "def");
+        String query = "SELECT * FROM product_category WHERE id = ?;";
+
+        ResultSet foundElement = db_handler.createPreparedStatementForFind(id, query);
+        System.out.println(foundElement);
+        try {
+            foundElement.next();
+            ProductCategory foundCategory = new ProductCategory(foundElement.getString("name"),
+                    foundElement.getString("department"),
+                    foundElement.getString("description"));
+            foundCategory.setId(foundElement.getInt("id"));
+            System.out.println(foundCategory);
+            return foundCategory;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

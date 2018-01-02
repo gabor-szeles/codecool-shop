@@ -7,7 +7,6 @@ import spark.Request;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Map;
 
 public class Utils {
@@ -25,7 +24,8 @@ public class Utils {
 
     public static Map<String, String> parseJson(Request request) {
         Gson gson = new Gson();
-        Type type = new TypeToken<Map<String, String>>(){}.getType();
+        Type type = new TypeToken<Map<String, String>>() {
+        }.getType();
 
         return gson.fromJson(request.body(), type);
     }

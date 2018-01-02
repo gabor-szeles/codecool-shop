@@ -9,11 +9,10 @@ import java.sql.*;
 
 public class Db_handler {
 
-    private static Db_handler instance = null;
-
     private static final String DATABASE = "jdbc:postgresql://localhost:5432/codecoolshop";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "postgres";
+    private static Db_handler instance = null;
 
 
     private Db_handler() {
@@ -36,8 +35,8 @@ public class Db_handler {
 
     public void executeQuery(String query) {
         try (Connection connection = getConnection();
-             Statement statement =connection.createStatement();
-        ){
+             Statement statement = connection.createStatement()
+        ) {
             statement.execute(query);
 
         } catch (SQLException e) {
@@ -45,12 +44,13 @@ public class Db_handler {
         }
     }
 
-    public void executePreparedStatement(PreparedStatement preparedStatement) {
+    public ResultSet executePreparedStatement(PreparedStatement preparedStatement) {
         try {
-            preparedStatement.executeQuery();
+            return preparedStatement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public void createPreparedStatementForAdd(BaseModel object, String query) {
@@ -95,5 +95,17 @@ public class Db_handler {
         prepStatement.setFloat(5, product.getDefaultPrice());
         prepStatement.setInt(6, product.getProductCategory().getId());
         prepStatement.setInt(7, product.getSupplier().getId());
+    }
+
+    public ResultSet createPreparedStatementForFind(int id, String query) {
+        try {
+            Connection conn = getConnection();
+            PreparedStatement prepStatement = conn.prepareStatement(query);
+            prepStatement.setInt(1, id);
+            return executePreparedStatement(prepStatement);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

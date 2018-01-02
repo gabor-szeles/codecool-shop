@@ -7,6 +7,8 @@ import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +39,30 @@ public class ProductDaoDb implements ProductDao {
 
     @Override
     public Product find(int id) {
-        // placeholder //
-        return new Product("def", 10f, "USD", "def", new ProductCategory("def","def", "def"), new Supplier("def", "def"));
+
+        String query = "SELECT * FROM product WHERE id = ?;";
+        SupplierDaoDb supplierDaoDb = SupplierDaoDb.getInstance();
+        ProductCategoryDaoDb productCategoryDaoDb = ProductCategoryDaoDb.getInstance();
+        ResultSet foundElement = db_handler.createPreparedStatementForFind(id, query);
+        System.out.println(foundElement);
+        try {
+
+            foundElement.next();
+            Product foundProduct = new Product(
+                    foundElement.getString("name"),
+                    foundElement.getFloat("default_price"),
+                    foundElement.getString("currency_string"),
+                    foundElement.getString("description"),
+                    productCategoryDaoDb.find(foundElement.getInt("category_id")),
+                    supplierDaoDb.find(foundElement.getInt("supplier_id")));
+
+            foundProduct.setId(foundElement.getInt("id"));
+            System.out.println(foundProduct);
+            return foundProduct;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

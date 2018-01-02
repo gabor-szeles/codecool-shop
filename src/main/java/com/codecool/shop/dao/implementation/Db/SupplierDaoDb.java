@@ -4,6 +4,8 @@ import com.codecool.shop.Db_handler;
 import com.codecool.shop.dao.SupplierDao;
 import com.codecool.shop.model.Supplier;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,22 @@ public class SupplierDaoDb implements SupplierDao {
 
     @Override
     public Supplier find(int id) {
-        return new Supplier("Name", "Desc");
+
+        String query = "SELECT * FROM supplier WHERE id = ?;";
+
+        ResultSet foundElement = db_handler.createPreparedStatementForFind(id, query);
+        System.out.println(foundElement);
+        try {
+
+            foundElement.next();
+            Supplier foundSupplier = new Supplier(foundElement.getString("name"), foundElement.getString("description"));
+            foundSupplier.setId(foundElement.getInt("id"));
+            System.out.println(foundSupplier);
+            return foundSupplier;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
