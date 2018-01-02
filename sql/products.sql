@@ -1,6 +1,6 @@
-﻿DROP TABLE IF EXISTS products;
+﻿DROP TABLE IF EXISTS product;
 
-CREATE TABLE products
+CREATE TABLE product
 (
 id integer PRIMARY KEY,
 name text,

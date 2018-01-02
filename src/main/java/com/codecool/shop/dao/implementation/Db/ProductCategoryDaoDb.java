@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ProductCategoryDaoDb implements ProductCategoryDao {
 
-    private Db_handler db_handler = Db_handler.getInstance();
+    private static Db_handler db_handler = Db_handler.getInstance();
     private static ProductCategoryDaoDb instance = null;
 
     /* A private Constructor prevents any other class from instantiating.
