@@ -2,9 +2,9 @@ package com.codecool.shop.controller;
 
 import com.codecool.shop.Utils;
 import com.codecool.shop.dao.ProductCategoryDao;
-import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
-import com.codecool.shop.dao.implementation.ProductDaoMem;
-import com.codecool.shop.dao.implementation.SupplierDaoMem;
+import com.codecool.shop.dao.implementation.Mem.ProductCategoryDaoMem;
+import com.codecool.shop.dao.implementation.Mem.ProductDaoMem;
+import com.codecool.shop.dao.implementation.Mem.SupplierDaoMem;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.Supplier;
 import com.codecool.shop.model.*;
