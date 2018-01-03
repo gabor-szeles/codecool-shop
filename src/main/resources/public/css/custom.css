@@ -137,3 +137,7 @@ aside {
 .list-group-item-text {
     margin: 0 0 11px;
 }
+
+.wrapper {
+    margin-top: 200px;
+}

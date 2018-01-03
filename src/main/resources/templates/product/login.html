@@ -21,15 +21,23 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-    <form action="/api/user/registration" method="POST">
-        <input type="text" name="name" placeholder="Username" />
-        <input type="password" name="password" placeholder="Password" />
-        <button type="submit">Register</button>
-    </form>
-    <form action="/api/user/login" method="POST">
-        <input type="text" name="name" placeholder="Username" />
-        <input type="password" name="password" placeholder="Password" />
-        <button type="submit">Log In</button>
-    </form>
+    <div class="container-fluid">
+        <div class="wrapper">
+            <form action="/api/user/registration" method="POST">
+                <div class="row justify-content-center align-self-center">
+                    <input class="col-3" type="text" name="name" placeholder="Username" />
+                    <input class="col-3" type="password" name="password" placeholder="Password" />
+                    <button type="submit" class="btn btn-primary col-1">Register</button>
+                </div>
+            </form>
+            <form action="/api/user/login" method="POST">
+                <div class="row justify-content-center">
+                    <input class="col-3" type="text" name="name" placeholder="Username" />
+                    <input class="col-3" type="password" name="password" placeholder="Password" />
+                    <button type="submit" class="btn btn-primary col-1">Log In</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
