@@ -26,25 +26,14 @@ public class Db_handler {
     }
 
 
-    public static Connection getConnection() throws SQLException {
+    private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(
                 DATABASE,
                 DB_USER,
                 DB_PASSWORD);
     }
 
-    public void executeQuery(String query) {
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()
-        ) {
-            statement.execute(query);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public ResultSet executePreparedStatement(PreparedStatement preparedStatement) {
+    private ResultSet executePreparedStatement(PreparedStatement preparedStatement) {
         try {
             return preparedStatement.executeQuery();
         } catch (SQLException e) {

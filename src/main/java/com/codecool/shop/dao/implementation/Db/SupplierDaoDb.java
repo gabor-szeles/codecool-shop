@@ -53,11 +53,8 @@ public class SupplierDaoDb implements SupplierDao {
 
     @Override
     public void remove(int id) {
-
         String query = "DELETE FROM supplier WHERE id = ?;";
-
         db_handler.createPreparedStatementForFindOrRemove(id, query);
-
     }
 
     @Override
