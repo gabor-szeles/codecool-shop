@@ -48,6 +48,8 @@ public class Main {
 
         post("/api/user/registration", UserController::registration);
 
+        post("/api/user/login", UserController::login);
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }

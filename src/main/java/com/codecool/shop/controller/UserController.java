@@ -27,8 +27,26 @@ public class UserController {
         boolean success = userDaoDb.add(user);
 
         if (success) {
+            System.out.println("Registration successful");
+            req.session().attribute("username", user.getName());
             res.redirect("/");
         } else {
+            System.out.println("Username already in use");
+            res.redirect("/login");
+        }
+
+        return "";
+    }
+
+    public static String login(Request req, Response res) {
+        User user = new User(req.queryParams("name"), req.queryParams("password"));
+        User selectedUser = userDaoDb.find(req.queryParams("name"));
+        if (BCrypt.checkpw(user.getPassword(), selectedUser.getPassword())) {
+            System.out.println("Password matches");
+            req.session().attribute("username", selectedUser.getName());
+            res.redirect("/");
+        } else {
+            System.out.println("Password doesn't match");
             res.redirect("/login");
         }
 

@@ -2,11 +2,13 @@ package com.codecool.shop.dao.implementation.Db;
 
 import com.codecool.shop.Db_handler;
 import com.codecool.shop.dao.UserDao;
+import com.codecool.shop.model.Supplier;
 import com.codecool.shop.model.User;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDaoDb implements UserDao {
@@ -45,6 +47,20 @@ public class UserDaoDb implements UserDao {
 
     @Override
     public User find(String username) {
-        return null;
+        String query = "SELECT name, password FROM users WHERE name = ?";
+
+        try {
+            Connection connection = db_handler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            User user = new User(resultSet.getString("name"), resultSet.getString("password"));
+            return user;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
