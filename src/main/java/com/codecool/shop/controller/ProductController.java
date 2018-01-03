@@ -2,6 +2,7 @@ package com.codecool.shop.controller;
 
 import com.codecool.shop.Utils;
 import com.codecool.shop.dao.ProductCategoryDao;
+import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoDb;
 import com.codecool.shop.dao.implementation.Db.SupplierDaoDb;
 import com.codecool.shop.dao.implementation.Mem.ProductCategoryDaoMem;
 import com.codecool.shop.dao.implementation.Mem.ProductDaoMem;
@@ -35,7 +36,7 @@ public class ProductController {
 
     public static String getProductsBySupplier(Request request, Response response) {
         int supplierId = Integer.parseInt(request.params("id"));
-        SupplierDaoMem supplierDataStore = SupplierDaoMem.getInstance();
+        SupplierDaoDb supplierDataStore = SupplierDaoDb.getInstance();
         Supplier targetSupplier = supplierDataStore.find(supplierId);
         List<Product> products = targetSupplier.getProducts();
 
@@ -50,7 +51,7 @@ public class ProductController {
 
     public static String getProductsByCategory(Request request, Response response) {
         int categoryId = Integer.parseInt(request.params("id"));
-        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
+        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoDb.getInstance();
         ProductCategory targetCategory = productCategoryDataStore.find(categoryId);
         List<Product> products = targetCategory.getProducts();
 

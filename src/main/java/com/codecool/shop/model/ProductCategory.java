@@ -1,14 +1,14 @@
 package com.codecool.shop.model;
 
-import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoDb;
 import com.codecool.shop.dao.implementation.Db.ProductDaoDb;
 import com.codecool.shop.dao.implementation.Mem.ProductCategoryDaoMem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductCategory extends BaseModel {
     private String department;
-    private ArrayList<Product> products;  // query to fill this //
+    private List<Product> products;  // query to fill this //
 
     public ProductCategory(String name, String department, String description) {
         super(name, description);
@@ -26,7 +26,8 @@ public class ProductCategory extends BaseModel {
         this.department = department;
     }
 
-    public ArrayList getProducts() {
+    public List<Product> getProducts() {
+        this.products = ProductDaoDb.getInstance().getBy(this);
         return this.products;
     }
 

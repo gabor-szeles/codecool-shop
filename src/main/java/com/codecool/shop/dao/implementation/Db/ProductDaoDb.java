@@ -123,6 +123,16 @@ public class ProductDaoDb implements ProductDao {
 
     @Override
     public List<Product> getBy(ProductCategory productCategory) {
-        return new ArrayList<>();
+        List<Product> products = getAll();
+
+        List<Product> productsByCategory = new ArrayList<>();
+
+        for (Product product : products) {
+            if (product.getProductCategory().getId() == productCategory.getId()) {
+                productsByCategory.add(product);
+            }
+        }
+
+        return productsByCategory;
     }
 }
