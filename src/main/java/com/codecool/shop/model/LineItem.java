@@ -20,7 +20,7 @@ public class LineItem {
 
     @Override
     public String toString() {
-        return  "item: " + item.getName() +
+        return "item: " + item.getName() +
                 ", quantity: " + quantity +
                 ", itemPriceSum: " + itemPriceSum;
     }
@@ -41,9 +41,9 @@ public class LineItem {
     }
 
     public void decrementQuantity() {
-            this.quantity--;
-            this.itemPriceSum = this.item.getDefaultPrice() * quantity;
-            Order.getCurrentOrder().changeTotalPrice();
-            Order.getCurrentOrder().decrementTotalSize();
+        this.quantity--;
+        this.itemPriceSum = this.item.getDefaultPrice() * quantity;
+        Order.getCurrentOrder().changeTotalPrice();
+        Order.getCurrentOrder().decrementTotalSize();
     }
 }

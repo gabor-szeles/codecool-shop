@@ -48,8 +48,8 @@ public class Main {
     }
 
     private static void populateData() {
-
         Order shoppingCart = new Order();
+
 
         //setting up a new supplier
         Supplier gardenersSupplyCompany = new Supplier("Gardeners Supply Company", "company providing environmentally friendly gardening products and information through its website, catalogs, and retail stores");

@@ -1,4 +1,4 @@
-package com.codecool.shop.dao.implementation;
+package com.codecool.shop.dao.implementation.Mem;
 
 
 import com.codecool.shop.dao.ProductCategoryDao;

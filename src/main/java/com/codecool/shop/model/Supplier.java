@@ -1,6 +1,6 @@
 package com.codecool.shop.model;
 
-import com.codecool.shop.dao.implementation.SupplierDaoMem;
+import com.codecool.shop.dao.implementation.Mem.SupplierDaoMem;
 
 import java.util.ArrayList;
 
@@ -10,9 +10,9 @@ public class Supplier extends BaseModel {
 
     public Supplier(String name, String description) {
         super(name, description);
-        SupplierDaoMem suppliers = SupplierDaoMem.getInstance();
+        SupplierDaoMem supplierDaoMem = SupplierDaoMem.getInstance();
         this.products = new ArrayList<>();
-        suppliers.add(this);
+        supplierDaoMem.add(this);
     }
 
     public ArrayList getProducts() {

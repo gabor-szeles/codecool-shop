@@ -1,17 +1,16 @@
 package com.codecool.shop.model;
 
-import com.codecool.shop.dao.implementation.OrderDaoMem;
+import com.codecool.shop.dao.implementation.Mem.OrderDaoMem;
 
-import javax.sound.sampled.Line;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Order {
+    private static Order currentOrder;
     protected int id;
     private List<LineItem> addedItems;
     private float totalPrice;
-    private static Order currentOrder;
     private int totalSize;
     private Map<String, String> userData;
     private Map<String, String> paymentData;
@@ -29,7 +28,7 @@ public class Order {
         return currentOrder;
     }
 
-    public void add (LineItem lineItem) {
+    public void add(LineItem lineItem) {
         this.addedItems.add(lineItem);
         addItem(lineItem);
 
@@ -49,18 +48,17 @@ public class Order {
 
     public void changeTotalPrice() {
         totalPrice = 0;
-        for (LineItem lineItem : this.addedItems){
+        for (LineItem lineItem : this.addedItems) {
             totalPrice += lineItem.getItemPriceSum();
         }
     }
 
+    public int getId() {
+        return id;
+    }
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public int getTotalSize() {

@@ -1,19 +1,21 @@
 package com.codecool.shop.model;
 
-import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
+import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoDb;
+import com.codecool.shop.dao.implementation.Db.ProductDaoDb;
+import com.codecool.shop.dao.implementation.Mem.ProductCategoryDaoMem;
 
 import java.util.ArrayList;
 
 public class ProductCategory extends BaseModel {
     private String department;
-    private ArrayList<Product> products;
+    private ArrayList<Product> products;  // query to fill this //
 
     public ProductCategory(String name, String department, String description) {
         super(name, description);
-        ProductCategoryDaoMem productCategories = ProductCategoryDaoMem.getInstance();
+        ProductCategoryDaoMem productCategoryDaoMem = ProductCategoryDaoMem.getInstance();
         this.department = department;
         this.products = new ArrayList<>();
-        productCategories.add(this);
+        productCategoryDaoMem.add(this);
     }
 
     public String getDepartment() {

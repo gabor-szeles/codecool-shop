@@ -2,17 +2,17 @@ package com.codecool.shop.controller;
 
 import com.codecool.shop.Utils;
 import com.codecool.shop.dao.ProductCategoryDao;
-import com.codecool.shop.dao.implementation.ProductCategoryDaoMem;
-import com.codecool.shop.dao.implementation.ProductDaoMem;
-import com.codecool.shop.dao.implementation.SupplierDaoMem;
-import com.codecool.shop.model.Product;
-import com.codecool.shop.model.Supplier;
+import com.codecool.shop.dao.implementation.Mem.ProductCategoryDaoMem;
+import com.codecool.shop.dao.implementation.Mem.ProductDaoMem;
+import com.codecool.shop.dao.implementation.Mem.SupplierDaoMem;
 import com.codecool.shop.model.*;
-
 import spark.Request;
 import spark.Response;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class ProductController {
 
@@ -102,8 +102,8 @@ public class ProductController {
     }
 
     private static boolean isLineItem(Product targetItem) {
-        for (LineItem lineItem: Order.getCurrentOrder().getAddedItems()) {
-            if (lineItem.getItem().equals(targetItem)){
+        for (LineItem lineItem : Order.getCurrentOrder().getAddedItems()) {
+            if (lineItem.getItem().equals(targetItem)) {
                 lineItem.incrementQuantity();
                 return true;
             }
@@ -115,17 +115,16 @@ public class ProductController {
         Map<String, String> data = Utils.parseJson(req);
         List<LineItem> lineItems = Order.getCurrentOrder().getAddedItems();
         LineItem targetLineItem = null;
-        for (LineItem lineItem : lineItems ) {
+        for (LineItem lineItem : lineItems) {
             if (lineItem.getItem().getId() == Integer.parseInt(data.get("Id"))) {
                 targetLineItem = lineItem;
                 break;
             }
         }
-        if (Objects.equals(data.get("change"), "plus")){
+        if (Objects.equals(data.get("change"), "plus")) {
             targetLineItem.incrementQuantity();
             Order.getCurrentOrder().changeTotalPrice();
-        }
-        else {
+        } else {
             if (targetLineItem.getQuantity() > 0) {
                 targetLineItem.decrementQuantity();
                 if (targetLineItem.getQuantity() == 0) {
