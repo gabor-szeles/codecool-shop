@@ -3,6 +3,7 @@ package com.codecool.shop.dao.implementation.Db;
 
 import com.codecool.shop.Db_handler;
 import com.codecool.shop.dao.ProductCategoryDao;
+import com.codecool.shop.dao.implementation.Mem.ProductCategoryDaoMem;
 import com.codecool.shop.model.ProductCategory;
 
 import java.sql.ResultSet;
@@ -37,26 +38,34 @@ public class ProductCategoryDaoDb implements ProductCategoryDao {
 
     @Override
     public ProductCategory find(int id) {
-        String query = "SELECT * FROM product_category WHERE id = ?;";
 
-        ResultSet foundElement = db_handler.createPreparedStatementForFindOrRemove(id, query);
-        System.out.println(foundElement);
-        try {
-            foundElement.next();
-            ProductCategory foundCategory = new ProductCategory(foundElement.getString("name"),
-                    foundElement.getString("department"),
-                    foundElement.getString("description"));
-            foundCategory.setId(foundElement.getInt("id"));
-            System.out.println(foundCategory);
-            return foundCategory;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        ProductCategoryDaoMem productCategoryDaoMem = ProductCategoryDaoMem.getInstance();
+
+        if (productCategoryDaoMem.getAll().contains(productCategoryDaoMem.find(id))) {
+            return productCategoryDaoMem.find(id);
+        } else {
+
+            String query = "SELECT * FROM product_category WHERE id = ?;";
+
+            ResultSet foundElement = db_handler.createPreparedStatementForFindOrRemove(id, query);
+            try {
+                foundElement.next();
+                ProductCategory foundCategory = new ProductCategory(foundElement.getString("name"),
+                        foundElement.getString("department"),
+                        foundElement.getString("description"));
+                foundCategory.setId(foundElement.getInt("id"));
+                return foundCategory;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
-        return null;
     }
 
     @Override
     public void remove(int id) {
+        String query = "DELETE FROM product_category WHERE id = ?;";
+        db_handler.createPreparedStatementForFindOrRemove(id, query);
     }
 
     @Override

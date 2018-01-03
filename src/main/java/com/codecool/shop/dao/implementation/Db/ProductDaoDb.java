@@ -3,6 +3,7 @@ package com.codecool.shop.dao.implementation.Db;
 
 import com.codecool.shop.Db_handler;
 import com.codecool.shop.dao.ProductDao;
+import com.codecool.shop.dao.implementation.Mem.ProductDaoMem;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
@@ -40,26 +41,32 @@ public class ProductDaoDb implements ProductDao {
     @Override
     public Product find(int id) {
 
-        String query = "SELECT * FROM product WHERE id = ?;";
-        SupplierDaoDb supplierDaoDb = SupplierDaoDb.getInstance();
-        ProductCategoryDaoDb productCategoryDaoDb = ProductCategoryDaoDb.getInstance();
-        ResultSet foundElement = db_handler.createPreparedStatementForFindOrRemove(id, query);
-        try {
-            foundElement.next();
-            Product foundProduct = new Product(
-                    foundElement.getString("name"),
-                    foundElement.getFloat("default_price"),
-                    foundElement.getString("currency_string"),
-                    foundElement.getString("description"),
-                    productCategoryDaoDb.find(foundElement.getInt("category_id")),
-                    supplierDaoDb.find(foundElement.getInt("supplier_id")));
+        ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
+        if (productDaoMem.getAll().contains(productDaoMem.find(id))) {
+            return productDaoMem.find(id);
+        } else {
 
-            foundProduct.setId(foundElement.getInt("id"));
-            return foundProduct;
-        } catch (SQLException e) {
-            e.printStackTrace();
+            String query = "SELECT * FROM product WHERE id = ?;";
+            SupplierDaoDb supplierDaoDb = SupplierDaoDb.getInstance();
+            ProductCategoryDaoDb productCategoryDaoDb = ProductCategoryDaoDb.getInstance();
+            ResultSet foundElement = db_handler.createPreparedStatementForFindOrRemove(id, query);
+            try {
+                foundElement.next();
+                Product foundProduct = new Product(
+                        foundElement.getString("name"),
+                        foundElement.getFloat("default_price"),
+                        foundElement.getString("currency_string"),
+                        foundElement.getString("description"),
+                        productCategoryDaoDb.find(foundElement.getInt("category_id")),
+                        supplierDaoDb.find(foundElement.getInt("supplier_id")));
+
+                foundProduct.setId(foundElement.getInt("id"));
+                return foundProduct;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
-        return null;
     }
 
     @Override

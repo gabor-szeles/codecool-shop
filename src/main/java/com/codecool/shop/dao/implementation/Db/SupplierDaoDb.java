@@ -2,6 +2,7 @@ package com.codecool.shop.dao.implementation.Db;
 
 import com.codecool.shop.Db_handler;
 import com.codecool.shop.dao.SupplierDao;
+import com.codecool.shop.dao.implementation.Mem.SupplierDaoMem;
 import com.codecool.shop.model.Supplier;
 
 import java.sql.ResultSet;
@@ -36,19 +37,25 @@ public class SupplierDaoDb implements SupplierDao {
 
     @Override
     public Supplier find(int id) {
+        SupplierDaoMem supplierDaoMem = SupplierDaoMem.getInstance();
 
-        String query = "SELECT * FROM supplier WHERE id = ?;";
+        if (supplierDaoMem.getAll().contains(supplierDaoMem.find(id))) {
+            return supplierDaoMem.find(id);
+        } else {
 
-        ResultSet foundElement = db_handler.createPreparedStatementForFindOrRemove(id, query);
-        try {
-            foundElement.next();
-            Supplier foundSupplier = new Supplier(foundElement.getString("name"), foundElement.getString("description"));
-            foundSupplier.setId(foundElement.getInt("id"));
-            return foundSupplier;
-        } catch (SQLException e) {
-            e.printStackTrace();
+            String query = "SELECT * FROM supplier WHERE id = ?;";
+
+            ResultSet foundElement = db_handler.createPreparedStatementForFindOrRemove(id, query);
+            try {
+                foundElement.next();
+                Supplier foundSupplier = new Supplier(foundElement.getString("name"), foundElement.getString("description"));
+                foundSupplier.setId(foundElement.getInt("id"));
+                return foundSupplier;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
-        return null;
     }
 
     @Override
