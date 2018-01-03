@@ -17,7 +17,19 @@
     right: 0;
 }
 
-.btn:focus, .btn:active, .btn {
+.quantity-number {
+    margin: 0 5px;
+}
+
+button.quantity-changer {
+}
+
+.product-in-cart {
+    margin-bottom: 5px !important;
+    vertical-align: middle !important;
+}
+
+.btn:focus,.btn:active, .btn {
     outline: none !important;
     box-shadow: none;
     border: none;

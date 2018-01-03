@@ -65,8 +65,6 @@ $(document).ready(function () {
 
         changeQuantity: function (event) {
             let productId = $(event.target).parent().data("prodId")
-            // let productId = event.target.parentNode.dataset.prodId;
-            // let change = event.target.dataset.change;
             let change = $(event.target).data("change");
             let data = {"Id": productId, "change": change};
             ajax.changeQuantityAjax(data, responseHandler.updateOrder);
@@ -157,13 +155,13 @@ $(document).ready(function () {
 
     const elementBuilder = {
 
-        productInOrder: function (name, quantity, price, prodId) {
-            let wrapper = $('<div/>', {"class": "row", "data-prod-id": prodId});
+        productInOrder: function(name, quantity, price, prodId) {
+            let wrapper = $('<div/>', {"class": "row product-in-cart", "data-prod-id": prodId});
             let nameParagraph = $('<p/>', {"class": "col-8"}).text(name);
-            let minusBtn = $('<button>', {"class": "quantity-changer", "data-change": "minus"}).text("-");
-            let quantityParagraph = $('<p/>', {"class": "col-1"}).text(quantity);
-            let plusBtn = $('<button>', {"class": "quantity-changer", "data-change": "plus"}).text("+");
-            let priceParagraph = $('<p/>', {"class": "col-3"}).text(price);
+            let minusBtn = $('<button>', {"class": "quantity-changer btn btn-primary", "data-change": "minus"}).text("-");
+            let quantityParagraph = $('<p/>', {"class": "quantity-number"}).text(quantity);
+            let plusBtn = $('<button>', {"class": "quantity-changer btn btn-primary", "data-change": "plus"}).text("+");
+            let priceParagraph = $('<p/>', {"class": "col-2"}).text(price);
             wrapper
                 .append(nameParagraph)
                 .append(minusBtn)
@@ -341,9 +339,9 @@ $(document).ready(function () {
                 });
                 $('#cart').empty();
                 $('#cart').append(form)
-                    .append(nameInput).append("<br>")
-                    .append(paypalPassword).append("<br>")
-                    .append(payPalconfirmationButton);
+                          .append(paypalEmail).append("<br>")
+                          .append(paypalPassword).append("<br>")
+                          .append(payPalconfirmationButton);
             });
             $('#cart').append(paymentOptionText)
                 .append(creditCardPaymentButton)

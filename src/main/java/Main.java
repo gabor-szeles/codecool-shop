@@ -18,11 +18,7 @@ public class Main {
         port(5000);
 
         before((request, response) -> {
-            if (Arrays.asList("GET", "DELETE").contains(request.requestMethod())) {
-                System.out.println(request.requestMethod() + " @ " + request.url() + " ° " + request.params());
-            } else {
-                System.out.println(request.requestMethod() + " @ " + request.url() + " ° " + request.body());
-            }
+            System.out.println(request.requestMethod() + " @ " + request.url());
             // check if user logged in
             // put data to localStorage
         });
@@ -43,9 +39,9 @@ public class Main {
 
         post("/api/add-user-data", ProductController::addUserData);
 
-        post("/api/add-credit-card-data", ProductController::addCreditCardData);
+        post("/api/add-credit-card-data", ProductController::addPaymentData);
 
-        post("/api/add-pay-pal-data", ProductController::addPayPalData);
+        post("/api/add-pay-pal-data", ProductController::addPaymentData);
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
