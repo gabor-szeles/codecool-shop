@@ -2,6 +2,7 @@ package com.codecool.shop.controller;
 
 import com.codecool.shop.Utils;
 import com.codecool.shop.dao.ProductCategoryDao;
+import com.codecool.shop.dao.implementation.Db.SupplierDaoDb;
 import com.codecool.shop.dao.implementation.Mem.ProductCategoryDaoMem;
 import com.codecool.shop.dao.implementation.Mem.ProductDaoMem;
 import com.codecool.shop.dao.implementation.Mem.SupplierDaoMem;
@@ -15,11 +16,11 @@ public class ProductController {
 
     public static String renderProducts(Request req, Response res) {
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
-        SupplierDaoMem supplierDataStore = SupplierDaoMem.getInstance();
+        SupplierDaoDb supplierDataStore = SupplierDaoDb.getInstance();
 
         int supplierId = 1;
         Supplier targetSupplier = supplierDataStore.find(supplierId);
-        ArrayList products = targetSupplier.getProducts();
+        List products = targetSupplier.getProducts();
 
         List<Map> productsResponse = ModelBuilder.productModel(products);
 
