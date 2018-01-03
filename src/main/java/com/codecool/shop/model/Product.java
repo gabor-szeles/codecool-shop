@@ -1,5 +1,6 @@
 package com.codecool.shop.model;
 
+import com.codecool.shop.dao.implementation.Db.ProductDaoDb;
 import com.codecool.shop.dao.implementation.Mem.ProductDaoMem;
 
 import java.util.Currency;
@@ -14,11 +15,13 @@ public class Product extends BaseModel {
 
     public Product(String name, float defaultPrice, String currencyString, String description, ProductCategory productCategory, Supplier supplier) {
         super(name, description);
-        ProductDaoMem products = ProductDaoMem.getInstance();
+        ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
+        ProductDaoDb productDaoDb = ProductDaoDb.getInstance();
         this.setPrice(defaultPrice, currencyString);
         this.setSupplier(supplier);
         this.setProductCategory(productCategory);
-        products.add(this);
+        productDaoMem.add(this);
+        productDaoDb.add(this);
     }
 
     public float getDefaultPrice() {
