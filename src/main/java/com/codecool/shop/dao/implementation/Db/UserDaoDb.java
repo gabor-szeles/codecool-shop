@@ -3,6 +3,7 @@ package com.codecool.shop.dao.implementation.Db;
 import com.codecool.shop.Db_handler;
 import com.codecool.shop.dao.UserDao;
 import com.codecool.shop.model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

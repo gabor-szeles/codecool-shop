@@ -4,6 +4,7 @@ import com.codecool.shop.Utils;
 import com.codecool.shop.dao.UserDao;
 import com.codecool.shop.dao.implementation.Db.UserDaoDb;
 import com.codecool.shop.model.User;
+import org.mindrot.jbcrypt.BCrypt;
 import spark.Request;
 import spark.Response;
 
@@ -21,7 +22,8 @@ public class UserController {
     }
 
     public static String registration(Request req, Response res) {
-        User user = new User(req.queryParams("name"), req.queryParams("password"));
+        String saltedPassword = BCrypt.hashpw(req.queryParams("password"), BCrypt.gensalt());
+        User user = new User(req.queryParams("name"), saltedPassword);
         boolean success = userDaoDb.add(user);
 
         if (success) {
