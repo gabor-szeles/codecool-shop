@@ -33,13 +33,21 @@ public class Db_handler {
                 DB_PASSWORD);
     }
 
-    private ResultSet executePreparedStatement(PreparedStatement preparedStatement) {
+    private ResultSet executePreparedStatementQuery(PreparedStatement preparedStatement) {
         try {
             return preparedStatement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void executePreparedStatement(PreparedStatement preparedStatement) {
+        try {
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void createPreparedStatementForAdd(BaseModel object, String query) {
@@ -91,7 +99,7 @@ public class Db_handler {
             Connection conn = getConnection();
             PreparedStatement prepStatement = conn.prepareStatement(query);
             prepStatement.setInt(1, id);
-            return executePreparedStatement(prepStatement);
+            return executePreparedStatementQuery(prepStatement);
         } catch (SQLException e) {
             e.printStackTrace();
         }
