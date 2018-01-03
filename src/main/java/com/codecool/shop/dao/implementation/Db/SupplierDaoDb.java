@@ -39,14 +39,11 @@ public class SupplierDaoDb implements SupplierDao {
 
         String query = "SELECT * FROM supplier WHERE id = ?;";
 
-        ResultSet foundElement = db_handler.createPreparedStatementForFind(id, query);
-        System.out.println(foundElement);
+        ResultSet foundElement = db_handler.createPreparedStatementForFindOrRemove(id, query);
         try {
-
             foundElement.next();
             Supplier foundSupplier = new Supplier(foundElement.getString("name"), foundElement.getString("description"));
             foundSupplier.setId(foundElement.getInt("id"));
-            System.out.println(foundSupplier);
             return foundSupplier;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,6 +53,10 @@ public class SupplierDaoDb implements SupplierDao {
 
     @Override
     public void remove(int id) {
+
+        String query = "DELETE FROM supplier WHERE id = ?;";
+
+        db_handler.createPreparedStatementForFindOrRemove(id, query);
 
     }
 

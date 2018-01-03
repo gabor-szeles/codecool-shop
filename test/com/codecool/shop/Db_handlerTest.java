@@ -1,6 +1,8 @@
 package com.codecool.shop;
 
+import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoDb;
 import com.codecool.shop.dao.implementation.Db.ProductDaoDb;
+import com.codecool.shop.dao.implementation.Db.SupplierDaoDb;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
@@ -20,6 +22,13 @@ class Db_handlerTest {
     }
 
     @Test
+    void testCreatePreparedStatementForAddProductCategory() {
+        ProductCategory productCategory = new ProductCategory("test", "testdep", "test");
+        ProductCategoryDaoDb productCategoryDaoDb = ProductCategoryDaoDb.getInstance();
+        productCategoryDaoDb.add(productCategory);
+    }
+
+    @Test
     void testCreatePreparedStatementForAddProduct() {
         Supplier supplier = new Supplier("Test", "Test description");
         ProductCategory productCategory = new ProductCategory("TestCategory", "Testing", "Test description for prodCategory");
@@ -34,7 +43,7 @@ class Db_handlerTest {
     }
 
     @Test
-    void testFind() {
+    void testFindProduct() {
         ProductDaoDb productDaoDb = ProductDaoDb.getInstance();
         Supplier supplier = new Supplier("Test", "Test description");
         ProductCategory productCategory = new ProductCategory("TestCategory", "Testing", "Test description for prodCategory");
@@ -45,4 +54,20 @@ class Db_handlerTest {
         assertEquals(product.getDescription(), found.getDescription());
     }
 
+    @Test
+    void testDeleteSupplier() {
+        SupplierDaoDb supplierDaoDb = SupplierDaoDb.getInstance();
+        supplierDaoDb.remove(1);
+    }
+
+    @Test
+    void testDeleteProduct() {
+        ProductDaoDb productDaoDb = ProductDaoDb.getInstance();
+        productDaoDb.remove(1);
+    }
+
+    @Test
+    void testDeleteProductCategory() {
+        ProductCategoryDaoDb.getInstance().remove(1);
+    }
 }

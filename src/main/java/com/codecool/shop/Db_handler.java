@@ -97,7 +97,7 @@ public class Db_handler {
         prepStatement.setInt(7, product.getSupplier().getId());
     }
 
-    public ResultSet createPreparedStatementForFind(int id, String query) {
+    public ResultSet createPreparedStatementForFindOrRemove(int id, String query) {
         try {
             Connection conn = getConnection();
             PreparedStatement prepStatement = conn.prepareStatement(query);

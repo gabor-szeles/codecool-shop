@@ -43,10 +43,8 @@ public class ProductDaoDb implements ProductDao {
         String query = "SELECT * FROM product WHERE id = ?;";
         SupplierDaoDb supplierDaoDb = SupplierDaoDb.getInstance();
         ProductCategoryDaoDb productCategoryDaoDb = ProductCategoryDaoDb.getInstance();
-        ResultSet foundElement = db_handler.createPreparedStatementForFind(id, query);
-        System.out.println(foundElement);
+        ResultSet foundElement = db_handler.createPreparedStatementForFindOrRemove(id, query);
         try {
-
             foundElement.next();
             Product foundProduct = new Product(
                     foundElement.getString("name"),
@@ -57,7 +55,6 @@ public class ProductDaoDb implements ProductDao {
                     supplierDaoDb.find(foundElement.getInt("supplier_id")));
 
             foundProduct.setId(foundElement.getInt("id"));
-            System.out.println(foundProduct);
             return foundProduct;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,6 +64,8 @@ public class ProductDaoDb implements ProductDao {
 
     @Override
     public void remove(int id) {
+        String query = "DELETE FROM product WHERE id = ?;";
+        db_handler.createPreparedStatementForFindOrRemove(id, query);
     }
 
     @Override

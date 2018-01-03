@@ -39,7 +39,7 @@ public class ProductCategoryDaoDb implements ProductCategoryDao {
     public ProductCategory find(int id) {
         String query = "SELECT * FROM product_category WHERE id = ?;";
 
-        ResultSet foundElement = db_handler.createPreparedStatementForFind(id, query);
+        ResultSet foundElement = db_handler.createPreparedStatementForFindOrRemove(id, query);
         System.out.println(foundElement);
         try {
             foundElement.next();
