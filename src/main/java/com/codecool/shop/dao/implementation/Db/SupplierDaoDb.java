@@ -66,6 +66,23 @@ public class SupplierDaoDb implements SupplierDao {
 
     @Override
     public List<Supplier> getAll() {
-        return new ArrayList<>();
+        SupplierDaoMem.getInstance().clear();
+        ArrayList<Supplier> suppliers = new ArrayList<>();
+        String query = "SELECT * FROM supplier";
+        ResultSet foundElements = db_handler.createPreparedStatementForGetAll(query);
+
+        try {
+            while (foundElements.next()){
+                Supplier newSupplier = new Supplier(foundElements.getString("name"),
+                        foundElements.getString("description"));
+                newSupplier.setId(foundElements.getInt("id"));
+
+                suppliers.add(newSupplier);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(suppliers);
+        return suppliers;
     }
 }

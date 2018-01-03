@@ -77,12 +77,48 @@ public class ProductDaoDb implements ProductDao {
 
     @Override
     public List<Product> getAll() {
-        return new ArrayList<>();
+
+        ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
+        productDaoMem.clear();
+
+        ArrayList<Product> products = new ArrayList<>();
+        SupplierDaoDb supplierDaoDb = SupplierDaoDb.getInstance();
+        ProductCategoryDaoDb productCategoryDaoDb = ProductCategoryDaoDb.getInstance();
+        String query = "SELECT * FROM product";
+        ResultSet foundElements = db_handler.createPreparedStatementForGetAll(query);
+        try {
+            while (foundElements.next()){
+                Product newProduct = new Product(foundElements.getString("name"),
+                        foundElements.getFloat("default_price"),
+                        foundElements.getString("currency_string"),
+                        foundElements.getString("description"),
+                        productCategoryDaoDb.find(foundElements.getInt("category_id")),
+                        supplierDaoDb.find(foundElements.getInt("supplier_id"))
+                        );
+                newProduct.setId(foundElements.getInt("id"));
+
+                products.add(newProduct);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(products);
+        return products;
     }
 
     @Override
     public List<Product> getBy(Supplier supplier) {
-        return new ArrayList<>();
+        List<Product> products = getAll();
+
+        List<Product> productsBySupplier = new ArrayList<>();
+
+        for (Product product : products) {
+            if (product.getSupplier().getId() == supplier.getId()) {
+                productsBySupplier.add(product);
+            }
+        }
+
+        return productsBySupplier;
     }
 
     @Override

@@ -70,6 +70,27 @@ public class ProductCategoryDaoDb implements ProductCategoryDao {
 
     @Override
     public List<ProductCategory> getAll() {
-        return new ArrayList<>();
+
+        ProductCategoryDaoMem.getInstance().clear();
+
+        ArrayList<ProductCategory> productCategories = new ArrayList<>();
+        String query = "SELECT * FROM product_category";
+        ResultSet foundElements = db_handler.createPreparedStatementForGetAll(query);
+
+        try {
+            while (foundElements.next()){
+                ProductCategory newProductCategory = new ProductCategory(foundElements.getString("name"),
+                        foundElements.getString("department"),
+                        foundElements.getString("description"));
+                newProductCategory.setId(foundElements.getInt("id"));
+
+                productCategories.add(newProductCategory);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(productCategories);
+        return productCategories;
     }
 }
