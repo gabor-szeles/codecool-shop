@@ -17,6 +17,7 @@ import java.util.Objects;
 public class ProductController {
 
     public static String renderProducts(Request req, Response res) {
+        UserController.ensureUserIsLoggedIn(req, res);
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
         SupplierDaoMem supplierDataStore = SupplierDaoMem.getInstance();
         Utils utils = Utils.getInstance();
@@ -29,6 +30,7 @@ public class ProductController {
         List<Map> productsResponse = modelBuilder.productModel(products);
 
         Map<String, Object> data = new HashMap<>();
+        data.put("username", req.session().attribute("username"));
         data.put("categories", productCategoryDataStore.getAll());
         data.put("suppliers", supplierDataStore.getAll());
         data.put("collectionName", targetSupplier.getName());
