@@ -1,4 +1,5 @@
 import com.codecool.shop.controller.ProductController;
+import com.codecool.shop.controller.UserController;
 import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
@@ -42,6 +43,10 @@ public class Main {
         post("/api/add-credit-card-data", ProductController::addPaymentData);
 
         post("/api/add-pay-pal-data", ProductController::addPaymentData);
+
+        get("/login", UserController::renderLogin);
+
+        post("/api/user/registration", UserController::registration);
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();

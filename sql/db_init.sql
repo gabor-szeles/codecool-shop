@@ -1,10 +1,10 @@
-﻿DROP TABLE IF EXISTS "user";
+﻿DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS "order";
 DROP TABLE IF EXISTS supplier;
 DROP TABLE IF EXISTS product_category;
 DROP TABLE IF EXISTS product;
 
-CREATE TABLE "user"
+CREATE TABLE users
 (
   id serial NOT NULL,
   name varchar(30) NOT NULL UNIQUE,

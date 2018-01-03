@@ -10,8 +10,8 @@ import java.sql.*;
 public class Db_handler {
 
     private static final String DATABASE = "jdbc:postgresql://localhost:5432/codecoolshop";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "postgres";
+    private static final String DB_USER = "bans";
+    private static final String DB_PASSWORD = "pass";
     private static Db_handler instance = null;
 
 
@@ -26,7 +26,7 @@ public class Db_handler {
     }
 
 
-    private Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(
                 DATABASE,
                 DB_USER,
