@@ -9,24 +9,19 @@ import com.codecool.shop.model.*;
 import spark.Request;
 import spark.Response;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class ProductController {
 
     public static String renderProducts(Request req, Response res) {
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
         SupplierDaoMem supplierDataStore = SupplierDaoMem.getInstance();
-        Utils utils = Utils.getInstance();
 
         int supplierId = 1;
         Supplier targetSupplier = supplierDataStore.find(supplierId);
-        List<Product> products = targetSupplier.getProducts();
+        ArrayList products = targetSupplier.getProducts();
 
-        ModelBuilder modelBuilder = ModelBuilder.getInstance();
-        List<Map> productsResponse = modelBuilder.productModel(products);
+        List<Map> productsResponse = ModelBuilder.productModel(products);
 
         Map<String, Object> data = new HashMap<>();
         data.put("categories", productCategoryDataStore.getAll());
@@ -34,7 +29,7 @@ public class ProductController {
         data.put("collectionName", targetSupplier.getName());
         data.put("collection", productsResponse);
 
-        return utils.renderTemplate(data, "product/index");
+        return Utils.renderTemplate(data, "product/index");
     }
 
     public static String getProductsBySupplier(Request request, Response response) {
@@ -43,15 +38,13 @@ public class ProductController {
         Supplier targetSupplier = supplierDataStore.find(supplierId);
         List<Product> products = targetSupplier.getProducts();
 
-        ModelBuilder modelBuilder = ModelBuilder.getInstance();
-        List<Map> collection = modelBuilder.productModel(products);
+        List<Map> collection = ModelBuilder.productModel(products);
 
         Map<String, Object> data = new HashMap<>();
         data.put("collection", collection);
         data.put("collectionName", targetSupplier.getName());
 
-        Utils utils = Utils.getInstance();
-        return utils.toJson(data);
+        return Utils.toJson(data);
     }
 
     public static String getProductsByCategory(Request request, Response response) {
@@ -60,15 +53,13 @@ public class ProductController {
         ProductCategory targetCategory = productCategoryDataStore.find(categoryId);
         List<Product> products = targetCategory.getProducts();
 
-        ModelBuilder modelBuilder = ModelBuilder.getInstance();
-        List<Map> collection = modelBuilder.productModel(products);
+        List<Map> collection = ModelBuilder.productModel(products);
 
         Map<String, Object> data = new HashMap<>();
         data.put("collection", collection);
         data.put("collectionName", targetCategory.getName());
 
-        Utils utils = Utils.getInstance();
-        return utils.toJson(data);
+        return Utils.toJson(data);
     }
 
     public static String handleOrder(Request req, Response res) {
@@ -139,9 +130,8 @@ public class ProductController {
     }
 
     private static Map<String, Object> getShoppingCartData() {
-        ModelBuilder modelBuilder = ModelBuilder.getInstance();
         List<LineItem> orderItems = Order.getCurrentOrder().getAddedItems();
-        List<Map> orders = modelBuilder.lineItemModel(orderItems);
+        List<Map> orders = ModelBuilder.lineItemModel(orderItems);
         Map<String, Object> response = new HashMap<>();
         response.put("itemsNumber", Integer.toString(Order.getCurrentOrder().getTotalSize()));
         response.put("totalPrice", Float.toString(Order.getCurrentOrder().getTotalPrice()));
