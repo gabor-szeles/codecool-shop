@@ -1,6 +1,14 @@
-﻿DROP TABLE IF EXISTS supplier;
+﻿DROP TABLE IF EXISTS "order";
+DROP TABLE IF EXISTS supplier;
 DROP TABLE IF EXISTS product_category;
 DROP TABLE IF EXISTS product;
+
+CREATE TABLE "order"
+(
+  id integer NOT NULL PRIMARY KEY,
+  totalsize integer,
+  totalprice numeric(10,2)
+);
 
 CREATE TABLE supplier
 (
