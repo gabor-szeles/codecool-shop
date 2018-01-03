@@ -50,6 +50,8 @@ public class Main {
 
         post("/api/user/login", UserController::login);
 
+        get("/api/user/logout", UserController::logOut);
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }
