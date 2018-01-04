@@ -61,6 +61,7 @@ public class ProductDaoJdbc implements ProductDao {
                         supplierDaoJdbc.find(foundElement.getInt("supplier_id")));
 
                 foundProduct.setId(foundElement.getInt("id"));
+                ProductDaoMem.getInstance().add(foundProduct);
                 return foundProduct;
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -71,6 +72,7 @@ public class ProductDaoJdbc implements ProductDao {
 
     @Override
     public void remove(int id) {
+        ProductDaoMem.getInstance().remove(id);
         String query = "DELETE FROM product WHERE id = ?;";
         db_handler.createPreparedStatementForFindOrRemove(id, query);
     }
@@ -96,7 +98,7 @@ public class ProductDaoJdbc implements ProductDao {
                         supplierDaoJdbc.find(foundElements.getInt("supplier_id"))
                         );
                 newProduct.setId(foundElements.getInt("id"));
-
+                ProductDaoMem.getInstance().add(newProduct);
                 products.add(newProduct);
             }
         } catch (SQLException e) {
