@@ -20,7 +20,7 @@ public class SupplierDaoTest {
     @BeforeEach
     public void setUpDao() {
         SupplierDaoMem.getInstance().clear();
-        testDao = SupplierDaoJdbc.getInstance();
+        testDao = SupplierDaoMem.getInstance();
     }
 
     @Test

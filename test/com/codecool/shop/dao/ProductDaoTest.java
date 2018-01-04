@@ -24,7 +24,7 @@ class ProductDaoTest {
     @BeforeEach
     public void setUpDao() {
         ProductDaoMem.getInstance().clear();
-        testDao = ProductDaoJdbc.getInstance();
+        testDao = ProductDaoMem.getInstance();
         testCategory = new ProductCategory("test", "test", "test");
         testCategory.setId(1);
         ProductCategoryDaoJdbc.getInstance().add(testCategory);
@@ -89,8 +89,8 @@ class ProductDaoTest {
         testProduct.setId(1);
         testDao.add(testProduct);
         List<Product> testProductListByCategory = testDao.getBy(testCategory);
+        System.out.println(testProductListByCategory.size());
         assertEquals(1, testProductListByCategory.size());
-        testDao.remove(1);
+        testDao.remove(testProduct.getId());
     }
-
 }

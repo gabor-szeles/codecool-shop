@@ -54,11 +54,11 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
                         foundElement.getString("department"),
                         foundElement.getString("description"));
                 foundCategory.setId(foundElement.getInt("id"));
+                productCategoryDaoMem.add(foundCategory);
                 return foundCategory;
             } catch (SQLException e) {
-                e.printStackTrace();
+                return null;
             }
-            return null;
         }
     }
 
@@ -83,11 +83,11 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
                         foundElements.getString("department"),
                         foundElements.getString("description"));
                 newProductCategory.setId(foundElements.getInt("id"));
-
+                ProductCategoryDaoMem.getInstance().add(newProductCategory);
                 productCategories.add(newProductCategory);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            return null;
         }
 
         return productCategories;
