@@ -110,7 +110,7 @@ public class Db_handler {
         prepStatement.setInt(7, product.getSupplier().getId());
     }
 
-    public ResultSet createPreparedStatementForFindOrRemove(int id, String query) {
+    public ResultSet createPreparedStatementForFind(int id, String query) {
         try {
             Connection conn = getConnection();
             PreparedStatement prepStatement = conn.prepareStatement(query);
@@ -120,6 +120,17 @@ public class Db_handler {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void createPreparedStatementForRemove(int id, String query) {
+        try {
+            Connection conn = getConnection();
+            PreparedStatement prepStatement = conn.prepareStatement(query);
+            prepStatement.setInt(1, id);
+            executePreparedStatement(prepStatement);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public ResultSet createPreparedStatementForGetAll(String query) {

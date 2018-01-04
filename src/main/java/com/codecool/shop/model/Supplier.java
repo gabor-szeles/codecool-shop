@@ -12,9 +12,7 @@ public class Supplier extends BaseModel {
 
     public Supplier(String name, String description) {
         super(name, description);
-        SupplierDaoMem supplierDaoMem = SupplierDaoMem.getInstance();
         this.products = new ArrayList<>();
-        supplierDaoMem.add(this);
     }
 
     public List getProducts() {

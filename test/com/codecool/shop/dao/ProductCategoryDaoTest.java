@@ -29,8 +29,8 @@ public class ProductCategoryDaoTest {
                 "testProductCategoryDescription" );
         testProductCategory.setId(1);
         testProductCategoryDao.add(testProductCategory);
-        assertEquals("add", testProductCategoryDao.find(1).getName());
-        testProductCategoryDao.remove(1);
+        assertEquals("add", testProductCategoryDao.find(testProductCategory.getId()).getName());
+        testProductCategoryDao.remove(testProductCategory.getId());
     }
 
     @Test
@@ -38,11 +38,11 @@ public class ProductCategoryDaoTest {
         ProductCategory testProductCategory = new ProductCategory("find",
                 "testProductCategoryDepartment",
                 "testProductCategoryDescription" );
+        testProductCategory.setId(1);
         testProductCategoryDao.add(testProductCategory);
-        System.out.println(testProductCategoryDao.getAll());
-        ProductCategory expectedProductCategory = testProductCategoryDao.find(1);
+        ProductCategory expectedProductCategory = testProductCategoryDao.find(testProductCategory.getId());
         assertEquals(expectedProductCategory.getName(), "find");
-        testProductCategoryDao.remove(1);
+        testProductCategoryDao.remove(testProductCategory.getId());
     }
 
     @Test
@@ -50,14 +50,21 @@ public class ProductCategoryDaoTest {
         ProductCategory testProductCategory = new ProductCategory("rm",
                 "testProductCategoryDepartment",
                 "testProductCategoryDescription" );
+        testProductCategory.setId(1);
         testProductCategoryDao.add(testProductCategory);
-        testProductCategoryDao.remove(0);
-        assertNull(testProductCategoryDao.find(0));
+        testProductCategoryDao.remove(testProductCategory.getId());
+        assertNull(testProductCategoryDao.find(testProductCategory.getId()));
     }
 
     @Test
     public void testGetAll () {
+        ProductCategory testProductCategory = new ProductCategory("rm",
+                "testProductCategoryDepartment",
+                "testProductCategoryDescription" );
+        testProductCategory.setId(1);
+        testProductCategoryDao.add(testProductCategory);
         List <ProductCategory> testProductCategoryList = testProductCategoryDao.getAll();
         assertEquals(1, testProductCategoryList.size());
+        testProductCategoryDao.remove(testProductCategory.getId());
     }
 }
