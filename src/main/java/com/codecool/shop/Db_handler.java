@@ -5,7 +5,11 @@ import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.*;
+import java.util.Properties;
 
 public class Db_handler {
 
@@ -27,10 +31,39 @@ public class Db_handler {
 
 
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(
-                DATABASE,
-                DB_USER,
-                DB_PASSWORD);
+        Properties props = new Properties();
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream("configuration/DataBase.properties");
+            try {
+                props.load(in);
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+   /*     String driver = props.getProperty("jdbc.driver");
+        if (driver != null) {
+            try {
+                Class.forName(driver) ;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }*/
+
+        String url = props.getProperty("jdbc.url");
+        System.out.println(url);
+        String username = props.getProperty("jdbc.username");
+        System.out.println(username);
+        String password = props.getProperty("jdbc.password");
+        System.out.println(password);
+
+        Connection con = DriverManager.getConnection(url, username, password);
+
+        return con;
     }
 
     private ResultSet executePreparedStatementQuery(PreparedStatement preparedStatement) {
