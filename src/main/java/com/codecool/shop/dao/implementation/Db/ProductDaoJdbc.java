@@ -49,7 +49,7 @@ public class ProductDaoJdbc implements ProductDao {
             String query = "SELECT * FROM product WHERE id = ?;";
             SupplierDaoJdbc supplierDaoJdbc = SupplierDaoJdbc.getInstance();
             ProductCategoryDaoJdbc productCategoryDaoJdbc = ProductCategoryDaoJdbc.getInstance();
-            ResultSet foundElement = db_handler.createPreparedStatementForFindOrRemove(id, query);
+            ResultSet foundElement = db_handler.createPreparedStatementForFind(id, query);
             try {
                 foundElement.next();
                 Product foundProduct = new Product(
@@ -61,18 +61,19 @@ public class ProductDaoJdbc implements ProductDao {
                         supplierDaoJdbc.find(foundElement.getInt("supplier_id")));
 
                 foundProduct.setId(foundElement.getInt("id"));
+                ProductDaoMem.getInstance().add(foundProduct);
                 return foundProduct;
             } catch (SQLException e) {
-                e.printStackTrace();
+                return null;
             }
-            return null;
         }
     }
 
     @Override
     public void remove(int id) {
+        ProductDaoMem.getInstance().remove(id);
         String query = "DELETE FROM product WHERE id = ?;";
-        db_handler.createPreparedStatementForFindOrRemove(id, query);
+        db_handler.createPreparedStatementForRemove(id, query);
     }
 
     @Override
@@ -96,7 +97,7 @@ public class ProductDaoJdbc implements ProductDao {
                         supplierDaoJdbc.find(foundElements.getInt("supplier_id"))
                         );
                 newProduct.setId(foundElements.getInt("id"));
-
+                ProductDaoMem.getInstance().add(newProduct);
                 products.add(newProduct);
             }
         } catch (SQLException e) {
