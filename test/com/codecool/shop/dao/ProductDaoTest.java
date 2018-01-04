@@ -20,17 +20,17 @@ class ProductDaoTest {
     private static ProductCategory testCategory;
     private static Supplier testSupplier;
 
-    @BeforeAll
-    public static void setUpDao() {
+    @BeforeEach
+    public void setUpDao() {
+        ProductDaoMem.getInstance().clear();
         testDao = ProductDaoJdbc.getInstance();
-        TestUtils.populateData();
         testCategory = new ProductCategory("test", "test", "test");
         testSupplier = new Supplier("test", "test");
     }
 
     @Test
     public void testFind() {
-        assertNotNull(testDao.find(1));
+        assertNull(testDao.find(1));
     }
 
     @Test
@@ -51,8 +51,10 @@ class ProductDaoTest {
 
     @Test
     public void testGetAll() {
+        Product testProduct = new Product("all", 1, "USD", "test", testCategory, testSupplier);
+        testDao.add(testProduct);
         List<Product> testProductList = testDao.getAll();
-        assertEquals(6, testProductList.size());
+        assertEquals(1, testProductList.size());
     }
 
     @Test
@@ -61,16 +63,22 @@ class ProductDaoTest {
         testDao.add(testProduct);
         List<Product> testProductListBySupplier = testDao.getBy(testSupplier);
         assertEquals(1, testProductListBySupplier.size());
-        testDao.remove(testProduct.getId());
+        testDao.remove(1);
     }
 
-/*    @Test
+    @Test
     public void testGetByCategory() {
         Product testProduct = new Product("categorytest", 1, "USD", "test", testCategory, testSupplier);
+        testProduct.setId(1);
         testDao.add(testProduct);
         List<Product> testProductListByCategory = testDao.getBy(testCategory);
         assertEquals(1, testProductListByCategory.size());
-        testDao.remove(testProduct.getId());
-    }*/
+        testDao.remove(1);
+    }
+
+    @Test
+    public void testAnyád() {
+        assertEquals(true, true);
+    }
 
 }
