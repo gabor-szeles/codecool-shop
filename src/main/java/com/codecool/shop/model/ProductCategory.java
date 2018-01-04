@@ -1,6 +1,6 @@
 package com.codecool.shop.model;
 
-import com.codecool.shop.dao.implementation.Db.ProductDaoDb;
+import com.codecool.shop.dao.implementation.Db.ProductDaoJdbc;
 import com.codecool.shop.dao.implementation.Mem.ProductCategoryDaoMem;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class ProductCategory extends BaseModel {
     }
 
     public List<Product> getProducts() {
-        this.products = ProductDaoDb.getInstance().getBy(this);
+        this.products = ProductDaoJdbc.getInstance().getBy(this);
         return this.products;
     }
 

@@ -10,19 +10,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SupplierDaoDb implements SupplierDao {
+public class SupplierDaoJdbc implements SupplierDao {
 
     private static Db_handler db_handler = Db_handler.getInstance();
-    private static SupplierDaoDb instance = null;
+    private static SupplierDaoJdbc instance = null;
 
     /* A private Constructor prevents any other class from instantiating.
      */
-    private SupplierDaoDb() {
+    private SupplierDaoJdbc() {
     }
 
-    public static SupplierDaoDb getInstance() {
+    public static SupplierDaoJdbc getInstance() {
         if (instance == null) {
-            instance = new SupplierDaoDb();
+            instance = new SupplierDaoJdbc();
         }
         return instance;
     }
@@ -82,7 +82,6 @@ public class SupplierDaoDb implements SupplierDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println(suppliers);
         return suppliers;
     }
 }

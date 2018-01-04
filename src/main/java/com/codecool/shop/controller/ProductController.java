@@ -2,8 +2,8 @@ package com.codecool.shop.controller;
 
 import com.codecool.shop.Utils;
 import com.codecool.shop.dao.ProductCategoryDao;
-import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoDb;
-import com.codecool.shop.dao.implementation.Db.SupplierDaoDb;
+import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoJdbc;
+import com.codecool.shop.dao.implementation.Db.SupplierDaoJdbc;
 import com.codecool.shop.dao.implementation.Mem.ProductCategoryDaoMem;
 import com.codecool.shop.dao.implementation.Mem.ProductDaoMem;
 import com.codecool.shop.model.*;
@@ -16,7 +16,7 @@ public class ProductController {
 
     public static String renderProducts(Request req, Response res) {
         ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
-        SupplierDaoDb supplierDataStore = SupplierDaoDb.getInstance();
+        SupplierDaoJdbc supplierDataStore = SupplierDaoJdbc.getInstance();
 
         int supplierId = 1;
         Supplier targetSupplier = supplierDataStore.find(supplierId);
@@ -35,7 +35,7 @@ public class ProductController {
 
     public static String getProductsBySupplier(Request request, Response response) {
         int supplierId = Integer.parseInt(request.params("id"));
-        SupplierDaoDb supplierDataStore = SupplierDaoDb.getInstance();
+        SupplierDaoJdbc supplierDataStore = SupplierDaoJdbc.getInstance();
         Supplier targetSupplier = supplierDataStore.find(supplierId);
         List<Product> products = targetSupplier.getProducts();
 
@@ -50,7 +50,7 @@ public class ProductController {
 
     public static String getProductsByCategory(Request request, Response response) {
         int categoryId = Integer.parseInt(request.params("id"));
-        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoDb.getInstance();
+        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJdbc.getInstance();
         ProductCategory targetCategory = productCategoryDataStore.find(categoryId);
         List<Product> products = targetCategory.getProducts();
 

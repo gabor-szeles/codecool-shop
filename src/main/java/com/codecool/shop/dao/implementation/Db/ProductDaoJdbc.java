@@ -13,19 +13,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductDaoDb implements ProductDao {
+public class ProductDaoJdbc implements ProductDao {
 
     private static Db_handler db_handler = Db_handler.getInstance();
-    private static ProductDaoDb instance = null;
+    private static ProductDaoJdbc instance = null;
 
     /* A private Constructor prevents any other class from instantiating.
      */
-    private ProductDaoDb() {
+    private ProductDaoJdbc() {
     }
 
-    public static ProductDaoDb getInstance() {
+    public static ProductDaoJdbc getInstance() {
         if (instance == null) {
-            instance = new ProductDaoDb();
+            instance = new ProductDaoJdbc();
         }
         return instance;
     }
@@ -47,8 +47,8 @@ public class ProductDaoDb implements ProductDao {
         } else {
 
             String query = "SELECT * FROM product WHERE id = ?;";
-            SupplierDaoDb supplierDaoDb = SupplierDaoDb.getInstance();
-            ProductCategoryDaoDb productCategoryDaoDb = ProductCategoryDaoDb.getInstance();
+            SupplierDaoJdbc supplierDaoJdbc = SupplierDaoJdbc.getInstance();
+            ProductCategoryDaoJdbc productCategoryDaoJdbc = ProductCategoryDaoJdbc.getInstance();
             ResultSet foundElement = db_handler.createPreparedStatementForFindOrRemove(id, query);
             try {
                 foundElement.next();
@@ -57,8 +57,8 @@ public class ProductDaoDb implements ProductDao {
                         foundElement.getFloat("default_price"),
                         foundElement.getString("currency_string"),
                         foundElement.getString("description"),
-                        productCategoryDaoDb.find(foundElement.getInt("category_id")),
-                        supplierDaoDb.find(foundElement.getInt("supplier_id")));
+                        productCategoryDaoJdbc.find(foundElement.getInt("category_id")),
+                        supplierDaoJdbc.find(foundElement.getInt("supplier_id")));
 
                 foundProduct.setId(foundElement.getInt("id"));
                 return foundProduct;
@@ -82,8 +82,8 @@ public class ProductDaoDb implements ProductDao {
         productDaoMem.clear();
 
         ArrayList<Product> products = new ArrayList<>();
-        SupplierDaoDb supplierDaoDb = SupplierDaoDb.getInstance();
-        ProductCategoryDaoDb productCategoryDaoDb = ProductCategoryDaoDb.getInstance();
+        SupplierDaoJdbc supplierDaoJdbc = SupplierDaoJdbc.getInstance();
+        ProductCategoryDaoJdbc productCategoryDaoJdbc = ProductCategoryDaoJdbc.getInstance();
         String query = "SELECT * FROM product";
         ResultSet foundElements = db_handler.createPreparedStatementForGetAll(query);
         try {
@@ -92,8 +92,8 @@ public class ProductDaoDb implements ProductDao {
                         foundElements.getFloat("default_price"),
                         foundElements.getString("currency_string"),
                         foundElements.getString("description"),
-                        productCategoryDaoDb.find(foundElements.getInt("category_id")),
-                        supplierDaoDb.find(foundElements.getInt("supplier_id"))
+                        productCategoryDaoJdbc.find(foundElements.getInt("category_id")),
+                        supplierDaoJdbc.find(foundElements.getInt("supplier_id"))
                         );
                 newProduct.setId(foundElements.getInt("id"));
 

@@ -11,19 +11,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductCategoryDaoDb implements ProductCategoryDao {
+public class ProductCategoryDaoJdbc implements ProductCategoryDao {
 
     private static Db_handler db_handler = Db_handler.getInstance();
-    private static ProductCategoryDaoDb instance = null;
+    private static ProductCategoryDaoJdbc instance = null;
 
     /* A private Constructor prevents any other class from instantiating.
      */
-    private ProductCategoryDaoDb() {
+    private ProductCategoryDaoJdbc() {
     }
 
-    public static ProductCategoryDaoDb getInstance() {
+    public static ProductCategoryDaoJdbc getInstance() {
         if (instance == null) {
-            instance = new ProductCategoryDaoDb();
+            instance = new ProductCategoryDaoJdbc();
         }
         return instance;
     }
@@ -90,7 +90,6 @@ public class ProductCategoryDaoDb implements ProductCategoryDao {
             e.printStackTrace();
         }
 
-        System.out.println(productCategories);
         return productCategories;
     }
 }

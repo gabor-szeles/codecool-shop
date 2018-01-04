@@ -1,7 +1,6 @@
 package com.codecool.shop.model;
 
-import com.codecool.shop.dao.implementation.Db.ProductDaoDb;
-import com.codecool.shop.dao.implementation.Db.SupplierDaoDb;
+import com.codecool.shop.dao.implementation.Db.ProductDaoJdbc;
 import com.codecool.shop.dao.implementation.Mem.SupplierDaoMem;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class Supplier extends BaseModel {
     }
 
     public List getProducts() {
-        this.products = ProductDaoDb.getInstance().getBy(this);
+        this.products = ProductDaoJdbc.getInstance().getBy(this);
         return this.products;
     }
 
