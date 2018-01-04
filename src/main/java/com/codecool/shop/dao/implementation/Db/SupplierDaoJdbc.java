@@ -45,7 +45,7 @@ public class SupplierDaoJdbc implements SupplierDao {
 
             String query = "SELECT * FROM supplier WHERE id = ?;";
 
-            ResultSet foundElement = db_handler.createPreparedStatementForFindOrRemove(id, query);
+            ResultSet foundElement = db_handler.createPreparedStatementForFind(id, query);
             try {
                 foundElement.next();
                 Supplier foundSupplier = new Supplier(foundElement.getString("name"), foundElement.getString("description"));
@@ -62,7 +62,7 @@ public class SupplierDaoJdbc implements SupplierDao {
     @Override
     public void remove(int id) {
         String query = "DELETE FROM supplier WHERE id = ?;";
-        db_handler.createPreparedStatementForFindOrRemove(id, query);
+        db_handler.createPreparedStatementForRemove(id, query);
     }
 
     @Override
