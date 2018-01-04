@@ -1,8 +1,8 @@
 package com.codecool.shop;
 
-import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoDb;
-import com.codecool.shop.dao.implementation.Db.ProductDaoDb;
-import com.codecool.shop.dao.implementation.Db.SupplierDaoDb;
+import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoJdbc;
+import com.codecool.shop.dao.implementation.Db.ProductDaoJdbc;
+import com.codecool.shop.dao.implementation.Db.SupplierDaoJdbc;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
@@ -28,8 +28,8 @@ class Db_handlerTest {
     @Test
     void testCreatePreparedStatementForAddProductCategory() {
         ProductCategory productCategory = new ProductCategory("test", "testdep", "test");
-        ProductCategoryDaoDb productCategoryDaoDb = ProductCategoryDaoDb.getInstance();
-        productCategoryDaoDb.add(productCategory);
+        ProductCategoryDaoJdbc productCategoryDaoJdbc = ProductCategoryDaoJdbc.getInstance();
+        productCategoryDaoJdbc.add(productCategory);
     }
 
     @Test
@@ -48,11 +48,11 @@ class Db_handlerTest {
 
     @Test
     void testFindProduct() {
-        ProductDaoDb productDaoDb = ProductDaoDb.getInstance();
+        ProductDaoJdbc productDaoJdbc = ProductDaoJdbc.getInstance();
         Supplier supplier = new Supplier("Test", "Test description");
         ProductCategory productCategory = new ProductCategory("TestCategory", "Testing", "Test description for prodCategory");
         Product product = new Product("TestProduct", 14f, "EUR", "TestDescription", productCategory, supplier);
-        Product found = productDaoDb.find(1);
+        Product found = productDaoJdbc.find(1);
         assertEquals(found.getId(), found.getId());
         assertEquals(product.getName(), found.getName());
         assertEquals(product.getDescription(), found.getDescription());
@@ -60,18 +60,18 @@ class Db_handlerTest {
 
     @Test
     void testDeleteSupplier() {
-        SupplierDaoDb supplierDaoDb = SupplierDaoDb.getInstance();
-        supplierDaoDb.remove(1);
+        SupplierDaoJdbc supplierDaoJdbc = SupplierDaoJdbc.getInstance();
+        supplierDaoJdbc.remove(1);
     }
 
     @Test
     void testDeleteProduct() {
-        ProductDaoDb productDaoDb = ProductDaoDb.getInstance();
-        productDaoDb.remove(1);
+        ProductDaoJdbc productDaoJdbc = ProductDaoJdbc.getInstance();
+        productDaoJdbc.remove(1);
     }
 
     @Test
     void testDeleteProductCategory() {
-        ProductCategoryDaoDb.getInstance().remove(1);
+        ProductCategoryDaoJdbc.getInstance().remove(1);
     }
 }

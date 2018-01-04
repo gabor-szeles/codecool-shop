@@ -105,4 +105,16 @@ public class Db_handler {
         }
         return null;
     }
+
+    public ResultSet createPreparedStatementForGetAll(String query) {
+        try {
+            Connection conn = getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+            return preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
