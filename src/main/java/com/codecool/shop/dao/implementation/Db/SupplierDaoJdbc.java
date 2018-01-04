@@ -50,6 +50,7 @@ public class SupplierDaoJdbc implements SupplierDao {
                 foundElement.next();
                 Supplier foundSupplier = new Supplier(foundElement.getString("name"), foundElement.getString("description"));
                 foundSupplier.setId(foundElement.getInt("id"));
+                supplierDaoMem.add(foundSupplier);
                 return foundSupplier;
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -76,7 +77,7 @@ public class SupplierDaoJdbc implements SupplierDao {
                 Supplier newSupplier = new Supplier(foundElements.getString("name"),
                         foundElements.getString("description"));
                 newSupplier.setId(foundElements.getInt("id"));
-
+                SupplierDaoMem.getInstance().add(newSupplier);
                 suppliers.add(newSupplier);
             }
         } catch (SQLException e) {
