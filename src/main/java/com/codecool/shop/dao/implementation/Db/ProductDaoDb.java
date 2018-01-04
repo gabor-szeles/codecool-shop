@@ -102,7 +102,6 @@ public class ProductDaoDb implements ProductDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println(products);
         return products;
     }
 
