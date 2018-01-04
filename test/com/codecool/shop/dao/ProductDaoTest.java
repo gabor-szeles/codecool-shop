@@ -64,13 +64,13 @@ class ProductDaoTest {
         testDao.remove(testProduct.getId());
     }
 
-/*    @Test
+    @Test
     public void testGetByCategory() {
         Product testProduct = new Product("categorytest", 1, "USD", "test", testCategory, testSupplier);
         testDao.add(testProduct);
         List<Product> testProductListByCategory = testDao.getBy(testCategory);
+        System.out.println(testProductListByCategory.size());
         assertEquals(1, testProductListByCategory.size());
         testDao.remove(testProduct.getId());
-    }*/
-
+    }
 }
