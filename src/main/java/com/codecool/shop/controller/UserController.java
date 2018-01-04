@@ -2,7 +2,7 @@ package com.codecool.shop.controller;
 
 import com.codecool.shop.Utils;
 import com.codecool.shop.dao.UserDao;
-import com.codecool.shop.dao.implementation.Db.UserDaoDb;
+import com.codecool.shop.dao.implementation.Db.UserDaoJdbc;
 import com.codecool.shop.model.User;
 import org.mindrot.jbcrypt.BCrypt;
 import spark.Request;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class UserController {
 
-    private static UserDao userDaoDb = UserDaoDb.getInstance();
+    private static UserDao userDaoDb = UserDaoJdbc.getInstance();
 
     public static String renderLogin(Request req, Response res) {
         Utils utils = Utils.getInstance();
