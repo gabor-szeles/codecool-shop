@@ -20,7 +20,7 @@ public class SupplierDaoTest {
     @BeforeEach
     public void setUpDao() {
         SupplierDaoMem.getInstance().clear();
-        testDao = SupplierDaoMem.getInstance();
+        testDao = SupplierDaoJdbc.getInstance();
     }
 
     @Test
@@ -31,13 +31,16 @@ public class SupplierDaoTest {
     @Test
     public void testAdd() {
         testSupplier = new Supplier("add", "test");
+        testSupplier.setId(1);
         testDao.add(testSupplier);
         assertNotNull(testDao.find(testSupplier.getId()));
+        testDao.remove(testSupplier.getId());
     }
 
     @Test
     public void testRemove() {
         testSupplier = new Supplier("rem", "test");
+        testSupplier.setId(1);
         testDao.add(testSupplier);
         assertNotNull(testDao.find(testSupplier.getId()));
         testDao.remove(testSupplier.getId());
@@ -47,6 +50,7 @@ public class SupplierDaoTest {
     @Test
     public void testGetAll() {
         testSupplier = new Supplier("all", "test");
+        testSupplier.setId(1);
         testDao.add(testSupplier);
         List<Supplier> testSupplierList = testDao.getAll();
         assertEquals(1, testSupplierList.size());
