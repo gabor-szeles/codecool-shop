@@ -28,6 +28,8 @@ public class UserController {
 
         if (success) {
             System.out.println("Registration successful");
+            EmailSender emailSender = new EmailSender(user.getEmail());
+            emailSender.send();
             req.session().attribute("username", user.getName());
             res.redirect("/");
         } else {
