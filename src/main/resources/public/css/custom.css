@@ -141,3 +141,8 @@ aside {
 .wrapper {
     margin-top: 200px;
 }
+
+.danger {
+    color: red;
+    font-weight: bold;
+}

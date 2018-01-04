@@ -14,10 +14,17 @@ import java.util.Map;
 public class UserController {
 
     private static UserDao userDaoDb = UserDaoJdbc.getInstance();
+    private static Utils utils = Utils.getInstance();
 
     public static String renderLogin(Request req, Response res) {
-        Utils utils = Utils.getInstance();
         Map model = new HashMap();
+
+        if (req.session().attribute("message") != null) {
+            String message = req.session().attribute("message");
+            model.put("message", message);
+            req.session().removeAttribute("message");
+        }
+
         return utils.renderTemplate(model, "product/login");
     }
 
@@ -34,6 +41,7 @@ public class UserController {
             res.redirect("/");
         } else {
             System.out.println("Username already in use");
+            req.session().attribute("message", "Username already in use.");
             res.redirect("/login");
         }
 
@@ -50,10 +58,12 @@ public class UserController {
                 res.redirect("/");
             } else {
                 System.out.println("Password doesn't match");
+                req.session().attribute("message", "Wrong password.");
                 res.redirect("/login");
             }
         } else {
             System.out.println("User doesn't exist");
+            req.session().attribute("message", "User doesn't exist.");
             res.redirect("/login");
         }
 
