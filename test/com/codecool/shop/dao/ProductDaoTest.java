@@ -1,12 +1,10 @@
 package com.codecool.shop.dao;
 
-import com.codecool.shop.TestUtils;
 import com.codecool.shop.dao.implementation.Db.ProductDaoJdbc;
 import com.codecool.shop.dao.implementation.Mem.ProductDaoMem;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,30 +34,36 @@ class ProductDaoTest {
     @Test
     public void testAdd() {
         Product testProduct = new Product("add", 1, "USD", "test", testCategory, testSupplier);
+        testProduct.setId(1);
         testDao.add(testProduct);
-        assertNotNull(testDao.find(testProduct.getId()));
+        assertNotNull(testDao.find(1));
+        testDao.remove(testProduct.getId());
     }
 
     @Test
     public void testRemove() {
         Product testProduct = new Product("rem", 1, "USD", "test", testCategory, testSupplier);
+        testProduct.setId(1);
         testDao.add(testProduct);
-        assertNotNull(testDao.find(testProduct.getId()));
+        assertNotNull(testDao.find(1));
         testDao.remove(testProduct.getId());
-        assertNull(testDao.find(testProduct.getId()));
+        assertNull(testDao.find(1));
     }
 
     @Test
     public void testGetAll() {
         Product testProduct = new Product("all", 1, "USD", "test", testCategory, testSupplier);
+        testProduct.setId(1);
         testDao.add(testProduct);
         List<Product> testProductList = testDao.getAll();
         assertEquals(1, testProductList.size());
+        testDao.remove(1);
     }
 
     @Test
     public void testGetBySupplier() {
         Product testProduct = new Product("supptest", 1, "USD", "test", testCategory, testSupplier);
+        testProduct.setId(1);
         testDao.add(testProduct);
         List<Product> testProductListBySupplier = testDao.getBy(testSupplier);
         assertEquals(1, testProductListBySupplier.size());
