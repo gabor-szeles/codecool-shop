@@ -76,9 +76,4 @@ class ProductDaoTest {
         testDao.remove(1);
     }
 
-    @Test
-    public void testAnyád() {
-        assertEquals(true, true);
-    }
-
 }
