@@ -24,6 +24,10 @@
 
 <body>
 <nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top">
+    <form action="/api/user/logout" method="GET">
+        <button class="btn btn-primary">Log Out</button>
+    </form>
+    <h1 class="navbar-brand mb-0" th:text="${username}"></h1>
     <h1 class="navbar-brand mb-0">Total items</h1>
     <strong id="total-items">0</strong>
     <h1 class="navbar-brand mb-0">Total price</h1>
