@@ -13,9 +13,6 @@ import java.util.Properties;
 
 public class Db_handler {
 
-    private static final String DATABASE = "jdbc:postgresql://localhost:5432/codecoolshop";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "postgres";
     private static Db_handler instance = null;
 
 
@@ -45,25 +42,11 @@ public class Db_handler {
             e.printStackTrace();
         }
 
-   /*     String driver = props.getProperty("jdbc.driver");
-        if (driver != null) {
-            try {
-                Class.forName(driver) ;
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }*/
-
         String url = props.getProperty("jdbc.url");
-        System.out.println(url);
         String username = props.getProperty("jdbc.username");
-        System.out.println(username);
         String password = props.getProperty("jdbc.password");
-        System.out.println(password);
 
-        Connection con = DriverManager.getConnection(url, username, password);
-
-        return con;
+        return DriverManager.getConnection(url, username, password);
     }
 
     private ResultSet executePreparedStatementQuery(PreparedStatement preparedStatement) {
