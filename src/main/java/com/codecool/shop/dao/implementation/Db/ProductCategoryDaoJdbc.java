@@ -47,25 +47,25 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
 
             String query = "SELECT * FROM product_category WHERE id = ?;";
 
-            ResultSet foundElement = db_handler.createPreparedStatementForFindOrRemove(id, query);
+            ResultSet foundElement = db_handler.createPreparedStatementForFind(id, query);
             try {
                 foundElement.next();
                 ProductCategory foundCategory = new ProductCategory(foundElement.getString("name"),
                         foundElement.getString("department"),
                         foundElement.getString("description"));
                 foundCategory.setId(foundElement.getInt("id"));
+                productCategoryDaoMem.add(foundCategory);
                 return foundCategory;
             } catch (SQLException e) {
-                e.printStackTrace();
+                return null;
             }
-            return null;
         }
     }
 
     @Override
     public void remove(int id) {
         String query = "DELETE FROM product_category WHERE id = ?;";
-        db_handler.createPreparedStatementForFindOrRemove(id, query);
+        db_handler.createPreparedStatementForRemove(id, query);
     }
 
     @Override
@@ -83,11 +83,11 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
                         foundElements.getString("department"),
                         foundElements.getString("description"));
                 newProductCategory.setId(foundElements.getInt("id"));
-
+                ProductCategoryDaoMem.getInstance().add(newProductCategory);
                 productCategories.add(newProductCategory);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            return null;
         }
 
         return productCategories;

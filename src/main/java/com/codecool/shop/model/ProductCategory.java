@@ -12,10 +12,8 @@ public class ProductCategory extends BaseModel {
 
     public ProductCategory(String name, String department, String description) {
         super(name, description);
-        ProductCategoryDaoMem productCategoryDaoMem = ProductCategoryDaoMem.getInstance();
         this.department = department;
         this.products = new ArrayList<>();
-        productCategoryDaoMem.add(this);
     }
 
     public String getDepartment() {
