@@ -23,7 +23,7 @@ public class UserController {
 
     public static String registration(Request req, Response res) {
         String saltedPassword = BCrypt.hashpw(req.queryParams("password"), BCrypt.gensalt());
-        User user = new User(req.queryParams("name"), saltedPassword);
+        User user = new User(req.queryParams("name"), req.queryParams("email"), saltedPassword);
         boolean success = userDaoDb.add(user);
 
         if (success) {

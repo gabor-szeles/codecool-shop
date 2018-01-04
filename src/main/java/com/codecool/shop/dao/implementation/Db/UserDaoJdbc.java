@@ -26,13 +26,14 @@ public class UserDaoJdbc implements UserDao {
 
     @Override
     public boolean add(User user) {
-        String query = "INSERT INTO users (name, password) VALUES (?, ?)";
+        String query = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
 
         try {
             Connection connection = db_handler.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, user.getName());
-            statement.setString(2, user.getPassword());
+            statement.setString(2, user.getEmail());
+            statement.setString(3, user.getPassword());
             statement.execute();
 
             return true;
