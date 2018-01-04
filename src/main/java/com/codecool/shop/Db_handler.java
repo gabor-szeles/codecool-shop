@@ -117,5 +117,4 @@ public class Db_handler {
         return null;
     }
 
-  //  public ResultSet //
 }

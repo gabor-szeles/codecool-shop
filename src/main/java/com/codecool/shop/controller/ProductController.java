@@ -6,7 +6,6 @@ import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoDb;
 import com.codecool.shop.dao.implementation.Db.SupplierDaoDb;
 import com.codecool.shop.dao.implementation.Mem.ProductCategoryDaoMem;
 import com.codecool.shop.dao.implementation.Mem.ProductDaoMem;
-import com.codecool.shop.dao.implementation.Mem.SupplierDaoMem;
 import com.codecool.shop.model.*;
 import spark.Request;
 import spark.Response;
@@ -115,10 +114,12 @@ public class ProductController {
             }
         }
         if (Objects.equals(data.get("change"), "plus")) {
-            targetLineItem.incrementQuantity();
+            if (targetLineItem != null) {
+                targetLineItem.incrementQuantity();
+            }
             Order.getCurrentOrder().changeTotalPrice();
         } else {
-            if (targetLineItem.getQuantity() > 0) {
+            if (targetLineItem != null && targetLineItem.getQuantity() > 0) {
                 targetLineItem.decrementQuantity();
                 if (targetLineItem.getQuantity() == 0) {
                     Order.getCurrentOrder().getAddedItems().remove(targetLineItem);
