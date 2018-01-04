@@ -2,7 +2,6 @@ package com.codecool.shop.dao.implementation.Db;
 
 import com.codecool.shop.Db_handler;
 import com.codecool.shop.dao.UserDao;
-import com.codecool.shop.model.Supplier;
 import com.codecool.shop.model.User;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -11,16 +10,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserDaoDb implements UserDao {
+public class UserDaoJdbc implements UserDao {
 
     private static Db_handler db_handler = Db_handler.getInstance();
-    private static UserDaoDb instance = null;
+    private static UserDaoJdbc instance = null;
 
-    private UserDaoDb() {}
+    private UserDaoJdbc() {}
 
-    public static UserDaoDb getInstance() {
+    public static UserDaoJdbc getInstance() {
         if (instance == null) {
-            instance = new UserDaoDb();
+            instance = new UserDaoJdbc();
         }
         return instance;
     }
@@ -54,13 +53,15 @@ public class UserDaoDb implements UserDao {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
-            resultSet.next();
-            User user = new User(resultSet.getString("name"), resultSet.getString("password"));
-            return user;
+            if(resultSet.next()) {
+                User user = new User(resultSet.getString("name"), resultSet.getString("password"));
+                return user;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
+        return null;
     }
 }
