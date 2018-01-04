@@ -54,13 +54,15 @@ public class UserDaoDb implements UserDao {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
-            resultSet.next();
-            User user = new User(resultSet.getString("name"), resultSet.getString("password"));
-            return user;
+            if(resultSet.next()) {
+                User user = new User(resultSet.getString("name"), resultSet.getString("password"));
+                return user;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
+        return null;
     }
 }
