@@ -23,18 +23,26 @@
 <body>
     <div class="container-fluid">
         <div class="wrapper">
+            <div class="row justify-content-center">
+                <p class="col-6 danger" th:text="${message}"></p>
+            </div>
             <form action="/api/user/registration" method="POST">
                 <div class="row justify-content-center align-self-center">
-                    <input class="col-3" type="text" name="name" placeholder="Username" />
-                    <input class="col-3" type="password" name="password" placeholder="Password" />
-                    <button type="submit" class="btn btn-primary col-1">Register</button>
+                    <div class="col-6">
+                        <input class="col-12" type="text" name="name" placeholder="Username" required="required" pattern=".{3,}" title="Name must be at least 3 letters." />
+                        <input class="col-12" type="email" name="email" placeholder="E-mail Address" required="required" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" />
+                        <input class="col-12" type="password" name="password" placeholder="Password" required="required" pattern=".{6,}" title="Password must be at least 6 letters." />
+                        <button type="submit" class="btn btn-primary col-12">Register</button>
+                    </div>
                 </div>
             </form>
             <form action="/api/user/login" method="POST">
                 <div class="row justify-content-center">
-                    <input class="col-3" type="text" name="name" placeholder="Username" />
-                    <input class="col-3" type="password" name="password" placeholder="Password" />
-                    <button type="submit" class="btn btn-primary col-1">Log In</button>
+                    <div class="col-6">
+                        <input class="col-12" type="text" name="name" placeholder="Username" required="required" pattern=".{3,}" title="Name must be at least 3 letters." />
+                        <input class="col-12" type="password" name="password" required="required" placeholder="Password" pattern=".{6,}" title="Password must be at least 6 letters." />
+                        <button type="submit" class="btn btn-primary col-12">Log In</button>
+                    </div>
                 </div>
             </form>
         </div>
