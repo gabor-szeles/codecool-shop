@@ -12,7 +12,8 @@ public class ModelBuilder {
 
     private static ModelBuilder instance = null;
 
-    private ModelBuilder() {}
+    private ModelBuilder() {
+    }
 
     public static ModelBuilder getInstance() {
         if (instance == null) {
@@ -40,9 +41,9 @@ public class ModelBuilder {
         List<Map> model = new ArrayList<>();
         for (LineItem lineItem : lineItems) {
             Map<String, String> currentLineItem = new HashMap<>();
-            currentLineItem.put("name", lineItem.getItem().getName() );
-            currentLineItem.put("quantity", Integer.toString(lineItem.getQuantity()) );
-            currentLineItem.put("price", Float.toString(lineItem.getItemPriceSum()) );
+            currentLineItem.put("name", lineItem.getItem().getName());
+            currentLineItem.put("quantity", Integer.toString(lineItem.getQuantity()));
+            currentLineItem.put("price", Float.toString(lineItem.getItemPriceSum()));
             currentLineItem.put("prodId", Integer.toString(lineItem.getItem().getId()));
             model.add(currentLineItem);
         }

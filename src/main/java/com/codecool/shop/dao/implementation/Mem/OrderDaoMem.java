@@ -1,4 +1,4 @@
-package com.codecool.shop.dao.implementation;
+package com.codecool.shop.dao.implementation.Mem;
 
 import com.codecool.shop.dao.OrderDao;
 import com.codecool.shop.model.Order;
@@ -6,9 +6,9 @@ import com.codecool.shop.model.Order;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderDaoMem implements OrderDao{
-    private List<Order> DATA = new ArrayList<>();
+public class OrderDaoMem implements OrderDao {
     private static OrderDaoMem instance = null;
+    private List<Order> DATA = new ArrayList<>();
 
     private OrderDaoMem() {
     }
