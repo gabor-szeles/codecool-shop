@@ -18,9 +18,16 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
 
     /* A private Constructor prevents any other class from instantiating.
      */
+
+    /**
+     * ProductCategoryDaoJdbc provides access to ProductCategory objects through the SQL database
+     */
     private ProductCategoryDaoJdbc() {
     }
 
+    /**
+     * Returns the data access object for JDBC
+     */
     public static ProductCategoryDaoJdbc getInstance() {
         if (instance == null) {
             instance = new ProductCategoryDaoJdbc();
@@ -36,6 +43,9 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
         db_handler.createPreparedStatementForAdd(category, query);
     }
 
+    /**
+     * @implNote returns null if no record is found in the database
+     */
     @Override
     public ProductCategory find(int id) {
 
@@ -68,6 +78,9 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
         db_handler.createPreparedStatementForRemove(id, query);
     }
 
+    /**
+     * @throws SQLException when the products table is empty
+     */
     @Override
     public List<ProductCategory> getAll() {
 
