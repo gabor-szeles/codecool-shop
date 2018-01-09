@@ -7,6 +7,9 @@ import com.codecool.shop.model.ProductCategory;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * ProductCategoryDaoMem provides access to ProductCategory objects in the memory
+ */
 public class ProductCategoryDaoMem implements ProductCategoryDao {
 
     private static ProductCategoryDaoMem instance = null;
@@ -17,6 +20,9 @@ public class ProductCategoryDaoMem implements ProductCategoryDao {
     private ProductCategoryDaoMem() {
     }
 
+    /**
+     * Returns the data access object for memory
+     */
     public static ProductCategoryDaoMem getInstance() {
         if (instance == null) {
             instance = new ProductCategoryDaoMem();
@@ -45,6 +51,9 @@ public class ProductCategoryDaoMem implements ProductCategoryDao {
         return DATA;
     }
 
+    /**
+     * Clears the list of Supplier objects
+     */
     public void clear() {
         DATA.clear();
     }
