@@ -13,6 +13,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * ProductDaoJdbc provides access to product objects through the SQL database
+ */
+
 public class ProductDaoJdbc implements ProductDao {
 
     private static Db_handler db_handler = Db_handler.getInstance();
@@ -38,6 +42,10 @@ public class ProductDaoJdbc implements ProductDao {
         db_handler.createPreparedStatementForAdd(product, query);
     }
 
+
+    /**
+     * @implNote returns null if no record is found in the database
+     */
     @Override
     public Product find(int id) {
 
@@ -76,6 +84,9 @@ public class ProductDaoJdbc implements ProductDao {
         db_handler.createPreparedStatementForRemove(id, query);
     }
 
+    /**
+     * @throws SQLException when the products table is empty
+     */
     @Override
     public List<Product> getAll() {
 
