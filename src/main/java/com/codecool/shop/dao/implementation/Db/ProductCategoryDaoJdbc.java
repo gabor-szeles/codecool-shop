@@ -79,7 +79,7 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
     }
 
     /**
-     * @throws SQLException when the products table is empty
+     * @throws SQLException when the product_category table is empty
      */
     @Override
     public List<ProductCategory> getAll() {
