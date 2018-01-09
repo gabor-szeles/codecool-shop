@@ -118,6 +118,99 @@ $(document).ready(function () {
                 .append(emailAddress).append("<br>")
                 .append(paymentButton);
             $('#cart').append(form);
+        },
+        addCreditCardCredentialsInputForm: function () {
+            let form = $('<form/>', {});
+            let nameInput = $('<input/>', {
+                id: "cardHoledName",
+                name: "cardHoler",
+                placeholder: "Enter Card Holder Name",
+            });
+            let cardNumber = $('<input/>', {
+                id: "cardNumber",
+                name: "cardNumber",
+                placeholder: "Enter card number",
+                pattern: "[0-9-]{19,19}",
+            });
+            let expirationMonth = $('<input/>', {
+                id: "expirationMonth",
+                name: "expirationMonth",
+                placeholder: "MM",
+                pattern: "[0-9]{2,2}",
+            });
+            let expirationYear = $('<input/>', {
+                id: "expirationYear",
+                name: "expirationYear",
+                placeholder: "YY",
+                pattern: "[0-9]{2,2}",
+            });
+            let cscNumber = $('<input/>', {
+                id: "cscNumber",
+                name: "cscNumber",
+                placeholder: "Enter CSC number",
+                pattern: "[0-9]{3,3}",
+            });
+            let creditCardconfirmationButton = $('<button/>', {id: "creditCardConfirmationButton", "class": "btn btn-primary"})
+                .text("Confirm Credit Card Credentials");
+            $('#cart').empty();
+            $('#cart').append(form)
+                .append(nameInput).append("<br>")
+                .append(cardNumber).append("<br>")
+                .append(expirationMonth).append(expirationYear).append("<br>")
+                .append(cscNumber).append("<br>")
+                .append(creditCardconfirmationButton);
+            eventApplier.addEventToCreditCardConfirmation();
+        },
+        creditCardConfirmationEvent: function () {
+            let cardHolderName = $('#cardHolderName').val();
+            let cardNumberData = $('#cardNumber').val();
+            let expMonth = $('#expirationMonth').val();
+            let expYear = $('#expirationYear').val();
+            let cscNum = $('#cscNumber').val();
+            let data = {
+                "cardHolderName": cardHolderName,
+                "cardNumber": cardNumberData,
+                "expMonth": expMonth,
+                "expYear": expYear,
+                "cscNumber": cscNum
+            };
+            ajax.insertCreditCardData(data, function () {
+                $('#cart').empty();
+                let paymentConfirmationText = $('<p/>', {"class": "offset-1"}).text("Thank you for your purchase");
+                $('#cart').append(paymentConfirmationText)
+            });
+        },
+        addPayPalCredentialsInputForm: function () {
+            let form = $('<form/>', {});
+            let paypalEmail = $('<input/>', {
+                id: "paypalEmail",
+                name: "paypalEmail",
+                placeholder: "Enter e-mail address",
+                pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$",
+            });
+            let paypalPassword = $('<input/>', {
+                id: "paypalPassword",
+                name: "paypalPassword",
+                placeholder: "Enter password",
+                type: "password",
+            });
+            let payPalconfirmationButton = $('<button/>', {id: "payPalPayment", "class": "btn btn-primary"})
+                .text("Confirm PayPal Credentials")
+            payPalconfirmationButton.click(function () {
+                let emailAddress = $('#paypalEmail').val();
+                let password = $('#paypalPassword').val();
+                let data = {"email": emailAddress, "password": password};
+                ajax.insertPayPalData(data, function () {
+                    $('#cart').empty();
+                    let paymentConfirmationText = $('<p/>', {"class": "offset-1"}).text("Thank you for your purchase");
+                    $('#cart').append(paymentConfirmationText)
+                });
+            });
+            $('#cart').empty();
+            $('#cart').append(form)
+                .append(paypalEmail).append("<br>")
+                .append(paypalPassword).append("<br>")
+                .append(payPalconfirmationButton);
         }
     };
 
@@ -149,8 +242,16 @@ $(document).ready(function () {
         },
         addEventToChangeQuantity: function () {
             $(".quantity-changer").click(event.changeQuantity);
+        },
+        addEventToCreditCardConfirmation: function () {
+            $("#creditCardConfirmationButton").click(event.creditCardConfirmationEvent)
+        },
+        addEventToCreditCardPaymentOptionButton: function () {
+            $("#creditCardPaymentOption").click(event.addCreditCardCredentialsInputForm);
+        },
+        addEventToPayPalPaymentOptionButton: function () {
+            $("#payPalPaymentOption").click(event.addPayPalCredentialsInputForm);
         }
-
     };
 
     const elementBuilder = {
@@ -240,112 +341,21 @@ $(document).ready(function () {
             eventApplier.addEventsToAddToCartButtons();
         },
 
-        initializePaymentPage: function (response) {
-            $('#cart').empty();
-
-            let paymentOptionText = $('<p/>', {"class": "offset-1"}).text("Please choose your payment method you prick!");
-            let creditCardPaymentButton = $('<button/>', {
-                id: "creditCardPayment",
+        initializePaymentPage: function () {
+            let paymentOptionText = $('<p/>', {"class": "offset-1"}).text("Please choose your payment method of choice!");
+            let creditCardPaymentOptionButton = $('<button/>', {
+                id: "creditCardPaymentOption",
                 "class": "btn btn-primary col-4 offset-1"
             })
                 .text("Credit Card");
-            creditCardPaymentButton.click(function () {
-                let form = $('<form/>', {});
-                let nameInput = $('<input/>', {
-                    id: "cardHoledName",
-                    name: "cardHoler",
-                    placeholder: "Enter Card Holder Name",
-                });
-                let cardNumber = $('<input/>', {
-                    id: "cardNumber",
-                    name: "cardNumber",
-                    placeholder: "Enter card number",
-                    pattern: "[0-9-]{19,19}",
-                });
-                let expirationMonth = $('<input/>', {
-                    id: "expirationMonth",
-                    name: "expirationMonth",
-                    placeholder: "MM",
-                    pattern: "[0-9]{2,2}",
-                });
-                let expirationYear = $('<input/>', {
-                    id: "expirationYear",
-                    name: "expirationYear",
-                    placeholder: "YY",
-                    pattern: "[0-9]{2,2}",
-                });
-                let cscNumber = $('<input/>', {
-                    id: "cscNumber",
-                    name: "cscNumber",
-                    placeholder: "Enter CSC number",
-                    pattern: "[0-9]{3,3}",
-                });
-                let creditCardconfirmationButton = $('<button/>', {id: "creditCardPayment", "class": "btn btn-primary"})
-                    .text("Confirm Credit Card Credentials");
-                creditCardconfirmationButton.click(function () {
-                    let cardHolderName = $('#cardHolderName').val();
-                    let cardNumberData = $('#cardNumber').val();
-                    let expMonth = $('#expirationMonth').val();
-                    let expYear = $('#expirationYear').val();
-                    let cscNum = $('#cscNumber').val();
-                    let data = {
-                        "cardHolderName": cardHolderName,
-                        "cardNumber": cardNumberData,
-                        "expMonth": expMonth,
-                        "expYear": expYear,
-                        "cscNumber": cscNum
-                    };
-                    ajax.insertCreditCardData(data, function () {
-                        $('#cart').empty();
-                        let paymentConfirmationText = $('<p/>', {"class": "offset-1"}).text("Thank you for your purchase");
-                        $('#cart').append(paymentConfirmationText)
-                    });
-                });
-                $('#cart').empty();
-                $('#cart').append(form)
-                    .append(nameInput).append("<br>")
-                    .append(cardNumber).append("<br>")
-                    .append(expirationMonth).append(expirationYear).append("<br>")
-                    .append(cscNumber).append("<br>")
-                    .append(creditCardconfirmationButton);
-            });
-            let payPalPaymentButton = $('<button/>', {id: "payPalPayment", "class": "btn btn-primary col-4 offset-1"})
+            let payPalPaymentOptionButton = $('<button/>', {id: "payPalPaymentOption", "class": "btn btn-primary col-4 offset-1"})
                 .text("Pay Pal");
-            payPalPaymentButton.click(function () {
-                let form = $('<form/>', {});
-                let paypalEmail = $('<input/>', {
-                    id: "paypalEmail",
-                    name: "paypalEmail",
-                    placeholder: "Enter e-mail address",
-                    pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$",
-                });
-                let paypalPassword = $('<input/>', {
-                    id: "paypalPassword",
-                    name: "paypalPassword",
-                    placeholder: "Enter password",
-                    type: "password",
-                });
-                let payPalconfirmationButton = $('<button/>', {id: "payPalPayment", "class": "btn btn-primary"})
-                    .text("Confirm PayPal Credentials")
-                payPalconfirmationButton.click(function () {
-                    let emailAddress = $('#paypalEmail').val();
-                    let password = $('#paypalPassword').val();
-                    let data = {"email": emailAddress, "password": password};
-                    ajax.insertPayPalData(data, function () {
-                        $('#cart').empty();
-                        let paymentConfirmationText = $('<p/>', {"class": "offset-1"}).text("Thank you for your purchase");
-                        $('#cart').append(paymentConfirmationText)
-                    });
-                });
-                $('#cart').empty();
-                $('#cart').append(form)
-                          .append(paypalEmail).append("<br>")
-                          .append(paypalPassword).append("<br>")
-                          .append(payPalconfirmationButton);
-            });
-            $('#cart').append(paymentOptionText)
-                .append(creditCardPaymentButton)
-                .append(payPalPaymentButton);
+            $('#cart').empty()
+                .append(paymentOptionText)
+                .append(creditCardPaymentOptionButton)
+                .append(payPalPaymentOptionButton);
+            eventApplier.addEventToCreditCardPaymentOptionButton();
+            eventApplier.addEventToPayPalPaymentOptionButton()
         }
     };
 
