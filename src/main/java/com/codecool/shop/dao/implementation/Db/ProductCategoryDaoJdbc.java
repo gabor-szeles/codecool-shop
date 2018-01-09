@@ -17,7 +17,7 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
 
     private static Db_handler db_handler = Db_handler.getInstance();
     private static ProductCategoryDaoJdbc instance = null;
-    private static final Logger logger = LoggerFactory.getLogger(ProductDaoJdbc.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProductCategoryDaoJdbc.class);
 
     /* A private Constructor prevents any other class from instantiating.
      */
