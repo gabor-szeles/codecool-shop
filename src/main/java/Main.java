@@ -15,8 +15,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");
-        System.setProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, "yyyy-MM-dd HH:mm:ss");
+        System.setProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, "yyyy-MM-dd HH:mm:ss.SS");
         System.setProperty(SimpleLogger.SHOW_DATE_TIME_KEY, "true");
 
         exception(Exception.class, (e, req, res) -> e.printStackTrace());
