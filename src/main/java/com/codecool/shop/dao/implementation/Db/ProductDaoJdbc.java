@@ -7,6 +7,8 @@ import com.codecool.shop.dao.implementation.Mem.ProductDaoMem;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +19,8 @@ public class ProductDaoJdbc implements ProductDao {
 
     private static Db_handler db_handler = Db_handler.getInstance();
     private static ProductDaoJdbc instance = null;
+    private static final Logger logger = LoggerFactory.getLogger(ProductDaoJdbc.class);
+
 
     /* A private Constructor prevents any other class from instantiating.
      */
@@ -34,7 +38,7 @@ public class ProductDaoJdbc implements ProductDao {
     public void add(Product product) {
         String query = "INSERT INTO product (id, name, description, currency_string, default_price, category_id, supplier_id) " +
                 "VALUES (?,?,?,?,?,?,?);";
-
+        logger.info("Add query created");
         db_handler.createPreparedStatementForAdd(product, query);
     }
 
@@ -43,6 +47,7 @@ public class ProductDaoJdbc implements ProductDao {
 
         ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
         if (productDaoMem.getAll().contains(productDaoMem.find(id))) {
+            logger.debug("Memory contains product id {}", id);
             return productDaoMem.find(id);
         } else {
 
@@ -64,6 +69,7 @@ public class ProductDaoJdbc implements ProductDao {
                 ProductDaoMem.getInstance().add(foundProduct);
                 return foundProduct;
             } catch (SQLException e) {
+                logger.warn("No SQL entry found for id {}", id);
                 return null;
             }
         }
@@ -72,6 +78,7 @@ public class ProductDaoJdbc implements ProductDao {
     @Override
     public void remove(int id) {
         ProductDaoMem.getInstance().remove(id);
+        logger.debug("Id {} removed from DaoMem", id);
         String query = "DELETE FROM product WHERE id = ?;";
         db_handler.createPreparedStatementForRemove(id, query);
     }
@@ -81,6 +88,7 @@ public class ProductDaoJdbc implements ProductDao {
 
         ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
         productDaoMem.clear();
+        logger.debug("ProductDaoMem cleared");
 
         ArrayList<Product> products = new ArrayList<>();
         SupplierDaoJdbc supplierDaoJdbc = SupplierDaoJdbc.getInstance();
@@ -101,8 +109,11 @@ public class ProductDaoJdbc implements ProductDao {
                 products.add(newProduct);
             }
         } catch (SQLException e) {
+            logger.warn("Product table empty!");
             e.printStackTrace();
         }
+
+        logger.debug("{} products found", products.size());
         return products;
     }
 
@@ -117,6 +128,7 @@ public class ProductDaoJdbc implements ProductDao {
                 productsBySupplier.add(product);
             }
         }
+        logger.debug("{} products added to supplier list of {}", productsBySupplier.size(), supplier.getName());
 
         return productsBySupplier;
     }
@@ -132,6 +144,7 @@ public class ProductDaoJdbc implements ProductDao {
                 productsByCategory.add(product);
             }
         }
+        logger.debug("{} products added to supplier list of {}", productsByCategory.size(), productCategory.getName());
 
         return productsByCategory;
     }
