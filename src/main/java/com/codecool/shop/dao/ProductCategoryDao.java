@@ -28,6 +28,10 @@ public interface ProductCategoryDao {
      */
     void remove(int id);
 
+    /**
+     * Returns a List of every ProductCategory found in the memory or the database
+     * @return A list of ProductCategory objects
+     */
     List<ProductCategory> getAll();
 
 }
