@@ -5,6 +5,8 @@ import com.codecool.shop.dao.SupplierDao;
 import com.codecool.shop.dao.implementation.Mem.ProductDaoMem;
 import com.codecool.shop.dao.implementation.Mem.SupplierDaoMem;
 import com.codecool.shop.model.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +17,7 @@ public class SupplierDaoJdbc implements SupplierDao {
 
     private static Db_handler db_handler = Db_handler.getInstance();
     private static SupplierDaoJdbc instance = null;
+    private static final Logger logger = LoggerFactory.getLogger(SupplierDaoJdbc.class);
 
     /* A private Constructor prevents any other class from instantiating.
      */
@@ -32,7 +35,7 @@ public class SupplierDaoJdbc implements SupplierDao {
     public void add(Supplier supplier) {
         String query = "INSERT INTO supplier (id, name, description) " +
                 "VALUES (?,?,?);";
-
+        logger.debug("Add query created");
         db_handler.createPreparedStatementForAdd(supplier, query);
     }
 
@@ -41,6 +44,7 @@ public class SupplierDaoJdbc implements SupplierDao {
         SupplierDaoMem supplierDaoMem = SupplierDaoMem.getInstance();
 
         if (supplierDaoMem.getAll().contains(supplierDaoMem.find(id))) {
+            logger.debug("Memory contains Supplier id {}", id);
             return supplierDaoMem.find(id);
         } else {
 
@@ -52,8 +56,10 @@ public class SupplierDaoJdbc implements SupplierDao {
                 Supplier foundSupplier = new Supplier(foundElement.getString("name"), foundElement.getString("description"));
                 foundSupplier.setId(foundElement.getInt("id"));
                 supplierDaoMem.add(foundSupplier);
+                logger.debug("Supplier {} added to ProductDaoMem", foundSupplier.getName());
                 return foundSupplier;
             } catch (SQLException e) {
+                logger.warn("No SQL entry found for supplier id {}", id);
                 return null;
             }
         }
@@ -62,6 +68,7 @@ public class SupplierDaoJdbc implements SupplierDao {
     @Override
     public void remove(int id) {
         SupplierDaoMem.getInstance().remove(id);
+        logger.debug("Supplier id {} removed from DaoMem", id);
         String query = "DELETE FROM supplier WHERE id = ?;";
         db_handler.createPreparedStatementForRemove(id, query);
     }
@@ -82,8 +89,11 @@ public class SupplierDaoJdbc implements SupplierDao {
                 suppliers.add(newSupplier);
             }
         } catch (SQLException e) {
+            logger.warn("Supplier table empty!");
             e.printStackTrace();
         }
+
+        logger.debug("{} suppliers found", suppliers.size());
         return suppliers;
     }
 }
