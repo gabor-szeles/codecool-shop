@@ -6,6 +6,9 @@ import com.codecool.shop.model.Order;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * OrderDaoMem provides access to Order objects in the memory
+ */
 public class OrderDaoMem implements OrderDao {
     private static OrderDaoMem instance = null;
     private List<Order> DATA = new ArrayList<>();
@@ -13,6 +16,9 @@ public class OrderDaoMem implements OrderDao {
     private OrderDaoMem() {
     }
 
+    /**
+     * Returns the data access object for memory
+     */
     public static OrderDaoMem getInstance() {
         if (instance == null) {
             instance = new OrderDaoMem();
