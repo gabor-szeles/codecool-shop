@@ -5,6 +5,8 @@ import com.codecool.shop.Db_handler;
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.dao.implementation.Mem.ProductCategoryDaoMem;
 import com.codecool.shop.model.ProductCategory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +17,7 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
 
     private static Db_handler db_handler = Db_handler.getInstance();
     private static ProductCategoryDaoJdbc instance = null;
+    private static final Logger logger = LoggerFactory.getLogger(ProductDaoJdbc.class);
 
     /* A private Constructor prevents any other class from instantiating.
      */
@@ -32,7 +35,7 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
     public void add(ProductCategory category) {
         String query = "INSERT INTO product_category (id, name, description, department) " +
                 "VALUES (?,?,?,?);";
-
+        logger.debug("Product category add query created");
         db_handler.createPreparedStatementForAdd(category, query);
     }
 
@@ -42,6 +45,7 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
         ProductCategoryDaoMem productCategoryDaoMem = ProductCategoryDaoMem.getInstance();
 
         if (productCategoryDaoMem.getAll().contains(productCategoryDaoMem.find(id))) {
+            logger.debug("Memory contains ProductCategory id {}", id);
             return productCategoryDaoMem.find(id);
         } else {
 
@@ -55,8 +59,10 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
                         foundElement.getString("description"));
                 foundCategory.setId(foundElement.getInt("id"));
                 productCategoryDaoMem.add(foundCategory);
+                logger.debug("Product category {} added to ProductCategoryDaoMem", foundCategory.getName());
                 return foundCategory;
             } catch (SQLException e) {
+                logger.warn("No SQL entry found for product category id {}", id);
                 return null;
             }
         }
@@ -87,9 +93,11 @@ public class ProductCategoryDaoJdbc implements ProductCategoryDao {
                 productCategories.add(newProductCategory);
             }
         } catch (SQLException e) {
+            logger.warn("ProductCategory table empty!");
             return null;
         }
 
+        logger.debug("{} suppliers found", productCategories.size());
         return productCategories;
     }
 }
