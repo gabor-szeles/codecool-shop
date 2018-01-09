@@ -38,7 +38,7 @@ public class ProductDaoJdbc implements ProductDao {
     public void add(Product product) {
         String query = "INSERT INTO product (id, name, description, currency_string, default_price, category_id, supplier_id) " +
                 "VALUES (?,?,?,?,?,?,?);";
-        logger.info("Add query created");
+        logger.debug("Add query created");
         db_handler.createPreparedStatementForAdd(product, query);
     }
 
@@ -67,9 +67,10 @@ public class ProductDaoJdbc implements ProductDao {
 
                 foundProduct.setId(foundElement.getInt("id"));
                 ProductDaoMem.getInstance().add(foundProduct);
+                logger.debug("Product {} added to ProductDaoMem", foundProduct.getName());
                 return foundProduct;
             } catch (SQLException e) {
-                logger.warn("No SQL entry found for id {}", id);
+                logger.warn("No SQL entry found for product id {}", id);
                 return null;
             }
         }
@@ -78,7 +79,7 @@ public class ProductDaoJdbc implements ProductDao {
     @Override
     public void remove(int id) {
         ProductDaoMem.getInstance().remove(id);
-        logger.debug("Id {} removed from DaoMem", id);
+        logger.debug("Product id {} removed from DaoMem", id);
         String query = "DELETE FROM product WHERE id = ?;";
         db_handler.createPreparedStatementForRemove(id, query);
     }
