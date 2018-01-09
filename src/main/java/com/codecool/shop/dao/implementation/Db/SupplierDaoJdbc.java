@@ -35,7 +35,7 @@ public class SupplierDaoJdbc implements SupplierDao {
     public void add(Supplier supplier) {
         String query = "INSERT INTO supplier (id, name, description) " +
                 "VALUES (?,?,?);";
-        logger.debug("Add query created");
+        logger.debug("Supplier add query created");
         db_handler.createPreparedStatementForAdd(supplier, query);
     }
 

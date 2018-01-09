@@ -38,7 +38,7 @@ public class ProductDaoJdbc implements ProductDao {
     public void add(Product product) {
         String query = "INSERT INTO product (id, name, description, currency_string, default_price, category_id, supplier_id) " +
                 "VALUES (?,?,?,?,?,?,?);";
-        logger.debug("Add query created");
+        logger.debug("Product add query created");
         db_handler.createPreparedStatementForAdd(product, query);
     }
 
