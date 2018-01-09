@@ -27,6 +27,9 @@ public class ProductDaoJdbc implements ProductDao {
     private ProductDaoJdbc() {
     }
 
+    /**
+     * Returns the data access object for JDBC
+     */
     public static ProductDaoJdbc getInstance() {
         if (instance == null) {
             instance = new ProductDaoJdbc();
