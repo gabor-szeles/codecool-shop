@@ -1,12 +1,12 @@
 package com.codecool.shop.dao.implementation.Mem;
 
-import com.codecool.shop.dao.SupplierDao;
+import com.codecool.shop.dao.BaseDao;
 import com.codecool.shop.model.Supplier;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SupplierDaoMem implements SupplierDao {
+public class SupplierDaoMem implements BaseDao<Supplier> {
 
     private static SupplierDaoMem instance = null;
     private List<Supplier> DATA = new ArrayList<>();

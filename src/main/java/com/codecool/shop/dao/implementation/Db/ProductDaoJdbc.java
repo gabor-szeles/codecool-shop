@@ -2,6 +2,7 @@ package com.codecool.shop.dao.implementation.Db;
 
 
 import com.codecool.shop.Db_handler;
+import com.codecool.shop.dao.BaseDao;
 import com.codecool.shop.dao.ProductDao;
 import com.codecool.shop.dao.implementation.Mem.ProductDaoMem;
 import com.codecool.shop.model.Product;
@@ -13,7 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductDaoJdbc implements ProductDao {
+public class ProductDaoJdbc implements BaseDao<Product>, ProductDao {
 
     private static Db_handler db_handler = Db_handler.getInstance();
     private static ProductDaoJdbc instance = null;

@@ -4,7 +4,9 @@ import com.codecool.shop.model.BaseModel;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
+import com.sun.rowset.CachedRowSetImpl;
 
+import javax.sql.rowset.CachedRowSet;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
