@@ -1,4 +1,7 @@
+
 com.codecool.shop
+com.codecool.shop.controller
 com.codecool.shop.dao
 com.codecool.shop.dao.implementation.Db
 com.codecool.shop.dao.implementation.Mem
+com.codecool.shop.model
