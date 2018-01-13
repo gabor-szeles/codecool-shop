@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BaseDao<T extends BaseModel> {
 
-    void add(T daoType);
+    void add(T model);
 
     T find(int id);
 
