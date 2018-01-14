@@ -435,6 +435,10 @@ $(document).ready(function () {
             });
         }
     };
+    
+    $('#toggleUserSettings').click(function() {
+        $('#navUserSettingsMenu').toggle( "slide", { direction: "up" }, 500 )
+    });
 
     dom.init();
 
