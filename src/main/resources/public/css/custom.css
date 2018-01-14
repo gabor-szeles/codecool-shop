@@ -153,16 +153,22 @@ footer {
 }
 
 #searchContainer {
-    margin: 0 60px 0 120px;
-    width: 260px;
+    margin: 0 60px 0 200px;
+    width: 270px;
+    -webkit-box-shadow: inset 2px 2px 3px -1px rgba(0,0,0,0.25);
+    -moz-box-shadow: inset 2px 2px 3px -1px rgba(0,0,0,0.25);
+    box-shadow: inset 2px 2px 3px -1px rgba(0,0,0,0.25);
+}
+
+.fa-search {
+    padding: 2px 5px;
 }
 
 #navSearch > input {
     width: 240px;
-    -webkit-box-shadow: inset 0px 1px 2px -1px rgba(0,0,0,0.25);
-    -moz-box-shadow: inset 0px 1px 2px -1px rgba(0,0,0,0.25);
-    box-shadow: inset 0px 1px 2px -1px rgba(0,0,0,0.25);
     padding: 2px 5px;
+    border: none;
+    background: none;
 }
 
 #navSearch > input:focus {
