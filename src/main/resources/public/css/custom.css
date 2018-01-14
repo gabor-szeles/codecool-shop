@@ -79,7 +79,7 @@ footer {
 }
 
 .fa-cog {
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .fa-shopping-cart {
@@ -88,16 +88,7 @@ footer {
 
 #navLogo {
     height: 40px;
-    margin: 0 -3px 0 40px;
-}
-
-#navUsername {
-    position: relative;
-    top: 4px;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-family: 'Raleway', sans-serif;
-    margin-right: 10px;
+    margin: 0 10px 0 40px;
 }
 
 #navUserSettingsMenu {
@@ -109,7 +100,7 @@ footer {
     border: 1px solid rgba(0,0,0,0.2);
     z-index: 99999;
     background-color: white;
-    padding: 10px 10px 7px 10px;
+    padding: 10px 7px 7px 7px;
 }
 
 #navUserSettingsMenu a {
@@ -129,7 +120,7 @@ footer {
 #navUserSettingsMenu li {
     display: block;
     color: #9c9c9c;
-    padding: 3px 5px 2px 5px;
+    padding: 3px 10px 2px 10px;
 }
 
 #total-items {
@@ -176,30 +167,36 @@ footer {
 }
 
 #navUser {
-    height: 42px;
-    padding: 0 20px;
+    height: 30px;
+    padding: 0 6px 0 8px;
     transform: skew(22deg);
-    background-color: #111111;
+    background-color: white;
+    -webkit-box-shadow: inset 2px 2px 3px 0px rgba(0,0,0,0.25);
+    -moz-box-shadow: inset 2px 2px 3px 0px rgba(0,0,0,0.25);
+    box-shadow: inset 2px 2px 3px 0px rgba(0,0,0,0.25);
 }
 
 #navSettings {
-    height: 42px;
-    padding: 0 5px;
+    height: 30px;
+    padding: 0 3px 0 2px;
     transform: skew(22deg);
     background-color: #ff1300;
 }
 
 #navUsername  {
     font-size: 18px;
-    color: white;
-    top:50%;
-    transform: translateY(-50%) skew(-22deg);
+    color: black;
+    position: relative;
+    top:48%;
+    font-weight: bold;
+    transform: translateY(-50%) skew(-22deg) scale(0.8, 1.0);
+    letter-spacing: .5px;
 }
 
 #toggleUserSettings {
     color: white;
     position: relative;
-    top: 10px;
+    top: 3px;
     transform: skew(-22deg);
 }
 
