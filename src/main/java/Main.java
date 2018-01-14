@@ -20,9 +20,6 @@ public class Main {
 
         before((request, response) -> {
             System.out.println(request.requestMethod() + " @ " + request.url());
-            request.session().attribute("username", "bence");
-            // check if user logged in
-            // put data to localStorage
         });
 
         // populate some data for the memory storage
