@@ -30,14 +30,17 @@
 
 <body>
 <nav id="navigation">
-    <!--<form action="/api/user/logout" method="GET">-->
-        <!--<button class="btn btn-primary">Log Out</button>-->
-    <!--</form>-->
     <img id="navLogo" src="/img/lava_logo.png" alt="logo" />
-    <h4 id="navUsername" th:text="${username}"></h4>
-    <button id="toggleUserSettings" class="revertButtonStyle">
-        <i class="fa fa-cog" aria-hidden="true"></i>
-    </button>
+    <div id="navUser">
+        <h5 id="navUsername" th:text="${username}"></h5>
+
+    </div>
+
+    <div id="navSettings">
+        <button id="toggleUserSettings" class="revertButtonStyle">
+            <i class="fa fa-cog" aria-hidden="true"></i>
+        </button>
+    </div>
 
     <div id="navUserSettingsMenu">
         <ul>
@@ -48,12 +51,19 @@
         </ul>
     </div>
 
+    <div id="searchContainer">
+        <form id="navSearch" action="#">
+            <input type="text" placeholder="Search" />
+        </form>
+        <i class="fa fa-search" aria-hidden="true"></i>
+    </div>
+
     <div class="floatRight">
         <button id="cartButton" class="revertButtonStyle">
             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
             <span id="total-items">0</span>
         </button>
-        <p><strong id="total-price">0</strong> USD</p>
+        <p id="price"><strong id="total-price">0</strong> USD</p>
     </div>
 
 </nav>

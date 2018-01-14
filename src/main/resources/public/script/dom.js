@@ -437,7 +437,10 @@ $(document).ready(function () {
     };
     
     $('#toggleUserSettings').click(function() {
-        $('#navUserSettingsMenu').toggle( "slide", { direction: "up" }, 500 )
+        let position = $(this).position();
+        $('#navUserSettingsMenu')
+            .css({"top": position.top + 20, "left": position.left + 25})
+            .toggle( "slide", { direction: "up" }, 500 );
     });
 
     dom.init();
