@@ -30,7 +30,7 @@ public class ProductController {
      * @return Renders the page, with the populated data
      */
     public static String renderProducts(Request req, Response res) {
-        UserController.ensureUserIsLoggedIn(req, res);
+        UserController.ensureUserIsLoggedIn(req, res);  /* TODO: check if user exists? */
         BaseDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
         SupplierDaoJdbc supplierDataStore = SupplierDaoJdbc.getInstance();
 
@@ -64,14 +64,14 @@ public class ProductController {
 
 
     /**
-     * This method is responsible for gethering all products filtered by supplier and returns as it is
+     * This method is responsible for gathering all products filtered by supplier and returns as it is
      * convertible to JSON format.
      * @param request request sent from client side
      * @param response response sent after processing the request
-     * @return the jasonified list of products filtered by supplier
+     * @return the JSONified list of products filtered by supplier
      */
     public static String getProductsBySupplier(Request request, Response response) {
-        int supplierId = Integer.parseInt(request.params("id"));
+        int supplierId = Integer.parseInt(request.params("id")); /* TODO: check if NaN, if NaN return with error message */
 
         LOGGER.info("Supplier id received from request: {}", supplierId);
 
@@ -84,20 +84,20 @@ public class ProductController {
         data.put("collection", collection);
         data.put("collectionName", targetSupplier.getName());
 
-        LOGGER.debug("Response with supplier data to jasonify: {}", data);
+        LOGGER.debug("Response with supplier data to JSONnify: {}", data);
 
         return Utils.toJson(data);
     }
 
     /**
-     * This method is responsible for gethering all products filtered by category and returns as it is
+     * This method is responsible for gathering all products filtered by category and returns as it is
      * convertible to JSON format.
      * @param request request sent from client side
      * @param response response sent after processing the request
      * @return the jasonified list of products filtered by category
      */
     public static String getProductsByCategory(Request request, Response response) {
-        int categoryId = Integer.parseInt(request.params("id"));
+        int categoryId = Integer.parseInt(request.params("id")); /* TODO: check if NaN, if NaN return with error message */
 
         ProductCategoryDaoJdbc productCategoryDataStore = ProductCategoryDaoJdbc.getInstance();
 
@@ -124,7 +124,7 @@ public class ProductController {
      * @return Returns a map with all the lineitems in the sopping cart completed with the newly item in the cart
      */
     public static String handleOrder(Request req, Response res) {
-        int productId = Integer.parseInt(req.params("id"));
+        int productId = Integer.parseInt(req.params("id")); /* TODO: check if NaN, if NaN return with error message */
         Product targetItem = ProductDaoMem.getInstance().find(productId);
 
         LOGGER.info("Line-item selected by id ({}) from order request: {}", productId, targetItem);
@@ -150,11 +150,11 @@ public class ProductController {
      * @return a confirmation that the update for the order has been processed
      */
     public static String addUserData(Request request, Response response) {
-        Map<String, String> userData = Utils.parseJson(request);
+        Map<String, String> userData = Utils.parseJson(request); /* TODO: check every field with regex for security */
 
         Order.getCurrentOrder().setUserData(userData);
 
-        LOGGER.debug("Userdata to jasonify after reading the request data in: {}", userData);
+        LOGGER.debug("Userdata to JSONify after reading the request data in: {}", userData);
         LOGGER.debug("order updated with user data");
 
         return Utils.toJson("OK");
@@ -167,10 +167,10 @@ public class ProductController {
      * @return a confirmation that the update for the order has been processed
      */
     public static String addPaymentData(Request request, Response response) {
-        Map<String, String> userData = Utils.parseJson(request);
+        Map<String, String> userData = Utils.parseJson(request); /* TODO: check every field with regex for security */
         Order.getCurrentOrder().setPaymentData(userData);
 
-        LOGGER.debug("Payment data to jasonify after reading the request data in: {}", userData);
+        LOGGER.debug("Payment data to JSONify after reading the request data in: {}", userData);
 
         LOGGER.info("Order updated with payment data");
         LOGGER.debug("order updated with payment data");
@@ -214,7 +214,7 @@ public class ProductController {
         List<LineItem> lineItems = Order.getCurrentOrder().getAddedItems();
         LineItem targetLineItem = null;
         for (LineItem lineItem : lineItems) {
-            if (lineItem.getItem().getId() == Integer.parseInt(data.get("Id"))) {
+            if (lineItem.getItem().getId() == Integer.parseInt(data.get("Id"))) { /* TODO: check if NaN error, if NaN return with error message */
                 targetLineItem = lineItem;
                 break;
             }
@@ -254,13 +254,13 @@ public class ProductController {
     }
 
     /**
-     * This method gethers all possible data about the shopping cart.
+     * This method gathers all possible data about the shopping cart.
      * @return a map with all the fields of the shopping cart for further processing
      */
     private static Map<String, Object> getShoppingCartData() {
         List<LineItem> orderItems = Order.getCurrentOrder().getAddedItems();
 
-        LOGGER.info("Shopping card data successfully gethered: {}", orderItems);
+        LOGGER.info("Shopping card data successfully gathered: {}", orderItems);
 
         List<Map> orders = ModelBuilder.lineItemModel(orderItems);
         Map<String, Object> response = new HashMap<>();
