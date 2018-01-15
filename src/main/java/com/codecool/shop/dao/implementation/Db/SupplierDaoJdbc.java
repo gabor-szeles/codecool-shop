@@ -21,9 +21,16 @@ public class SupplierDaoJdbc implements SupplierDao {
 
     /* A private Constructor prevents any other class from instantiating.
      */
+
+    /**
+     * SupplierDaoJdbc provides access to Supplier objects through the SQL database
+     */
     private SupplierDaoJdbc() {
     }
 
+    /**
+     * Returns the data access object for JDBC
+     */
     public static SupplierDaoJdbc getInstance() {
         if (instance == null) {
             instance = new SupplierDaoJdbc();
@@ -39,6 +46,9 @@ public class SupplierDaoJdbc implements SupplierDao {
         db_handler.createPreparedStatementForAdd(supplier, query);
     }
 
+    /**
+     * @implNote returns null if no record is found in the database
+     */
     @Override
     public Supplier find(int id) {
         SupplierDaoMem supplierDaoMem = SupplierDaoMem.getInstance();
@@ -73,6 +83,9 @@ public class SupplierDaoJdbc implements SupplierDao {
         db_handler.createPreparedStatementForRemove(id, query);
     }
 
+    /**
+     * @throws SQLException when the suppliers table is empty
+     */
     @Override
     public List<Supplier> getAll() {
         SupplierDaoMem.getInstance().clear();

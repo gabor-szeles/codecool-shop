@@ -13,6 +13,12 @@ import javax.mail.internet.MimeMessage;
 import java.util.Arrays;
 import java.util.Properties;
 
+/**
+ * Sends welcome email to a specific user address.
+ * <p>
+ * The recipient's address is specified in the constructor and sent through the <strong>gmail</strong> address specified in the fields.
+ *
+ */
 public class EmailSender {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailSender.class);
@@ -20,13 +26,26 @@ public class EmailSender {
     private static String PASSWORD = "lavawebshop1";
     private String recipient;
 
+    /**
+     * Private constructor to prevent unparameterized instantiation.
+     */
     private EmailSender() {}
 
+    /**
+     * Create an instance of EmailSender.
+     *
+     * @param recipient The email address of the recipient.
+     */
     public EmailSender(String recipient) {
         logger.debug("Entering EmailSender(recipient={})", recipient);
         this.recipient = recipient;
     }
 
+    /**
+     * Sends the email with the specified subject and message.
+     *
+     * Uses {@link #sendFromGMail(String, String, String[], String, String)} to send email.
+     */
     public void send() {
         String from = USER_NAME;
         String pass = PASSWORD;
@@ -37,6 +56,15 @@ public class EmailSender {
         sendFromGMail(from, pass, to, subject, body);
     }
 
+    /**
+     * Establishes the connection to the given <strong>gmail</strong> account and sends the email to the given addresses.
+     *
+     * @param from    The gmail account's address <strong>without @gmail.com</strong>, which the email will sent through.
+     * @param pass    The password for that gmail account.
+     * @param to      The address of the recipient.
+     * @param subject The subject of the email.
+     * @param body    The inner text of the email.
+     */
     private void sendFromGMail(String from, String pass, String[] to, String subject, String body) {
         Properties props = System.getProperties();
         String host = "smtp.gmail.com";
