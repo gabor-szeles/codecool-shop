@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * ProductDaoMem provides access to Product objects in the memory
+ */
 public class ProductDaoMem implements BaseDao<Product>, ProductDao {
 
     private static ProductDaoMem instance = null;
@@ -21,6 +24,9 @@ public class ProductDaoMem implements BaseDao<Product>, ProductDao {
     private ProductDaoMem() {
     }
 
+    /**
+     * Returns the data access object for memory
+     */
     public static ProductDaoMem getInstance() {
         if (instance == null) {
             instance = new ProductDaoMem();
@@ -60,6 +66,9 @@ public class ProductDaoMem implements BaseDao<Product>, ProductDao {
         return got;
     }
 
+    /**
+     * Clears the list of Product objects
+     */
     public void clear() {
         DATA.clear();
     }
