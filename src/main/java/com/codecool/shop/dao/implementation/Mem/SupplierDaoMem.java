@@ -6,6 +6,9 @@ import com.codecool.shop.model.Supplier;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * SupplierDaoMem provides access to Supplier objects in the memory
+ */
 public class SupplierDaoMem implements BaseDao<Supplier> {
 
     private static SupplierDaoMem instance = null;
@@ -16,6 +19,9 @@ public class SupplierDaoMem implements BaseDao<Supplier> {
     private SupplierDaoMem() {
     }
 
+    /**
+     * Returns the data access object for memory
+     */
     public static SupplierDaoMem getInstance() {
         if (instance == null) {
             instance = new SupplierDaoMem();
@@ -44,6 +50,9 @@ public class SupplierDaoMem implements BaseDao<Supplier> {
         return DATA;
     }
 
+    /**
+     * Clears the list of Supplier objects
+     */
     public void clear() {
         DATA.clear();
     }

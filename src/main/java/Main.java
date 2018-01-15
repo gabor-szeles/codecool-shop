@@ -4,6 +4,7 @@ import com.codecool.shop.model.Order;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
+import org.slf4j.impl.SimpleLogger;
 
 import java.util.Arrays;
 
@@ -14,14 +15,15 @@ public class Main {
 
     public static void main(String[] args) {
 
+        System.setProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, "yyyy-MM-dd HH:mm:ss.SS");
+        System.setProperty(SimpleLogger.SHOW_DATE_TIME_KEY, "true");
+
         exception(Exception.class, (e, req, res) -> e.printStackTrace());
         staticFiles.location("/public");
         port(5000);
 
         before((request, response) -> {
             System.out.println(request.requestMethod() + " @ " + request.url());
-            // check if user logged in
-            // put data to localStorage
         });
 
         // populate some data for the memory storage

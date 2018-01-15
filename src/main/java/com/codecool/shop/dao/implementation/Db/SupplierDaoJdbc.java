@@ -4,6 +4,8 @@ import com.codecool.shop.Db_handler;
 import com.codecool.shop.dao.BaseDao;
 import com.codecool.shop.dao.implementation.Mem.SupplierDaoMem;
 import com.codecool.shop.model.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,12 +16,20 @@ public class SupplierDaoJdbc implements BaseDao<Supplier> {
 
     private static Db_handler db_handler = Db_handler.getInstance();
     private static SupplierDaoJdbc instance = null;
+    private static final Logger logger = LoggerFactory.getLogger(SupplierDaoJdbc.class);
 
     /* A private Constructor prevents any other class from instantiating.
+     */
+
+    /**
+     * SupplierDaoJdbc provides access to Supplier objects through the SQL database
      */
     private SupplierDaoJdbc() {
     }
 
+    /**
+     * Returns the data access object for JDBC
+     */
     public static SupplierDaoJdbc getInstance() {
         if (instance == null) {
             instance = new SupplierDaoJdbc();
@@ -31,15 +41,19 @@ public class SupplierDaoJdbc implements BaseDao<Supplier> {
     public void add(Supplier supplier) {
         String query = "INSERT INTO supplier (id, name, description) " +
                 "VALUES (?,?,?);";
-
+        logger.debug("Supplier add query created");
         db_handler.createPreparedStatementForAdd(supplier, query);
     }
 
+    /**
+     * @implNote returns null if no record is found in the database
+     */
     @Override
     public Supplier find(int id) {
         SupplierDaoMem supplierDaoMem = SupplierDaoMem.getInstance();
 
         if (supplierDaoMem.getAll().contains(supplierDaoMem.find(id))) {
+            logger.debug("Memory contains Supplier id {}", id);
             return supplierDaoMem.find(id);
         } else {
 
@@ -51,8 +65,10 @@ public class SupplierDaoJdbc implements BaseDao<Supplier> {
                 Supplier foundSupplier = new Supplier(foundElement.getString("name"), foundElement.getString("description"));
                 foundSupplier.setId(foundElement.getInt("id"));
                 supplierDaoMem.add(foundSupplier);
+                logger.debug("Supplier {} added to ProductDaoMem", foundSupplier.getName());
                 return foundSupplier;
             } catch (SQLException e) {
+                logger.warn("No SQL entry found for supplier id {}", id);
                 return null;
             }
         }
@@ -61,10 +77,14 @@ public class SupplierDaoJdbc implements BaseDao<Supplier> {
     @Override
     public void remove(int id) {
         SupplierDaoMem.getInstance().remove(id);
+        logger.debug("Supplier id {} removed from DaoMem", id);
         String query = "DELETE FROM supplier WHERE id = ?;";
         db_handler.createPreparedStatementForRemove(id, query);
     }
 
+    /**
+     * @throws SQLException when the suppliers table is empty
+     */
     @Override
     public List<Supplier> getAll() {
         SupplierDaoMem.getInstance().clear();
@@ -81,8 +101,11 @@ public class SupplierDaoJdbc implements BaseDao<Supplier> {
                 suppliers.add(newSupplier);
             }
         } catch (SQLException e) {
+            logger.warn("Supplier table empty!");
             e.printStackTrace();
         }
+
+        logger.debug("{} suppliers found", suppliers.size());
         return suppliers;
     }
 }

@@ -435,6 +435,13 @@ $(document).ready(function () {
             });
         }
     };
+    
+    $('#toggleUserSettings').click(function() {
+        let position = $(this).position();
+        $('#navUserSettingsMenu')
+            .css({"top": position.top + 20, "left": position.left + 25})
+            .slideToggle('slow');
+    });
 
     dom.init();
 
