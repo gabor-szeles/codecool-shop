@@ -4,6 +4,8 @@ import com.codecool.shop.Db_handler;
 import com.codecool.shop.dao.UserDao;
 import com.codecool.shop.model.User;
 import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +16,7 @@ public class UserDaoJdbc implements UserDao {
 
     private static Db_handler db_handler = Db_handler.getInstance();
     private static UserDaoJdbc instance = null;
+    private static final Logger logger = LoggerFactory.getLogger(UserDaoJdbc.class);
 
     private UserDaoJdbc() {}
 
@@ -36,6 +39,7 @@ public class UserDaoJdbc implements UserDao {
             statement.setString(3, user.getPassword());
             statement.execute();
 
+            logger.debug("User added to database");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,10 +60,12 @@ public class UserDaoJdbc implements UserDao {
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()) {
                 User user = new User(resultSet.getString("name"), resultSet.getString("password"));
+                logger.debug("User found in database");
                 return user;
             }
 
         } catch (SQLException e) {
+            logger.warn("User not found in database!");
             e.printStackTrace();
             return null;
         }
