@@ -156,7 +156,8 @@ public class ProductController {
 
         LOGGER.debug("Userdata to jasonify after reading the request data in: {}", userData);
         LOGGER.debug("order updated with user data");
-        return "";
+
+        return Utils.toJson("OK");
     }
 
     /**
@@ -174,7 +175,7 @@ public class ProductController {
         LOGGER.info("Order updated with payment data");
         LOGGER.debug("order updated with payment data");
         new Order();
-        return "";
+        return Utils.toJson("OK");
     }
 
     /**
