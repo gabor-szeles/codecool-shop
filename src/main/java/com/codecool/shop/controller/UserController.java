@@ -5,6 +5,8 @@ import com.codecool.shop.dao.UserDao;
 import com.codecool.shop.dao.implementation.Db.UserDaoJdbc;
 import com.codecool.shop.model.User;
 import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
@@ -16,6 +18,7 @@ import java.util.Map;
  */
 public class UserController {
 
+    private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     private static UserDao userDaoDb = UserDaoJdbc.getInstance();
     private static Utils utils = Utils.getInstance();
 
@@ -51,7 +54,9 @@ public class UserController {
         boolean success = userDaoDb.add(user);
 
         if (success) {
-            System.out.println("Registration successful");
+
+            LOGGER.info("Registration successful");
+
             EmailSender emailSender = new EmailSender(user.getEmail());
             emailSender.send();
             req.session().attribute("username", user.getName());
@@ -75,18 +80,27 @@ public class UserController {
     public static String login(Request req, Response res) {
         User user = new User(req.queryParams("name"), req.queryParams("password"));
         User selectedUser = userDaoDb.find(req.queryParams("name"));
+
+        LOGGER.debug("Findig user based on request returned username: {}", selectedUser);
+
         if( selectedUser != null ){
             if (BCrypt.checkpw(user.getPassword(), selectedUser.getPassword())) {
-                System.out.println("Password matches");
+
+                LOGGER.info("Password matches after check");
+
                 req.session().attribute("username", selectedUser.getName());
                 res.redirect("/");
             } else {
-                System.out.println("Password doesn't match");
+
+                LOGGER.info("Password matches after check");
+
                 req.session().attribute("message", "Wrong password.");
                 res.redirect("/login");
             }
         } else {
-            System.out.println("User doesn't exist");
+
+            LOGGER.debug("Did not find user");
+
             req.session().attribute("message", "User doesn't exist.");
             res.redirect("/login");
         }
@@ -104,6 +118,8 @@ public class UserController {
         req.session().removeAttribute("username");
         res.redirect("/login");
 
+        LOGGER.info("Successfully logged out");
+
         return "";
     }
 
@@ -113,6 +129,9 @@ public class UserController {
      * @param res response sent after processing the request
      */
     public static void ensureUserIsLoggedIn(Request req, Response res) {
+
+        LOGGER.info("User is not logged in, redirecting to login page");
+
         if (req.session().attribute("username") == null) {
             res.redirect("/login");
         }

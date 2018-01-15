@@ -1,5 +1,8 @@
 package com.codecool.shop.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -7,6 +10,7 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -17,6 +21,7 @@ import java.util.Properties;
  */
 public class EmailSender {
 
+    private static final Logger logger = LoggerFactory.getLogger(EmailSender.class);
     private static String USER_NAME = "lavawebshop";
     private static String PASSWORD = "lavawebshop1";
     private String recipient;
@@ -32,6 +37,7 @@ public class EmailSender {
      * @param recipient The email address of the recipient.
      */
     public EmailSender(String recipient) {
+        logger.debug("Entering EmailSender(recipient={})", recipient);
         this.recipient = recipient;
     }
 
@@ -87,16 +93,20 @@ public class EmailSender {
             }
 
             message.setSubject(subject);
+            logger.trace("Email's subject: {}", subject);
             message.setText(body);
+            logger.trace("Email's body: {}", body);
             Transport transport = session.getTransport("smtp");
             transport.connect(host, from, pass);
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
-            System.out.println("Email sent to user.");
+            logger.info("Email sent to: {}", Arrays.toString(to));
         } catch (AddressException ae) {
             ae.printStackTrace();
+            logger.error("Not valid email address format: {}", (Arrays.toString(to)));
         } catch (MessagingException me) {
             me.printStackTrace();
+            logger.error("Error while sending email to user.", me);
         }
     }
 }
