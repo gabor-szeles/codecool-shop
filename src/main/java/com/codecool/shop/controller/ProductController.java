@@ -1,6 +1,7 @@
 package com.codecool.shop.controller;
 
 import com.codecool.shop.Utils;
+import com.codecool.shop.dao.implementation.Db.OrderDaoJdbc;
 import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoJdbc;
 import com.codecool.shop.dao.implementation.Db.ProductDaoJdbc;
 import com.codecool.shop.dao.implementation.Db.SupplierDaoJdbc;
@@ -44,6 +45,9 @@ public class ProductController {
 
         LOGGER.debug("Program finished processing request on loading target supplier data and ready to send back to client" +
                     "with the following data: {}", data);
+
+        OrderController.checkAndCreateOrder(req.session().attribute("userId"));
+        System.out.println(Order.getCurrentOrder());
 
         return Utils.renderTemplate(data, "product/index");
     }

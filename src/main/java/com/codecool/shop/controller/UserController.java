@@ -82,8 +82,6 @@ public class UserController {
         User user = new User(req.queryParams("name"), req.queryParams("password"));
         User selectedUser = userDaoDb.find(req.queryParams("name"));
 
-        System.out.println(selectedUser);
-
         LOGGER.debug("Findig user based on request returned username: {}", selectedUser);
 
         if( selectedUser != null ){

@@ -1,6 +1,7 @@
 package com.codecool.shop.controller;
 
 import com.codecool.shop.Utils;
+import com.codecool.shop.dao.implementation.Db.OrderDaoJdbc;
 import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoJdbc;
 import com.codecool.shop.dao.implementation.Db.ProductDaoJdbc;
 import com.codecool.shop.dao.implementation.Db.SupplierDaoJdbc;
@@ -24,9 +25,15 @@ public class OrderController {
     private static ProductCategoryDaoJdbc productCategoryDaoJdbc = ProductCategoryDaoJdbc.getInstance();
     private static ProductDaoJdbc productDaoJdbc = ProductDaoJdbc.getInstance();
 
-    public static Order checkAndCreateOrder (Integer userName) {
-
-        return null;
+    public static Order checkAndCreateOrder (Integer userId) {
+        Order userOrder = null;
+        Integer orderId = OrderDaoJdbc.checkActiveOrder(userId);
+        if(orderId != null) {
+            userOrder = OrderDaoJdbc.createOrderFromData(orderId, userId);
+        } else {
+            userOrder = new Order(userId);
+        }
+        return userOrder;
     }
     /**
      * This method is responsible to create a lineitem object that will represent the actual item object in an
@@ -89,7 +96,7 @@ public class OrderController {
 
         LOGGER.info("Order updated with payment data");
         LOGGER.debug("order updated with payment data");
-        new Order();
+        //new Order();
         return Utils.toJson("OK");
     }
 
