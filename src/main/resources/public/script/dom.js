@@ -171,7 +171,7 @@ $(document).ready(function () {
             let form = $('<form/>', {});
             let nameInput = $('<input/>', {
                 id: "cardHoledName",
-                name: "cardHoler",
+                name: "cardHolder",
                 placeholder: "Enter Card Holder Name",
             });
             let cardNumber = $('<input/>', {
