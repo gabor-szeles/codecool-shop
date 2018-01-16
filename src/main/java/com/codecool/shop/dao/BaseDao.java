@@ -13,4 +13,6 @@ public interface BaseDao<T extends BaseModel> {
     void remove(int id);
 
     List<T> getAll();
+
+
 }

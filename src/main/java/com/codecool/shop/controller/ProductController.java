@@ -133,6 +133,8 @@ public class ProductController {
             LineItem newLineItem = new LineItem(targetItem, targetItem.getDefaultPrice());
             Order.getCurrentOrder().add(newLineItem);
 
+            System.out.println("lineitem: " + newLineItem);
+
             LOGGER.info("New lineitem was created: {}", newLineItem);
         }
 
@@ -168,6 +170,8 @@ public class ProductController {
      */
     public static String addPaymentData(Request request, Response response) {
         Map<String, String> userData = Utils.parseJson(request);
+
+        System.out.println("userdata:" + userData);
         Order.getCurrentOrder().setPaymentData(userData);
 
         LOGGER.debug("Payment data to jasonify after reading the request data in: {}", userData);
