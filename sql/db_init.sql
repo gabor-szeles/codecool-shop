@@ -14,9 +14,19 @@ CREATE TABLE users
 
 CREATE TABLE "order"
 (
-  id SERIAL NOT NULL PRIMARY KEY,
+  Orderid SERIAL NOT NULL PRIMARY KEY,
   totalsize integer,
   totalprice numeric(10,2)
+);
+
+CREATE TABLE "order_detail"
+(
+id SERIAL PRIMARY KEY,
+order_id integer,
+user_id integer,
+is_active BOOLEAN,
+product_id integer,
+quantity integer
 );
 
 CREATE TABLE supplier
