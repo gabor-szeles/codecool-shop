@@ -1,5 +1,7 @@
 package com.codecool.shop.model;
 
+import java.util.List;
+
 public class LineItem {
 
     int id;
@@ -13,6 +15,13 @@ public class LineItem {
         this.quantity = 1;
         this.itemPriceSum = price;
         Order.getCurrentOrder().incrementTotalSize();
+    }
+
+    public LineItem(Product item, int quantity) {
+        this.item = item;
+        this.id = item.getId();
+        this.quantity = quantity;
+        this.itemPriceSum = calculateTotalPrice(item, quantity);
     }
 
     public float getItemPriceSum() {
@@ -47,5 +56,9 @@ public class LineItem {
         this.itemPriceSum = this.item.getDefaultPrice() * quantity;
         Order.getCurrentOrder().changeTotalPrice();
         Order.getCurrentOrder().decrementTotalSize();
+    }
+
+    private float calculateTotalPrice(Product product, int quantity) {
+        return product.getDefaultPrice()*quantity;
     }
 }
