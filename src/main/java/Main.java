@@ -54,6 +54,10 @@ public class Main {
 
         get("/api/user/logout", UserController::logOut);
 
+        exception(NumberFormatException.class, (exception, request, response) -> {
+            response.redirect("400", 400);
+        });
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }
