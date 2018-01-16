@@ -1,13 +1,7 @@
 import com.codecool.shop.controller.OrderController;
 import com.codecool.shop.controller.ProductController;
 import com.codecool.shop.controller.UserController;
-import com.codecool.shop.model.Order;
-import com.codecool.shop.model.Product;
-import com.codecool.shop.model.ProductCategory;
-import com.codecool.shop.model.Supplier;
 import org.slf4j.impl.SimpleLogger;
-
-import java.util.Arrays;
 
 import static spark.Spark.*;
 import static spark.debug.DebugScreen.enableDebugScreen;
@@ -24,11 +18,9 @@ public class Main {
         port(5000);
 
         before((request, response) -> {
-            System.out.println(request.requestMethod() + " @ " + request.url());
+            System.out.println(request.requestMethod() + " @ " + request);
         });
 
-        // populate some data for the memory storage
-        populateData();
 
         // routes
         get("/", ProductController::renderProducts);
@@ -57,10 +49,6 @@ public class Main {
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
-    }
-
-    private static void populateData() {
-        Order shoppingCart = new Order();
     }
 
 }
