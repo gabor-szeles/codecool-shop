@@ -1,7 +1,5 @@
 package com.codecool.shop.model;
 
-import com.codecool.shop.dao.implementation.Mem.OrderDaoMem;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,15 +12,24 @@ public class Order extends BaseModel {
     private int totalSize;
     private Map<String, String> userData;
     private Map<String, String> paymentData;
+    private int userId;
 
-    public Order() {
-        super("name");
-        OrderDaoMem orderData = OrderDaoMem.getInstance();
+    public Order(int userId) {
+        super("User Order");
         this.addedItems = new ArrayList<>();
         totalPrice = 0;
         totalSize = 0;
-        orderData.add(this);
         currentOrder = this;
+        this.userId = userId;
+    }
+
+    public Order(List<LineItem> lineItems, int userId) {
+        super("User Order");
+        this.addedItems = lineItems;
+        this.totalPrice = calculateTotalPrice(lineItems);
+        this.totalSize = lineItems.size();
+        currentOrder = this;
+        this.userId = userId;
     }
 
     public static Order getCurrentOrder() {
@@ -74,6 +81,10 @@ public class Order extends BaseModel {
         this.totalSize--;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
     @Override
     public String toString() {
         return "id: " + id + ", addedItems: " + addedItems + ", totalPrice :" + totalPrice;
@@ -93,5 +104,13 @@ public class Order extends BaseModel {
 
     public void setPaymentData(Map<String, String> paymentData) {
         this.paymentData = paymentData;
+    }
+
+    private float calculateTotalPrice(List<LineItem> lineItems) {
+        float totalPrice = 0;
+        for (LineItem lineItem : lineItems) {
+            totalPrice += lineItem.getItemPriceSum();
+        }
+        return totalPrice;
     }
 }
