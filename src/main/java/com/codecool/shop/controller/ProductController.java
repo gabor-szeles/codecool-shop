@@ -1,6 +1,7 @@
 package com.codecool.shop.controller;
 
 import com.codecool.shop.Utils;
+import com.codecool.shop.Validator;
 import com.codecool.shop.dao.BaseDao;
 import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoJdbc;
 import com.codecool.shop.dao.implementation.Db.SupplierDaoJdbc;
@@ -13,6 +14,8 @@ import spark.Request;
 import spark.Response;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Product controller class is responsible to handle server client communication releted to sessions. Also responsible for
@@ -90,9 +93,8 @@ public class ProductController {
             return Utils.toJson(data);
         } else {
             response.redirect("404", 404);
-            response.status(404);
-            return "";
         }
+        return Utils.toJson("ID not found");
     }
 
     /**
@@ -124,7 +126,7 @@ public class ProductController {
             response.redirect("404", 404);
         }
 
-        return Utils.toJson("Error in ID");
+        return Utils.toJson("ID not found");
     }
 
     /**
@@ -163,12 +165,22 @@ public class ProductController {
     public static String addUserData(Request request, Response response) {
         Map<String, String> userData = Utils.parseJson(request); /* TODO: check every field with regex for security */
 
-        Order.getCurrentOrder().setUserData(userData);
+        Validator validator = Validator.getInstance();
 
-        LOGGER.debug("Userdata to JSONify after reading the request data in: {}", userData);
-        LOGGER.debug("order updated with user data");
+        if (validator.validateUserData(userData)) {
 
-        return Utils.toJson("OK");
+            System.out.println(userData);
+
+            Order.getCurrentOrder().setUserData(userData);
+
+            LOGGER.debug("Userdata to JSONify after reading the request data in: {}", userData);
+            LOGGER.debug("order updated with user data");
+
+            return Utils.toJson("OK");
+        } else {
+            response.redirect("404",404);
+        }
+        return null;
     }
 
     /**
