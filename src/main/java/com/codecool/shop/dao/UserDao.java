@@ -12,7 +12,7 @@ public interface UserDao {
      * Adds a User record to the database
      * @param user User object to be added
      */
-    boolean add(User user);
+    Integer add(User user);
 
     /**
      * Finds a user in the database by its user name

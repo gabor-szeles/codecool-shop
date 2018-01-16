@@ -1,3 +1,4 @@
+import com.codecool.shop.controller.OrderController;
 import com.codecool.shop.controller.ProductController;
 import com.codecool.shop.controller.UserController;
 import com.codecool.shop.model.Order;
@@ -36,15 +37,15 @@ public class Main {
 
         get("/api/get-category-products/:id", ProductController::getProductsByCategory);
 
-        get("/api/add-product/:id", ProductController::handleOrder);
+        get("/api/add-product/:id", OrderController::handleOrder);
 
-        post("/api/change-quantity/", ProductController::changeQuantity);
+        post("/api/change-quantity/", OrderController::changeQuantity);
 
-        post("/api/add-user-data", ProductController::addUserData);
+        post("/api/add-user-data", OrderController::addUserData);
 
-        post("/api/add-credit-card-data", ProductController::addPaymentData);
+        post("/api/add-credit-card-data", OrderController::addPaymentData);
 
-        post("/api/add-pay-pal-data", ProductController::addPaymentData);
+        post("/api/add-pay-pal-data", OrderController::addPaymentData);
 
         get("/login", UserController::renderLogin);
 

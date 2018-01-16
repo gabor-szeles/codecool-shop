@@ -51,15 +51,16 @@ public class UserController {
     public static String registration(Request req, Response res) {
         String saltedPassword = BCrypt.hashpw(req.queryParams("password"), BCrypt.gensalt());
         User user = new User(req.queryParams("name"), req.queryParams("email"), saltedPassword);
-        boolean success = userDaoDb.add(user);
+        Integer userId = userDaoDb.add(user);
 
-        if (success) {
+        if (userId != null) {
 
             LOGGER.info("Registration successful");
 
             EmailSender emailSender = new EmailSender(user.getEmail());
             emailSender.send();
             req.session().attribute("username", user.getName());
+            req.session().attribute("userId", userId);
             res.redirect("/");
         } else {
             System.out.println("Username already in use");
@@ -81,14 +82,17 @@ public class UserController {
         User user = new User(req.queryParams("name"), req.queryParams("password"));
         User selectedUser = userDaoDb.find(req.queryParams("name"));
 
+        System.out.println(selectedUser);
+
         LOGGER.debug("Findig user based on request returned username: {}", selectedUser);
 
         if( selectedUser != null ){
             if (BCrypt.checkpw(user.getPassword(), selectedUser.getPassword())) {
 
                 LOGGER.info("Password matches after check");
-
+                req.session().attribute("userId", selectedUser.getId());
                 req.session().attribute("username", selectedUser.getName());
+                OrderController.checkAndCreateOrder(req.session().attribute("userId"));
                 res.redirect("/");
             } else {
 
