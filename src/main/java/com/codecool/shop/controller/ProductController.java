@@ -190,15 +190,23 @@ public class ProductController {
      * @return a confirmation that the update for the order has been processed
      */
     public static String addPaymentData(Request request, Response response) {
-        Map<String, String> userData = Utils.parseJson(request); /* TODO: check every field with regex for security */
-        Order.getCurrentOrder().setPaymentData(userData);
+        Map<String, String> paymentData = Utils.parseJson(request); /* TODO: check every field with regex for security */
+        Order.getCurrentOrder().setPaymentData(paymentData);
 
-        LOGGER.debug("Payment data to JSONify after reading the request data in: {}", userData);
+        Validator validator = Validator.getInstance();
 
-        LOGGER.info("Order updated with payment data");
-        LOGGER.debug("order updated with payment data");
-        new Order();
-        return Utils.toJson("OK");
+        if (validator.validatePaymentData(paymentData)) {
+
+            LOGGER.debug("Payment data to JSONify after reading the request data in: {}", paymentData);
+
+            LOGGER.info("Order updated with payment data");
+            LOGGER.debug("order updated with payment data");
+            new Order();
+            return Utils.toJson("OK");
+        } else {
+            response.redirect("404",404);
+        }
+        return null;
     }
 
     /**

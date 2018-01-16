@@ -19,8 +19,19 @@ public class Validator {
     }
 
     public boolean validateUserData(Map<String, String> userData) {
-        return userData != null && validateUsername(userData.get("userName")) && validateAddress(userData.get("address")) && validateCountry(userData.get("country")) && validateEMailAddress(userData.get("emailAddress")) && validatZipCode(userData.get("zipcode")) && validatePhoneNumber(userData.get("phoneNumber"));
+        return userData != null && validateUsername(userData.get("userName")) && validateAddress(userData.get("address")) && validateCountry(userData.get("country")) && validateEMailAddress(userData.get("emailAddress")) && validateZipCode(userData.get("zipcode")) && validatePhoneNumber(userData.get("phoneNumber"));
     }
+
+    public boolean validatePaymentData(Map<String, String> paymentData) {
+        if (paymentData != null) {
+            if (paymentData.get("email") != null) {
+                return validateEMailAddress(paymentData.get("email")) && validatePassword(paymentData.get("password"));
+            } else {
+                return paymentData.get("cardNumber") != null && validateCardNumber(paymentData.get("cardNumber")) && validateCardCsc(paymentData.get("cscNumber")) && validateCardExpMonth(paymentData.get("expMonth")) && validateCardExpYear(paymentData.get("expYear"));
+            }
+        } else return false;
+    }
+
 
     private boolean validateUsername(String username){
         Pattern usernamePattern = Pattern.compile("[a-zA-Z_0-9]+");
@@ -34,7 +45,7 @@ public class Validator {
         return countryMatcher.find();
     }
 
-    private boolean validatZipCode(String zipCode){
+    private boolean validateZipCode(String zipCode){
         Pattern zipCodePattern = Pattern.compile("[0-9]{4}");
         Matcher zipCodeMatcher = zipCodePattern.matcher(zipCode);
         return zipCodeMatcher.find();
@@ -47,7 +58,7 @@ public class Validator {
     }
 
     private boolean validatePhoneNumber(String phoneNumber){
-        Pattern numberPattern = Pattern.compile("[?0-9]+[0-9]+");
+        Pattern numberPattern = Pattern.compile("^[?0-9]+[0-9]+");
         Matcher numberMatcher = numberPattern.matcher(phoneNumber);
         return numberMatcher.find();
     }
@@ -56,5 +67,35 @@ public class Validator {
         Pattern addressPattern = Pattern.compile("^[^_!?$ß*>;]+");
         Matcher addressMatcher = addressPattern.matcher(address);
         return addressMatcher.find();
+    }
+
+    private boolean validateCardNumber(String cardNumber){
+        Pattern cardNumberPattern = Pattern.compile("^[0-9]{15,19}");
+        Matcher cardNumberMatcher = cardNumberPattern.matcher(cardNumber);
+        return cardNumberMatcher.find();
+    }
+
+    private boolean validateCardExpMonth(String expMonth){
+        Pattern cardExpMonthPattern = Pattern.compile("^0[1-9]|1[0-2]");
+        Matcher cardExpMonthMatcher = cardExpMonthPattern.matcher(expMonth);
+        return cardExpMonthMatcher.find();
+    }
+
+    private boolean validateCardExpYear(String expYear){
+        Pattern cardExpYearPattern = Pattern.compile("^[0-9]{2}");
+        Matcher cardExpYearMatcher = cardExpYearPattern.matcher(expYear);
+        return cardExpYearMatcher.find();
+    }
+
+    private boolean validateCardCsc(String csc){
+        Pattern cardCSCPattern = Pattern.compile("^[0-9]{3}");
+        Matcher cardCSCMatcher = cardCSCPattern.matcher(csc);
+        return cardCSCMatcher.find();
+    }
+
+    private boolean validatePassword(String password){
+        Pattern passwordPattern = Pattern.compile("^[^_!?$ß*>;.]{5,}");
+        Matcher passwordMatcher = passwordPattern.matcher(password);
+        return passwordMatcher.find();
     }
 }
