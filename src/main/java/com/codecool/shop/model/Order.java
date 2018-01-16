@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Order {
+public class Order extends BaseModel {
     private static Order currentOrder;
     protected int id;
     private List<LineItem> addedItems;
@@ -16,6 +16,7 @@ public class Order {
     private Map<String, String> paymentData;
 
     public Order() {
+        super("name");
         OrderDaoMem orderData = OrderDaoMem.getInstance();
         this.addedItems = new ArrayList<>();
         totalPrice = 0;

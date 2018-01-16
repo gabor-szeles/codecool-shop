@@ -2,12 +2,14 @@ package com.codecool.shop.model;
 
 public class LineItem {
 
+    int id;
     Product item;
     int quantity;
     float itemPriceSum;
 
     public LineItem(Product item, float price) {
         this.item = item;
+        this.id = item.getId();
         this.quantity = 1;
         this.itemPriceSum = price;
         Order.getCurrentOrder().incrementTotalSize();

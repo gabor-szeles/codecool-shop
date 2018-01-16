@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class SupplierDaoTest {
 
     private Supplier testSupplier;
-    private SupplierDao testDao;
+    private BaseDao testDao;
 
     @BeforeEach
     public void setUpDao() {

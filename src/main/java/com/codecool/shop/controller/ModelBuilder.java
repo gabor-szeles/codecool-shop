@@ -22,14 +22,14 @@ public class ModelBuilder {
         return instance;
     }
 
-    public static List<Map> productModel(List<Product> products) {
-        List<Map> model = new ArrayList<>();
+    public static List<Map<String, String>> productModel(List<Product> products) {
+        List<Map<String, String>> model = new ArrayList<>();
         for (Product product : products) {
             Map<String, String> currentProduct = new HashMap<>();
             currentProduct.put("id", String.valueOf(product.getId()));
             currentProduct.put("name", product.getName());
             currentProduct.put("description", product.getDescription());
-            currentProduct.put("price", product.getPrice());
+            currentProduct.put("price", String.valueOf(product.getDefaultPrice()));
 
             model.add(currentProduct);
         }

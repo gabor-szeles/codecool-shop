@@ -2,6 +2,8 @@ package com.codecool.shop.dao;
 
 import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoJdbc;
 import com.codecool.shop.dao.implementation.Mem.ProductCategoryDaoMem;
+import com.codecool.shop.model.BaseModel;
+import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ProductCategoryDaoTest {
 
-    private static ProductCategoryDao testProductCategoryDao;
+    private static BaseDao testProductCategoryDao;
 
 
     @BeforeEach
@@ -40,7 +42,7 @@ public class ProductCategoryDaoTest {
                 "testProductCategoryDescription" );
         testProductCategory.setId(1);
         testProductCategoryDao.add(testProductCategory);
-        ProductCategory expectedProductCategory = testProductCategoryDao.find(testProductCategory.getId());
+        BaseModel expectedProductCategory = testProductCategoryDao.find(testProductCategory.getId());
         assertEquals(expectedProductCategory.getName(), "find");
         testProductCategoryDao.remove(testProductCategory.getId());
     }

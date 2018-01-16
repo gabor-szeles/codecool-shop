@@ -1,16 +1,17 @@
 package com.codecool.shop.dao.implementation.Db;
 
 
+import com.codecool.shop.ConnectionDetails;
 import com.codecool.shop.Db_handler;
 import com.codecool.shop.dao.ProductDao;
-import com.codecool.shop.dao.implementation.Mem.ProductDaoMem;
 import com.codecool.shop.model.Product;
-import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.ResultSet;
+import javax.sql.rowset.CachedRowSet;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,6 @@ import java.util.List;
 /**
  * ProductDaoJdbc provides access to product objects through the SQL database
  */
-
 public class ProductDaoJdbc implements ProductDao {
 
     private static Db_handler db_handler = Db_handler.getInstance();
@@ -41,126 +41,58 @@ public class ProductDaoJdbc implements ProductDao {
         return instance;
     }
 
-    @Override
-    public void add(Product product) {
-        String query = "INSERT INTO product (id, name, description, currency_string, default_price, category_id, supplier_id) " +
-                "VALUES (?,?,?,?,?,?,?);";
-        logger.debug("Product add query created");
-        db_handler.createPreparedStatementForAdd(product, query);
-    }
-
-
-    /**
-     * @implNote returns null if no record is found in the database
-     */
-    @Override
     public Product find(int id) {
-
-        ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
-        if (productDaoMem.getAll().contains(productDaoMem.find(id))) {
-            logger.debug("Memory contains product id {}", id);
-            return productDaoMem.find(id);
-        } else {
-
-            String query = "SELECT * FROM product WHERE id = ?;";
-            SupplierDaoJdbc supplierDaoJdbc = SupplierDaoJdbc.getInstance();
-            ProductCategoryDaoJdbc productCategoryDaoJdbc = ProductCategoryDaoJdbc.getInstance();
-            ResultSet foundElement = db_handler.createPreparedStatementForFind(id, query);
-            try {
-                foundElement.next();
-                Product foundProduct = new Product(
-                        foundElement.getString("name"),
-                        foundElement.getFloat("default_price"),
-                        foundElement.getString("currency_string"),
-                        foundElement.getString("description"),
-                        productCategoryDaoJdbc.find(foundElement.getInt("category_id")),
-                        supplierDaoJdbc.find(foundElement.getInt("supplier_id")));
-
-                foundProduct.setId(foundElement.getInt("id"));
-                ProductDaoMem.getInstance().add(foundProduct);
-                logger.debug("Product {} added to ProductDaoMem", foundProduct.getName());
-                return foundProduct;
-            } catch (SQLException e) {
-                logger.warn("No SQL entry found for product id {}", id);
-                return null;
-            }
-        }
-    }
-
-    @Override
-    public void remove(int id) {
-        ProductDaoMem.getInstance().remove(id);
-        logger.debug("Product id {} removed from DaoMem", id);
-        String query = "DELETE FROM product WHERE id = ?;";
-        db_handler.createPreparedStatementForRemove(id, query);
-    }
-
-    /**
-     * @throws SQLException when the products table is empty
-     */
-    @Override
-    public List<Product> getAll() {
-
-        ProductDaoMem productDaoMem = ProductDaoMem.getInstance();
-        productDaoMem.clear();
-        logger.debug("ProductDaoMem cleared");
-
-        ArrayList<Product> products = new ArrayList<>();
-        SupplierDaoJdbc supplierDaoJdbc = SupplierDaoJdbc.getInstance();
-        ProductCategoryDaoJdbc productCategoryDaoJdbc = ProductCategoryDaoJdbc.getInstance();
-        String query = "SELECT * FROM product";
-        ResultSet foundElements = db_handler.createPreparedStatementForGetAll(query);
+        String query = "SELECT * FROM product WHERE id = ?";
         try {
-            while (foundElements.next()){
-                Product newProduct = new Product(foundElements.getString("name"),
-                        foundElements.getFloat("default_price"),
-                        foundElements.getString("currency_string"),
-                        foundElements.getString("description"),
-                        productCategoryDaoJdbc.find(foundElements.getInt("category_id")),
-                        supplierDaoJdbc.find(foundElements.getInt("supplier_id"))
-                        );
-                newProduct.setId(foundElements.getInt("id"));
-                ProductDaoMem.getInstance().add(newProduct);
-                products.add(newProduct);
+            Connection connection = db_handler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            ConnectionDetails connectionDetails = new ConnectionDetails(connection, statement);
+            CachedRowSet result = db_handler.fetchQuery(connectionDetails);
+            if(result.next()) {
+                return getProduct(result);
             }
+            return null;
         } catch (SQLException e) {
-            logger.warn("Product table empty!");
             e.printStackTrace();
+            return null;
         }
-
-        logger.debug("{} products found", products.size());
-        return products;
     }
 
-    @Override
-    public List<Product> getBy(Supplier supplier) {
-        List<Product> products = getAll();
-
-        List<Product> productsBySupplier = new ArrayList<>();
-
-        for (Product product : products) {
-            if (product.getSupplier().getId() == supplier.getId()) {
-                productsBySupplier.add(product);
+    private List<Product> getProducts(String query, int id) {
+        try {
+            Connection connection = db_handler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            ConnectionDetails connectionDetails = new ConnectionDetails(connection, statement);
+            CachedRowSet result = db_handler.fetchQuery(connectionDetails);
+            List<Product> products = new ArrayList<>();
+            while (result.next()) {
+                Product product =  getProduct(result);
+                products.add(product);
             }
+            return products;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
-        logger.debug("{} products added to supplier list of {}", productsBySupplier.size(), supplier.getName());
-
-        return productsBySupplier;
     }
 
-    @Override
-    public List<Product> getBy(ProductCategory productCategory) {
-        List<Product> products = getAll();
+    public List<Product> getBySupplier(int id) {
+        String query = "SELECT * FROM product WHERE supplier_id = ?";
+        return getProducts(query, id);
+    }
 
-        List<Product> productsByCategory = new ArrayList<>();
+    public List<Product> getByProductCategory(int id) {
+        String query = "SELECT * FROM product WHERE category_id = ?";
+        return getProducts(query, id);
+    }
 
-        for (Product product : products) {
-            if (product.getProductCategory().getId() == productCategory.getId()) {
-                productsByCategory.add(product);
-            }
-        }
-        logger.debug("{} products added to supplier list of {}", productsByCategory.size(), productCategory.getName());
-
-        return productsByCategory;
+    private Product getProduct(CachedRowSet result) throws SQLException {
+        return new Product (
+                result.getInt("id"),
+                result.getString("name"),
+                result.getString("description"),
+                result.getFloat("default_price"));
     }
 }
