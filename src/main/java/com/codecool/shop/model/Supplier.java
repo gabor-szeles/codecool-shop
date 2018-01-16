@@ -15,7 +15,7 @@ public class Supplier extends BaseModel {
         this.products = new ArrayList<>();
     }
 
-    public List getProducts() {
+    public List<Product> getProducts() {
         this.products = ProductDaoJdbc.getInstance().getBy(this);
         return this.products;
     }

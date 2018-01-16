@@ -30,7 +30,7 @@ public class ProductController {
      * @return Renders the page, with the populated data
      */
     public static String renderProducts(Request req, Response res) {
-        UserController.ensureUserIsLoggedIn(req, res);  /* TODO: check if user exists? */
+        UserController.ensureUserIsLoggedIn(req, res);
         BaseDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
         SupplierDaoJdbc supplierDataStore = SupplierDaoJdbc.getInstance();
 
@@ -77,16 +77,22 @@ public class ProductController {
 
         SupplierDaoJdbc supplierDataStore = SupplierDaoJdbc.getInstance();
         Supplier targetSupplier = supplierDataStore.find(supplierId);
-        List<Product> products = targetSupplier.getProducts();
-        List<Map> collection = ModelBuilder.productModel(products);
+        if (targetSupplier != null) {
+            List<Product> products = targetSupplier.getProducts();
+            List<Map> collection = ModelBuilder.productModel(products);
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("collection", collection);
-        data.put("collectionName", targetSupplier.getName());
+            Map<String, Object> data = new HashMap<>();
+            data.put("collection", collection);
+            data.put("collectionName", targetSupplier.getName());
 
-        LOGGER.debug("Response with supplier data to JSONnify: {}", data);
+            LOGGER.debug("Response with supplier data to JSONnify: {}", data);
 
-        return Utils.toJson(data);
+            return Utils.toJson(data);
+        } else {
+            response.redirect("404", 404);
+            response.status(404);
+            return "";
+        }
     }
 
     /**
@@ -103,17 +109,22 @@ public class ProductController {
 
         LOGGER.info("Category id received from request: {}", categoryId);
         ProductCategory targetCategory = productCategoryDataStore.find(categoryId);
-        List<Product> products = targetCategory.getProducts();
+        if (targetCategory != null) {
+            List<Product> products = targetCategory.getProducts();
+            List<Map> collection = ModelBuilder.productModel(products);
 
-        List<Map> collection = ModelBuilder.productModel(products);
+            Map<String, Object> data = new HashMap<>();
+            data.put("collection", collection);
+            data.put("collectionName", targetCategory.getName());
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("collection", collection);
-        data.put("collectionName", targetCategory.getName());
+            LOGGER.debug("Response with category data to jasonify: {}", data);
 
-        LOGGER.debug("Response with category data to jasonify: {}", data);
+            return Utils.toJson(data);
+        } else {
+            response.redirect("404", 404);
+        }
 
-        return Utils.toJson(data);
+        return Utils.toJson("Error in ID");
     }
 
     /**
