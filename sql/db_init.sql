@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS "order";
 DROP TABLE IF EXISTS supplier;
 DROP TABLE IF EXISTS product_category;
 DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS order_detail;
 
 CREATE TABLE users
 (
@@ -67,3 +68,5 @@ INSERT INTO product (name, description, currency_string, default_price, category
 INSERT INTO product (name, description, currency_string, default_price, category_id, supplier_id) VALUES ('Gopher and Mole Repellers','Effective, long-lasting and humane deterrent for gophers and moles', 'USD', 9.95, 1, 1);
 INSERT INTO product (name, description, currency_string, default_price, category_id, supplier_id) VALUES ('Raised Bed Booster Kit','Booster Kit revitalizes the soil in your raised beds.', 'USD', 24.95, 2, 1);
 INSERT INTO product (name, description, currency_string, default_price, category_id, supplier_id) VALUES ('Organic Tomato Fertilizer','Organic fertilizer provides essential nutrients', 'USD', 9.95, 2, 1);
+INSERT INTO order_detail (order_id, user_id, is_active, product_id, quantity) VALUES (1, 0, TRUE , 1, 15);
+INSERT INTO order_detail (order_id, user_id, is_active, product_id, quantity) VALUES (1, 0, TRUE , 2, 20);
