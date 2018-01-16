@@ -129,7 +129,7 @@ public class UserController {
      * @param res response sent after processing the request
      */
     public static void ensureUserIsLoggedIn(Request req, Response res) {
-
+        
         LOGGER.info("User is not logged in, redirecting to login page");
 
         if (req.session().attribute("username") == null) {

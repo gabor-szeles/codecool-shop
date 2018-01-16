@@ -1,7 +1,6 @@
 package com.codecool.shop.dao.implementation.Db;
 
 import com.codecool.shop.Db_handler;
-import com.codecool.shop.dao.BaseDao;
 import com.codecool.shop.model.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

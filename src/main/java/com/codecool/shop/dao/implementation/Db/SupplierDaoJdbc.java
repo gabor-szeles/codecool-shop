@@ -1,18 +1,22 @@
 package com.codecool.shop.dao.implementation.Db;
 
+
+import com.codecool.shop.ConnectionDetails;
 import com.codecool.shop.Db_handler;
-import com.codecool.shop.dao.BaseDao;
-import com.codecool.shop.dao.implementation.Mem.SupplierDaoMem;
+import com.codecool.shop.dao.ProductAttributeDao;
 import com.codecool.shop.model.Supplier;
+import com.codecool.shop.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.ResultSet;
+import javax.sql.rowset.CachedRowSet;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SupplierDaoJdbc implements BaseDao<Supplier> {
+public class SupplierDaoJdbc implements ProductAttributeDao<Supplier> {
 
     private static Db_handler db_handler = Db_handler.getInstance();
     private static SupplierDaoJdbc instance = null;
@@ -37,75 +41,47 @@ public class SupplierDaoJdbc implements BaseDao<Supplier> {
         return instance;
     }
 
-    @Override
-    public void add(Supplier supplier) {
-        String query = "INSERT INTO supplier (id, name, description) " +
-                "VALUES (?,?,?);";
-        logger.debug("Supplier add query created");
-        db_handler.createPreparedStatementForAdd(supplier, query);
-    }
-
-    /**
-     * @implNote returns null if no record is found in the database
-     */
-    @Override
     public Supplier find(int id) {
-        SupplierDaoMem supplierDaoMem = SupplierDaoMem.getInstance();
-
-        if (supplierDaoMem.getAll().contains(supplierDaoMem.find(id))) {
-            logger.debug("Memory contains Supplier id {}", id);
-            return supplierDaoMem.find(id);
-        } else {
-
-            String query = "SELECT * FROM supplier WHERE id = ?;";
-
-            ResultSet foundElement = db_handler.createPreparedStatementForFind(id, query);
-            try {
-                foundElement.next();
-                Supplier foundSupplier = new Supplier(foundElement.getString("name"), foundElement.getString("description"));
-                foundSupplier.setId(foundElement.getInt("id"));
-                supplierDaoMem.add(foundSupplier);
-                logger.debug("Supplier {} added to ProductDaoMem", foundSupplier.getName());
-                return foundSupplier;
-            } catch (SQLException e) {
-                logger.warn("No SQL entry found for supplier id {}", id);
-                return null;
-            }
-        }
-    }
-
-    @Override
-    public void remove(int id) {
-        SupplierDaoMem.getInstance().remove(id);
-        logger.debug("Supplier id {} removed from DaoMem", id);
-        String query = "DELETE FROM supplier WHERE id = ?;";
-        db_handler.createPreparedStatementForRemove(id, query);
-    }
-
-    /**
-     * @throws SQLException when the suppliers table is empty
-     */
-    @Override
-    public List<Supplier> getAll() {
-        SupplierDaoMem.getInstance().clear();
-        ArrayList<Supplier> suppliers = new ArrayList<>();
-        String query = "SELECT * FROM supplier";
-        ResultSet foundElements = db_handler.createPreparedStatementForGetAll(query);
-
+        String query = "SELECT * FROM supplier WHERE id = ?";
         try {
-            while (foundElements.next()){
-                Supplier newSupplier = new Supplier(foundElements.getString("name"),
-                        foundElements.getString("description"));
-                newSupplier.setId(foundElements.getInt("id"));
-                SupplierDaoMem.getInstance().add(newSupplier);
-                suppliers.add(newSupplier);
+            Connection connection = db_handler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
+            ConnectionDetails connectionDetails = new ConnectionDetails(connection, statement);
+            CachedRowSet result = db_handler.fetchQuery(connectionDetails);
+            if(result.next()) {
+                return new Supplier(
+                        result.getInt("id"),
+                        result.getString("name"),
+                        result.getString("description"));
             }
+            return null;
         } catch (SQLException e) {
-            logger.warn("Supplier table empty!");
             e.printStackTrace();
+            return null;
         }
+    }
 
-        logger.debug("{} suppliers found", suppliers.size());
-        return suppliers;
+    public List<Supplier> getAll() {
+        String query = "SELECT * FROM supplier";
+        try {
+            Connection connection = db_handler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            ConnectionDetails connectionDetails = new ConnectionDetails(connection, statement);
+            CachedRowSet result = db_handler.fetchQuery(connectionDetails);
+            List<Supplier> suppliers = new ArrayList<>();
+            while (result.next()) {
+                Supplier supplier = new Supplier(
+                        result.getInt("id"),
+                        result.getString("name"),
+                        result.getString("description"));
+                suppliers.add(supplier);
+            }
+            return suppliers;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.warn("ProductCategory table empty!");
+            return null;
+        }
     }
 }

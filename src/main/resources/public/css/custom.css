@@ -13,13 +13,24 @@ body {
 }
 
 #cart {
-    padding: 30px 50px;
     position: fixed;
     top: 78px;
     background-color: var(--color-smokewhite);
     z-index: 10;
     float: right;
     right: 0;
+}
+
+#cart > :first-child {
+    padding-top: 30px !important;
+}
+
+#cart > div:last-child {
+    padding-bottom: 30px;
+}
+
+#cart > div {
+    padding: 0 50px;
 }
 
 .quantity-number {
