@@ -45,7 +45,7 @@ public class OrderDaoJdbc implements ProductAttributeDao<Order> {
             if(result.next()) {
                 return result.getInt("order_id");
             }
-            return generateNextOrderId();
+            return generateOrder(userId);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -148,8 +148,26 @@ public class OrderDaoJdbc implements ProductAttributeDao<Order> {
         }
     }
 
-    public static int generateNextOrderId() {
-        return 10;
+    private static Integer generateOrder(int userId) {
+        String query = "INSERT INTO orders (user_id, is_active) VALUES (?, ?) RETURNING order_id";
+        try {
+            Connection connection = db_handler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            statement.setBoolean(2, true);
+            ConnectionDetails connectionDetails = new ConnectionDetails(connection, statement);
+            CachedRowSet result = db_handler.fetchQuery(connectionDetails);
+            if (result.next()) {
+                Integer id = result.getInt("order_id");
+                return id;
+            }
+            logger.debug("Order added to database");
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+            return null;
+        }
     }
 
     @Override
