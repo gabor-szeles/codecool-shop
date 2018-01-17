@@ -23,6 +23,7 @@ public class UserController {
     private static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     private static UserDao userDaoDb = UserDaoJdbc.getInstance();
     private static Utils utils = Utils.getInstance();
+    private static Validator validator = Validator.getInstance();
 
     /**
      * This method checks if a user is already logged in, if not redirects to the login page, otherwise establishes
@@ -56,8 +57,6 @@ public class UserController {
         regData.put("name", req.queryParams("name"));
         regData.put("password", req.queryParams("password"));
         regData.put("email", req.queryParams("email"));
-
-        Validator validator = Validator.getInstance();
 
         if (validator.validateRegistration(regData)) {
             String saltedPassword = BCrypt.hashpw(req.queryParams("password"), BCrypt.gensalt());
@@ -99,8 +98,6 @@ public class UserController {
 
         loginData.put("name", req.queryParams("name"));
         loginData.put("password", req.queryParams("password"));
-
-        Validator validator = Validator.getInstance();
 
         if (validator.validateLogin(loginData)) {
 
