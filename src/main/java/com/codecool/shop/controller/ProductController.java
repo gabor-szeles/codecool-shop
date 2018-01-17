@@ -76,7 +76,7 @@ public class ProductController {
      * @return the JSONified list of products filtered by supplier
      */
     public static String getProductsBySupplier(Request request, Response response) {
-        int supplierId = Integer.parseInt(request.params("id")); /* TODO: check if NaN, if NaN return with error message */
+        int supplierId = Integer.parseInt(request.params("id"));
 
         LOGGER.info("Supplier id received from request: {}", supplierId);
 
@@ -107,7 +107,7 @@ public class ProductController {
      * @return the jasonified list of products filtered by category
      */
     public static String getProductsByCategory(Request request, Response response) {
-        int categoryId = Integer.parseInt(request.params("id")); /* TODO: check if NaN, if NaN return with error message */
+        int categoryId = Integer.parseInt(request.params("id"));
 
         ProductCategoryDaoJdbc productCategoryDataStore = ProductCategoryDaoJdbc.getInstance();
 
@@ -139,7 +139,7 @@ public class ProductController {
      * @return Returns a map with all the lineitems in the sopping cart completed with the newly item in the cart
      */
     public static String handleOrder(Request req, Response res) {
-        int productId = Integer.parseInt(req.params("id")); /* TODO: check if NaN, if NaN return with error message */
+        int productId = Integer.parseInt(req.params("id"));
         Product targetItem = ProductDaoMem.getInstance().find(productId);
 
         LOGGER.info("Line-item selected by id ({}) from order request: {}", productId, targetItem);
@@ -168,9 +168,6 @@ public class ProductController {
         Map<String, String> userData = Utils.parseJson(request); /* TODO: check every field with regex for security */
 
         if (validator.validateUserData(userData)) {
-
-            System.out.println(userData);
-
             Order.getCurrentOrder().setUserData(userData);
 
             LOGGER.debug("Userdata to JSONify after reading the request data in: {}", userData);
@@ -178,7 +175,7 @@ public class ProductController {
 
             return Utils.toJson("OK");
         } else {
-            response.redirect("404",404);
+            response.redirect("400",400);
         }
         return null;
     }
@@ -202,7 +199,7 @@ public class ProductController {
             new Order();
             return Utils.toJson("OK");
         } else {
-            response.redirect("404",404);
+            response.redirect("400",400);
         }
         return null;
     }
