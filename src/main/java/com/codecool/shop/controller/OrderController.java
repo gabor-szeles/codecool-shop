@@ -46,17 +46,18 @@ public class OrderController {
         int productId = Integer.parseInt(req.params("id"));
         Product product = productDaoJdbc.find(productId);
         LOGGER.info("Line-item selected by id ({}) from order request: {}", productId, product);
+        int userId = req.session().attribute("userId");
 
-        if (!isLineItem(product)) {
-            LineItem newLineItem = new LineItem(product, product.getDefaultPrice());
-            Order.getCurrentOrder().add(newLineItem);
+        if (!isLineItem(product, req)) {
+            LineItem newLineItem = new LineItem(product, product.getDefaultPrice(), userId);
+            Order.getActiveOrder(userId).add(newLineItem);
 
             System.out.println("lineitem: " + newLineItem);
 
             LOGGER.info("New lineitem was created: {}", newLineItem);
         }
 
-        Map<String, Object> response = getShoppingCartData();
+        Map<String, Object> response = getShoppingCartData(req);
 
         LOGGER.debug("Shopping card data with the added lineitem to jasonify: {}", response);
 
@@ -72,7 +73,8 @@ public class OrderController {
     public static String addUserData(Request request, Response response) {
         Map<String, String> userData = Utils.parseJson(request);
 
-        Order.getCurrentOrder().setUserData(userData);
+        int userId = request.session().attribute("userId");
+        Order.getActiveOrder(userId).setUserData(userData);
 
         LOGGER.debug("Userdata to jasonify after reading the request data in: {}", userData);
         LOGGER.debug("order updated with user data");
@@ -90,7 +92,8 @@ public class OrderController {
         Map<String, String> userData = Utils.parseJson(request);
 
         System.out.println("userdata:" + userData);
-        Order.getCurrentOrder().setPaymentData(userData);
+        Integer userId = request.session().attribute("userId");
+        Order.getActiveOrder(userId).setPaymentData(userData);
 
         LOGGER.debug("Payment data to jasonify after reading the request data in: {}", userData);
 
@@ -106,14 +109,15 @@ public class OrderController {
      * @param targetItem
      * @return gives the state of the argument item
      */
-    private static boolean isLineItem(Product targetItem) {
+    private static boolean isLineItem(Product targetItem, Request req) {
 
         LOGGER.debug("Line-item to check if it is lineitem: {}", targetItem);
+        int userId = req.session().attribute("userId");
         System.out.println("WATCH THIS");
-        System.out.println(Order.getCurrentOrder().getAddedItems());
-        for (LineItem lineItem : Order.getCurrentOrder().getAddedItems()) {
+        System.out.println(Order.getActiveOrder(userId).getAddedItems());
+        for (LineItem lineItem : Order.getActiveOrder(userId).getAddedItems()) {
             if (lineItem.getItem().getId() == targetItem.getId()) {
-                lineItem.incrementQuantity();
+                lineItem.incrementQuantity(userId);
 
                 LOGGER.info("Lineitem is checked, and it returned true");
 
@@ -134,7 +138,8 @@ public class OrderController {
      */
     public static String changeQuantity(Request req, Response res) {
         Map<String, String> data = Utils.parseJson(req);
-        List<LineItem> lineItems = Order.getCurrentOrder().getAddedItems();
+        int userId = req.session().attribute("userId");
+        List<LineItem> lineItems = Order.getActiveOrder(userId).getAddedItems();
         LineItem targetLineItem = null;
         for (LineItem lineItem : lineItems) {
             if (lineItem.getItem().getId() == Integer.parseInt(data.get("Id"))) {
@@ -147,9 +152,9 @@ public class OrderController {
 
                 LOGGER.info("Quantity of targetlineitem ({}) has been increased", targetLineItem);
 
-                targetLineItem.incrementQuantity();
+                targetLineItem.incrementQuantity(userId);
             }
-            Order.getCurrentOrder().changeTotalPrice();
+            Order.getActiveOrder(userId).changeTotalPrice();
 
             LOGGER.info("Total price changed");
 
@@ -158,21 +163,21 @@ public class OrderController {
 
                 LOGGER.info("Quantity of targetlineitem ({}) has been decreased", targetLineItem);
 
-                targetLineItem.decrementQuantity();
+                targetLineItem.decrementQuantity(userId);
                 if (targetLineItem.getQuantity() == 0) {
-                    Order.getCurrentOrder().getAddedItems().remove(targetLineItem);
+                    Order.getActiveOrder(userId).getAddedItems().remove(targetLineItem);
 
                     LOGGER.info("Targetlineitem ({}) has been removed from order list", targetLineItem);
 
                 }
 
             }
-            Order.getCurrentOrder().changeTotalPrice();
+            Order.getActiveOrder(userId).changeTotalPrice();
 
             LOGGER.info("Total price changed");
 
         }
-        Map<String, Object> response = getShoppingCartData();
+        Map<String, Object> response = getShoppingCartData(req);
         return Utils.toJson(response);
     }
 
@@ -180,15 +185,16 @@ public class OrderController {
      * This method gethers all possible data about the shopping cart.
      * @return a map with all the fields of the shopping cart for further processing
      */
-    private static Map<String, Object> getShoppingCartData() {
-        List<LineItem> orderItems = Order.getCurrentOrder().getAddedItems();
+    private static Map<String, Object> getShoppingCartData(Request req) {
+        int userId = req.session().attribute("userId");
+        List<LineItem> orderItems = Order.getActiveOrder(userId).getAddedItems();
 
         LOGGER.info("Shopping card data successfully gethered: {}", orderItems);
 
         List<Map> orders = ModelBuilder.lineItemModel(orderItems);
         Map<String, Object> response = new HashMap<>();
-        response.put("itemsNumber", Integer.toString(Order.getCurrentOrder().getTotalSize()));
-        response.put("totalPrice", Float.toString(Order.getCurrentOrder().getTotalPrice()));
+        response.put("itemsNumber", Integer.toString(Order.getActiveOrder(userId).getTotalSize()));
+        response.put("totalPrice", Float.toString(Order.getActiveOrder(userId).getTotalPrice()));
         response.put("shoppingCart", orders);
 
         LOGGER.debug("Response with shopping cart data: {}", response);
