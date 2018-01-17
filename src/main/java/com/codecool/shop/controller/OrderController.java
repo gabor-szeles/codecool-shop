@@ -47,12 +47,15 @@ public class OrderController {
         Product product = productDaoJdbc.find(productId);
         LOGGER.info("Line-item selected by id ({}) from order request: {}", productId, product);
         int userId = req.session().attribute("userId");
+        int orderId = OrderDaoJdbc.checkActiveOrder(userId);
+        System.out.println(userId);
+        System.out.println(orderId);
 
         if (!isLineItem(product, req)) {
+            System.out.println("WATCH THIS");
             LineItem newLineItem = new LineItem(product, product.getDefaultPrice(), userId);
             Order.getActiveOrder(userId).add(newLineItem);
-
-            System.out.println("lineitem: " + newLineItem);
+            OrderDaoJdbc.addLineItem(newLineItem, orderId,userId);
 
             LOGGER.info("New lineitem was created: {}", newLineItem);
         }
@@ -90,8 +93,6 @@ public class OrderController {
      */
     public static String addPaymentData(Request request, Response response) {
         Map<String, String> userData = Utils.parseJson(request);
-
-        System.out.println("userdata:" + userData);
         Integer userId = request.session().attribute("userId");
         Order.getActiveOrder(userId).setPaymentData(userData);
 
@@ -113,14 +114,12 @@ public class OrderController {
 
         LOGGER.debug("Line-item to check if it is lineitem: {}", targetItem);
         int userId = req.session().attribute("userId");
-        System.out.println("WATCH THIS");
-        System.out.println(Order.getActiveOrder(userId).getAddedItems());
+        int orderId = OrderDaoJdbc.checkActiveOrder(userId);
         for (LineItem lineItem : Order.getActiveOrder(userId).getAddedItems()) {
             if (lineItem.getItem().getId() == targetItem.getId()) {
                 lineItem.incrementQuantity(userId);
-
+                OrderDaoJdbc.updateLineItem(lineItem, orderId);
                 LOGGER.info("Lineitem is checked, and it returned true");
-
                 return true;
             }
         }
@@ -139,6 +138,7 @@ public class OrderController {
     public static String changeQuantity(Request req, Response res) {
         Map<String, String> data = Utils.parseJson(req);
         int userId = req.session().attribute("userId");
+        int orderId = OrderDaoJdbc.checkActiveOrder(userId);
         List<LineItem> lineItems = Order.getActiveOrder(userId).getAddedItems();
         LineItem targetLineItem = null;
         for (LineItem lineItem : lineItems) {
@@ -153,6 +153,7 @@ public class OrderController {
                 LOGGER.info("Quantity of targetlineitem ({}) has been increased", targetLineItem);
 
                 targetLineItem.incrementQuantity(userId);
+                OrderDaoJdbc.updateLineItem(targetLineItem, orderId);
             }
             Order.getActiveOrder(userId).changeTotalPrice();
 
@@ -164,8 +165,10 @@ public class OrderController {
                 LOGGER.info("Quantity of targetlineitem ({}) has been decreased", targetLineItem);
 
                 targetLineItem.decrementQuantity(userId);
+                OrderDaoJdbc.updateLineItem(targetLineItem, orderId);
                 if (targetLineItem.getQuantity() == 0) {
                     Order.getActiveOrder(userId).getAddedItems().remove(targetLineItem);
+                    OrderDaoJdbc.removeLineItem(targetLineItem, orderId);
 
                     LOGGER.info("Targetlineitem ({}) has been removed from order list", targetLineItem);
 
