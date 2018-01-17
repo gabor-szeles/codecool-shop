@@ -1,7 +1,6 @@
 package com.codecool.shop.controller;
 
 import com.codecool.shop.Utils;
-import com.codecool.shop.dao.implementation.Db.OrderDaoJdbc;
 import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoJdbc;
 import com.codecool.shop.dao.implementation.Db.ProductDaoJdbc;
 import com.codecool.shop.dao.implementation.Db.SupplierDaoJdbc;
@@ -32,6 +31,7 @@ public class ProductController {
      */
     public static String renderProducts(Request req, Response res) {
         UserController.ensureUserIsLoggedIn(req, res);
+        int userId = req.session().attribute("userId");
         int supplierId = 1;
         Supplier supplier = supplierDaoJdbc.find(supplierId);
         List<Product> products = productDaoJdbc.getBySupplier(supplierId);
@@ -47,7 +47,7 @@ public class ProductController {
                     "with the following data: {}", data);
 
         OrderController.checkAndCreateOrder(req.session().attribute("userId"));
-        System.out.println(Order.getCurrentOrder());
+        System.out.println(Order.getActiveOrder(userId));
 
         return Utils.renderTemplate(data, "product/index");
     }

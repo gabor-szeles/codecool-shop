@@ -34,7 +34,7 @@ public class OrderDaoJdbc implements ProductAttributeDao<Order> {
     }
 
     public static Integer checkActiveOrder(Integer userId) {
-        String query = "SELECT order_id FROM order_detail WHERE id = ? AND is_active = ?";
+        String query = "SELECT order_id FROM order_detail WHERE user_id = ? AND is_active = ?";
         try {
             Connection connection = db_handler.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
@@ -54,7 +54,8 @@ public class OrderDaoJdbc implements ProductAttributeDao<Order> {
 
     public static Order createOrderFromData(Integer orderId, Integer userId) {
         List<LineItem> lineItems = getLineItemData(orderId);
-        return new Order(lineItems, userId);
+        int orderTotalSize = lineItems.stream().mapToInt(LineItem::getQuantity).sum();
+        return new Order(lineItems, userId, orderTotalSize);
     }
 
     private static List<LineItem> createLineItemList(CachedRowSet resultSet) throws SQLException {
@@ -80,6 +81,62 @@ public class OrderDaoJdbc implements ProductAttributeDao<Order> {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static void addLineItem(LineItem lineItem, int orderId, int userId) {
+        String query = "INSERT INTO order_detail (order_id, user_id, is_active, product_id, quantity) VALUES (?, ?, ?, ? ,?)";
+        try {
+            Connection connection = db_handler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, orderId);
+            statement.setInt(2, userId);
+            statement.setBoolean(3, true);
+            statement.setInt(4, lineItem.getItem().getId());
+            statement.setInt(5, lineItem.getQuantity());
+            logger.debug("Lineitem added to database");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateLineItem(LineItem lineItem, int orderId) {
+        String query = "UPDATE order_detail SET quantity = ? WHERE order_id = ? AND product_id = ?";
+        try {
+            Connection connection = db_handler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, lineItem.getQuantity());
+            statement.setInt(2, orderId);
+            statement.setInt(3, lineItem.getItem().getId());
+            logger.debug("Lineitem updated");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deactivateLineItem(LineItem lineItem, int orderId) {
+        String query = "UPDATE order_detail SET is_active = ? WHERE order_id = ?";
+        try {
+            Connection connection = db_handler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setBoolean(1, false);
+            statement.setInt(2, orderId);
+            logger.debug("Lineitem deactivade");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void removeLineItem(LineItem lineItem, int orderId) {
+        String query = "DELETE FROM order_detail WHERE order_id = ? AND product_id = ?";
+        try {
+            Connection connection = db_handler.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, orderId);
+            statement.setInt(2, lineItem.getItem().getId());
+            logger.debug("Lineitem deleted");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
