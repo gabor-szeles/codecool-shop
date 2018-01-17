@@ -53,12 +53,13 @@ public class UserController {
      */
     public static String registration(Request req, Response res) {
         Map<String, String> regData = new HashMap<>();
+        Map<String, String> response = new HashMap<>();
 
         regData.put("name", req.queryParams("name"));
         regData.put("password", req.queryParams("password"));
         regData.put("email", req.queryParams("email"));
 
-        if (validator.validateRegistration(regData)) {
+        if (validator.validateRegistration(regData, response)) {
             String saltedPassword = BCrypt.hashpw(req.queryParams("password"), BCrypt.gensalt());
             User user = new User(req.queryParams("name"), req.queryParams("email"), saltedPassword);
             boolean success = userDaoDb.add(user);
@@ -78,11 +79,26 @@ public class UserController {
             }
         } else {
             System.out.println("Registration data is invalid");
-            req.session().attribute("message", "Invalid registration data!");
+            String errorMessage = createErrorMessage(response);
+            req.session().attribute("message", errorMessage);
             res.redirect("/login");
         }
 
         return "";
+    }
+
+    private static String createErrorMessage(Map<String, String> response) {
+        String errorMessage = "";
+        if (response.get("username") != null)  {
+            errorMessage += response.get("username") + "\n";
+        }
+        if (response.get("password") != null) {
+            errorMessage += response.get("password") + "\n";
+        }
+        if (response.get("email") != null) {
+            errorMessage += response.get("email") + "\n";
+        }
+        return errorMessage;
     }
 
     /**
@@ -95,16 +111,17 @@ public class UserController {
     public static String login(Request req, Response res) {
 
         Map<String, String> loginData = new HashMap<>();
+        Map<String, String> response = new HashMap<>();
 
         loginData.put("name", req.queryParams("name"));
         loginData.put("password", req.queryParams("password"));
 
-        if (validator.validateLogin(loginData)) {
+        if (validator.validateLogin(loginData, response)) {
 
             User user = new User(req.queryParams("name"), req.queryParams("password"));
             User selectedUser = userDaoDb.find(req.queryParams("name"));
 
-            LOGGER.debug("Findig user based on request returned username: {}", selectedUser);
+            LOGGER.debug("Finding user based on request returned username: {}", selectedUser);
 
             if (selectedUser != null) {
                 if (BCrypt.checkpw(user.getPassword(), selectedUser.getPassword())) {
@@ -128,7 +145,8 @@ public class UserController {
                 res.redirect("/login");
             }
         } else {
-            req.session().attribute("message", "Login data is invalid");
+            String errorMessage = createErrorMessage(response);
+            req.session().attribute("message", errorMessage);
             res.redirect("/login");
         }
 

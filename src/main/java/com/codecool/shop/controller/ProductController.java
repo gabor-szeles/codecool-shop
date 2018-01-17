@@ -94,9 +94,10 @@ public class ProductController {
 
             return Utils.toJson(data);
         } else {
-            response.redirect("404", 404);
+            response.status(404);
+
+            return "";
         }
-        return Utils.toJson("ID not found");
     }
 
     /**
@@ -165,9 +166,10 @@ public class ProductController {
      * @return a confirmation that the update for the order has been processed
      */
     public static String addUserData(Request request, Response response) {
-        Map<String, String> userData = Utils.parseJson(request); /* TODO: check every field with regex for security */
+        Map<String, String> userData = Utils.parseJson(request);
+        Map<String, String> res = new HashMap<>();
 
-        if (validator.validateUserData(userData)) {
+        if (validator.validateUserData(userData, res)) {
             Order.getCurrentOrder().setUserData(userData);
 
             LOGGER.debug("Userdata to JSONify after reading the request data in: {}", userData);
@@ -175,9 +177,10 @@ public class ProductController {
 
             return Utils.toJson("OK");
         } else {
-            response.redirect("400",400);
+            response.status(400);
+            return Utils.toJson(res);
         }
-        return null;
+
     }
 
     /**
@@ -189,8 +192,8 @@ public class ProductController {
     public static String addPaymentData(Request request, Response response) {
         Map<String, String> paymentData = Utils.parseJson(request); /* TODO: check every field with regex for security */
         Order.getCurrentOrder().setPaymentData(paymentData);
-
-        if (validator.validatePaymentData(paymentData)) {
+        Map<String, String> res = new HashMap<>();
+        if (validator.validatePaymentData(paymentData, res)) {
 
             LOGGER.debug("Payment data to JSONify after reading the request data in: {}", paymentData);
 
@@ -199,9 +202,9 @@ public class ProductController {
             new Order();
             return Utils.toJson("OK");
         } else {
-            response.redirect("400",400);
+            response.status(400);
+            return Utils.toJson(res);
         }
-        return null;
     }
 
     /**

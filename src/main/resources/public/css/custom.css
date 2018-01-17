@@ -295,3 +295,9 @@ aside {
     color: red;
     font-weight: bold;
 }
+
+.errorMessage {
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+}

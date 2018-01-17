@@ -110,12 +110,12 @@ $(document).ready(function () {
                 .click(event.proceedToPayment);
             $('#cart').empty();
             form
-                .append(nameInput).append("<br>")
-                .append(countryName).append("<br>")
-                .append(zipCode).append("<br>")
-                .append(address).append("<br>")
-                .append(phoneNumber).append("<br>")
-                .append(emailAddress).append("<br>")
+                .append(nameInput).append("<p id='userNameMessage' class='errorMessage'>").append("<br>")
+                .append(countryName).append("<p id='countryNameMessage' class='errorMessage'>").append("<br>")
+                .append(zipCode).append("<p id='zipCodeMessage' class='errorMessage'>").append("<br>")
+                .append(address).append("<p id='addressMessage' class='errorMessage'>").append("<br>")
+                .append(phoneNumber).append("<p id='phoneNumberMessage' class='errorMessage'>").append("<br>")
+                .append(emailAddress).append("<p id='emailAddressMessage' class='errorMessage'>").append("<br>")
                 .append(paymentButton);
             $('#cart').append(form);
         },
@@ -256,6 +256,52 @@ $(document).ready(function () {
 
     const elementBuilder = {
 
+        createErrorsForUserData: function (response) {
+            console.log(response.responseJSON);
+            if (response.responseJSON.username) {
+                $('#userNameMessage')
+                    .text(response.responseJSON.username);
+            } else {
+                $('#userNameMessage')
+                    .text("");
+            }
+            if (response.responseJSON.country) {
+                $('#countryNameMessage')
+                    .text(response.responseJSON.country);
+            } else {
+                $('#countryNameMessage')
+                    .text("");
+            }
+            if (response.responseJSON.zipCode) {
+                $('#zipCodeMessage')
+                    .text(response.responseJSON.zipCode);
+            } else {
+                $('#zipCodeMessage')
+                    .text("");
+            }
+            if (response.responseJSON.address) {
+                $('#addressMessage')
+                    .text(response.responseJSON.address);
+            } else {
+                $('#addressMessage')
+                    .text("");
+            }
+            if (response.responseJSON.phoneNumber) {
+                $('#phoneNumberMessage')
+                    .text(response.responseJSON.phoneNumber);
+            } else {
+                $('#phoneNumberMessage')
+                    .text("");
+            }
+            if (response.responseJSON.email) {
+                $('#emailAddressMessage')
+                    .text(response.responseJSON.email);
+            } else {
+                $('#emailAddressMessage')
+                    .text("");
+            }
+        },
+
         productInOrder: function(name, quantity, price, prodId) {
             let wrapper = $('<div/>', {"class": "row product-in-cart", "data-prod-id": prodId});
             let nameParagraph = $('<p/>', {"class": "col-8"}).text(name);
@@ -377,7 +423,11 @@ $(document).ready(function () {
                 url: "/api/get-category-products/" + id,
                 dataType: "json",
                 contentType: "application/json",
-                success: responseHandler
+                success: responseHandler,
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
             });
         },
 
@@ -401,7 +451,6 @@ $(document).ready(function () {
                 success: responseHandler
             });
         },
-
         insertUserData: function (data, responseHandler) {
             $.ajax({
                 type: "POST",
@@ -409,7 +458,8 @@ $(document).ready(function () {
                 data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json",
-                success: responseHandler
+                success: responseHandler,
+                error: elementBuilder.createErrorsForUserData
             });
         },
 

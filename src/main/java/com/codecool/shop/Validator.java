@@ -18,92 +18,157 @@ public class Validator {
         return ourInstance;
     }
 
-    public boolean validateRegistration(Map<String, String> regData) {
-        return regData != null && validateUsername(regData.get("name")) && validatePassword(regData.get("password")) && validateEMailAddress(regData.get("email"));
+    public boolean validateRegistration(Map<String, String> regData, Map<String, String> res) {
+        return regData != null && validateUsername(regData.get("name"), res) && validatePassword(regData.get("password"), res) && validateEMailAddress(regData.get("email"), res);
     }
 
-    public boolean validateLogin(Map<String, String> loginData) {
-        return loginData != null && validateUsername(loginData.get("name")) && validatePassword(loginData.get("password"));
+    public boolean validateLogin(Map<String, String> loginData, Map<String, String> res) {
+        return loginData != null && validateUsername(loginData.get("name"), res) && validatePassword(loginData.get("password"), res);
     }
 
-    public boolean validateUserData(Map<String, String> userData) {
-        return userData != null && validateUsername(userData.get("userName")) && validateAddress(userData.get("address")) && validateCountry(userData.get("country")) && validateEMailAddress(userData.get("emailAddress")) && validateZipCode(userData.get("zipcode")) && validatePhoneNumber(userData.get("phoneNumber"));
+    public boolean validateUserData(Map<String, String> userData, Map<String, String> res) {
+        if (userData != null) {
+            boolean validUsername = validateUsername(userData.get("userName"), res);
+            boolean validAddress = validateAddress(userData.get("address"), res);
+            boolean validCountry = validateCountry(userData.get("country"), res);
+            boolean validEMailAddress = validateEMailAddress(userData.get("emailAddress"), res);
+            boolean validZipCode = validateZipCode(userData.get("zipcode"), res);
+            boolean validPhoneNumber = validatePhoneNumber(userData.get("phoneNumber"), res);
+            return validUsername && validAddress && validCountry && validEMailAddress && validZipCode && validPhoneNumber;
+        }
+        return false;
     }
 
-    public boolean validatePaymentData(Map<String, String> paymentData) {
+    public boolean validatePaymentData(Map<String, String> paymentData, Map<String, String> res) {
         if (paymentData != null) {
             if (paymentData.get("email") != null) {
-                return validateEMailAddress(paymentData.get("email")) && validatePassword(paymentData.get("password"));
+                return validateEMailAddress(paymentData.get("email"), res) && validatePassword(paymentData.get("password"), res);
             } else {
-                return paymentData.get("cardNumber") != null && validateCardNumber(paymentData.get("cardNumber")) && validateCardCsc(paymentData.get("cscNumber")) && validateCardExpMonth(paymentData.get("expMonth")) && validateCardExpYear(paymentData.get("expYear"));
+                return paymentData.get("cardNumber") != null && validateCardNumber(paymentData.get("cardNumber"), res) && validateCardCsc(paymentData.get("cscNumber"), res) && validateCardExpMonth(paymentData.get("expMonth"), res) && validateCardExpYear(paymentData.get("expYear"), res);
             }
         } else return false;
     }
 
 
-    private boolean validateUsername(String username){
+
+    private boolean validateUsername(String username, Map<String, String> res){
         Pattern usernamePattern = Pattern.compile("^[a-zA-Z0-9]+$");
         Matcher usernameMatcher = usernamePattern.matcher(username);
-        return usernameMatcher.find();
+        if (!usernameMatcher.find()) {
+            res.put("username", "Invalid username.");
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    private boolean validateCountry(String country){
+    private boolean validateCountry(String country, Map<String, String> res){
         Pattern countryPattern = Pattern.compile("^[^0-9_!?\"]+$");
         Matcher countryMatcher = countryPattern.matcher(country);
-        return countryMatcher.find();
+        if (!countryMatcher.find()) {
+            res.put("country", "Invalid country name.");
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    private boolean validateZipCode(String zipCode){
+    private boolean validateZipCode(String zipCode, Map<String, String> res){
         Pattern zipCodePattern = Pattern.compile("^[0-9]{4}$");
         Matcher zipCodeMatcher = zipCodePattern.matcher(zipCode);
-        return zipCodeMatcher.find();
+        if (!zipCodeMatcher.find()) {
+            res.put("zipCode", "Invalid ZIP code.");
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    private boolean validateEMailAddress(String eMailAddress){
+    private boolean validateEMailAddress(String eMailAddress, Map<String, String> res){
         Pattern eMailPattern = Pattern.compile("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$)");
         Matcher eMailMatcher = eMailPattern.matcher(eMailAddress);
-        return eMailMatcher.find();
+        if (!eMailMatcher.find()) {
+            res.put("email", "Invalid e-mail address.");
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    private boolean validatePhoneNumber(String phoneNumber){
+    private boolean validatePhoneNumber(String phoneNumber, Map<String, String> res){
         Pattern numberPattern = Pattern.compile("^[?0-9]+[0-9]+$");
         Matcher numberMatcher = numberPattern.matcher(phoneNumber);
-        return numberMatcher.find();
+        if (!numberMatcher.find()) {
+            res.put("phoneNumber", "Invalid phone number.");
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    private boolean validateAddress(String address){
+    private boolean validateAddress(String address, Map<String, String> res){
         Pattern addressPattern = Pattern.compile("^[^_!?$ß*>;]+$");
         Matcher addressMatcher = addressPattern.matcher(address);
-        return addressMatcher.find();
+        if (!addressMatcher.find()) {
+            res.put("address", "Invalid address.");
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    private boolean validateCardNumber(String cardNumber){
+    private boolean validateCardNumber(String cardNumber, Map<String, String> res){
         Pattern cardNumberPattern = Pattern.compile("^[0-9]{15,19}$");
         Matcher cardNumberMatcher = cardNumberPattern.matcher(cardNumber);
-        return cardNumberMatcher.find();
+        if (!cardNumberMatcher.find()) {
+            res.put("cardNumber", "Invalid card number.");
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    private boolean validateCardExpMonth(String expMonth){
+    private boolean validateCardExpMonth(String expMonth, Map<String, String> res){
         Pattern cardExpMonthPattern = Pattern.compile("^0[1-9]|1[0-2]$");
         Matcher cardExpMonthMatcher = cardExpMonthPattern.matcher(expMonth);
-        return cardExpMonthMatcher.find();
+        if (!cardExpMonthMatcher.find()) {
+            res.put("cardExpMonth", "Invalid card expiry month.");
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    private boolean validateCardExpYear(String expYear){
+    private boolean validateCardExpYear(String expYear, Map<String, String> res){
         Pattern cardExpYearPattern = Pattern.compile("^[0-9]{2}$");
         Matcher cardExpYearMatcher = cardExpYearPattern.matcher(expYear);
-        return cardExpYearMatcher.find();
+        if (!cardExpYearMatcher.find()) {
+            res.put("cardExpYear", "Invalid card expiry year.");
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    private boolean validateCardCsc(String csc){
+    private boolean validateCardCsc(String csc, Map<String, String> res){
         Pattern cardCSCPattern = Pattern.compile("^[0-9]{3}$");
         Matcher cardCSCMatcher = cardCSCPattern.matcher(csc);
-        return cardCSCMatcher.find();
+        if (!cardCSCMatcher.find()) {
+            res.put("cardCsc", "Invalid card csc.");
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    private boolean validatePassword(String password){
+    private boolean validatePassword(String password, Map<String, String> res){
         Pattern passwordPattern = Pattern.compile("^[^_!?$ß*>;.]{5,}$");
         Matcher passwordMatcher = passwordPattern.matcher(password);
-        return passwordMatcher.find();
+        if (!passwordMatcher.find()) {
+            res.put("password", "Invalid password.");
+            return false;
+        } else {
+            return true;
+        }
     }
 }
