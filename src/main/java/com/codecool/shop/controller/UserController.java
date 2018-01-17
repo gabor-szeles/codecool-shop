@@ -94,30 +94,44 @@ public class UserController {
      * @return empty string required for thymeleaf
      */
     public static String login(Request req, Response res) {
-        User user = new User(req.queryParams("name"), req.queryParams("password"));
-        User selectedUser = userDaoDb.find(req.queryParams("name"));
 
-        LOGGER.debug("Findig user based on request returned username: {}", selectedUser);
+        Map<String, String> loginData = new HashMap<>();
 
-        if( selectedUser != null ){
-            if (BCrypt.checkpw(user.getPassword(), selectedUser.getPassword())) {
+        loginData.put("name", req.queryParams("name"));
+        loginData.put("password", req.queryParams("password"));
 
-                LOGGER.info("Password matches after check");
+        Validator validator = Validator.getInstance();
 
-                req.session().attribute("username", selectedUser.getName());
-                res.redirect("/");
+        if (validator.validateLogin(loginData)) {
+
+            User user = new User(req.queryParams("name"), req.queryParams("password"));
+            User selectedUser = userDaoDb.find(req.queryParams("name"));
+
+            LOGGER.debug("Findig user based on request returned username: {}", selectedUser);
+
+            if (selectedUser != null) {
+                if (BCrypt.checkpw(user.getPassword(), selectedUser.getPassword())) {
+
+                    LOGGER.info("Password matches after check");
+
+                    req.session().attribute("username", selectedUser.getName());
+                    res.redirect("/");
+                } else {
+
+                    LOGGER.info("Password matches after check");
+
+                    req.session().attribute("message", "Wrong password.");
+                    res.redirect("/login");
+                }
             } else {
 
-                LOGGER.info("Password matches after check");
+                LOGGER.debug("Did not find user");
 
-                req.session().attribute("message", "Wrong password.");
+                req.session().attribute("message", "User doesn't exist.");
                 res.redirect("/login");
             }
         } else {
-
-            LOGGER.debug("Did not find user");
-
-            req.session().attribute("message", "User doesn't exist.");
+            req.session().attribute("message", "Login data is invalid");
             res.redirect("/login");
         }
 

@@ -22,6 +22,10 @@ public class Validator {
         return regData != null && validateUsername(regData.get("name")) && validatePassword(regData.get("password")) && validateEMailAddress(regData.get("email"));
     }
 
+    public boolean validateLogin(Map<String, String> loginData) {
+        return loginData != null && validateUsername(loginData.get("name")) && validatePassword(loginData.get("password"));
+    }
+
     public boolean validateUserData(Map<String, String> userData) {
         return userData != null && validateUsername(userData.get("userName")) && validateAddress(userData.get("address")) && validateCountry(userData.get("country")) && validateEMailAddress(userData.get("emailAddress")) && validateZipCode(userData.get("zipcode")) && validatePhoneNumber(userData.get("phoneNumber"));
     }
