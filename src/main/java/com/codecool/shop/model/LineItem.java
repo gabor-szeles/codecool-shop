@@ -1,20 +1,20 @@
 package com.codecool.shop.model;
 
-import java.util.List;
+import sun.misc.Request;
 
 public class LineItem {
 
-    int id;
-    Product item;
-    int quantity;
-    float itemPriceSum;
+    private int id;
+    private Product item;
+    private int quantity;
+    private float itemPriceSum;
 
-    public LineItem(Product item, float price) {
+    public LineItem(Product item, float price, int userId) {
         this.item = item;
         this.id = item.getId();
         this.quantity = 1;
         this.itemPriceSum = price;
-        Order.getCurrentOrder().incrementTotalSize();
+        Order.getActiveOrder(userId).incrementTotalSize();
     }
 
     public LineItem(Product item, int quantity) {
@@ -44,18 +44,18 @@ public class LineItem {
         return quantity;
     }
 
-    public void incrementQuantity() {
+    public void incrementQuantity(int userId) {
         this.quantity++;
         this.itemPriceSum = this.item.getDefaultPrice() * quantity;
-        Order.getCurrentOrder().changeTotalPrice();
-        Order.getCurrentOrder().incrementTotalSize();
+        Order.getActiveOrder(userId).changeTotalPrice();
+        Order.getActiveOrder(userId).incrementTotalSize();
     }
 
-    public void decrementQuantity() {
+    public void decrementQuantity(int userId) {
         this.quantity--;
         this.itemPriceSum = this.item.getDefaultPrice() * quantity;
-        Order.getCurrentOrder().changeTotalPrice();
-        Order.getCurrentOrder().decrementTotalSize();
+        Order.getActiveOrder(userId).changeTotalPrice();
+        Order.getActiveOrder(userId).decrementTotalSize();
     }
 
     private float calculateTotalPrice(Product product, int quantity) {

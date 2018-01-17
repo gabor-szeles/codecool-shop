@@ -1,11 +1,12 @@
 package com.codecool.shop.model;
 
+import com.codecool.shop.dao.implementation.Db.OrderDaoJdbc;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Order extends BaseModel {
-    private static Order currentOrder;
     protected int id;
     private List<LineItem> addedItems;
     private float totalPrice;
@@ -19,21 +20,20 @@ public class Order extends BaseModel {
         this.addedItems = new ArrayList<>();
         totalPrice = 0;
         totalSize = 0;
-        currentOrder = this;
         this.userId = userId;
     }
 
-    public Order(List<LineItem> lineItems, int userId) {
+    public Order(List<LineItem> lineItems, int userId, int totalSize) {
         super("User Order");
         this.addedItems = lineItems;
         this.totalPrice = calculateTotalPrice(lineItems);
-        this.totalSize = lineItems.size();
-        currentOrder = this;
+        this.totalSize = totalSize;
         this.userId = userId;
     }
 
-    public static Order getCurrentOrder() {
-        return currentOrder;
+    public static Order getActiveOrder(int userId) {
+        Integer orderId = OrderDaoJdbc.checkActiveOrder(userId);
+        return OrderDaoJdbc.createOrderFromData(orderId, userId);
     }
 
     public void add(LineItem lineItem) {
