@@ -1,5 +1,5 @@
 ﻿DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS "order";
+DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS supplier;
 DROP TABLE IF EXISTS product_category;
 DROP TABLE IF EXISTS product;
@@ -13,14 +13,16 @@ CREATE TABLE users
   password CHAR(60) NOT NULL
 );
 
-CREATE TABLE "order"
+CREATE TABLE orders
 (
-  Orderid SERIAL NOT NULL PRIMARY KEY,
-  totalsize integer,
-  totalprice numeric(10,2)
+  order_id SERIAL NOT NULL PRIMARY KEY,
+  user_id integer,
+  is_active BOOLEAN,
+  address_id integer,
+  payment_id integer
 );
 
-CREATE TABLE "order_detail"
+CREATE TABLE order_detail
 (
 id SERIAL PRIMARY KEY,
 order_id integer,
@@ -68,5 +70,6 @@ INSERT INTO product (name, description, currency_string, default_price, category
 INSERT INTO product (name, description, currency_string, default_price, category_id, supplier_id) VALUES ('Gopher and Mole Repellers','Effective, long-lasting and humane deterrent for gophers and moles', 'USD', 9.95, 1, 1);
 INSERT INTO product (name, description, currency_string, default_price, category_id, supplier_id) VALUES ('Raised Bed Booster Kit','Booster Kit revitalizes the soil in your raised beds.', 'USD', 24.95, 2, 1);
 INSERT INTO product (name, description, currency_string, default_price, category_id, supplier_id) VALUES ('Organic Tomato Fertilizer','Organic fertilizer provides essential nutrients', 'USD', 9.95, 2, 1);
-INSERT INTO order_detail (order_id, user_id, is_active, product_id, quantity) VALUES (1, 1, TRUE , 1, 15);
-INSERT INTO order_detail (order_id, user_id, is_active, product_id, quantity) VALUES (1, 1, TRUE , 2, 20);
+--INSERT INTO order_detail (order_id, user_id, is_active, product_id, quantity) VALUES (1, 1, TRUE , 1, 15);
+--INSERT INTO order_detail (order_id, user_id, is_active, product_id, quantity) VALUES (1, 1, TRUE , 2, 20);
+--INSERT INTO orders (order_id, user_id, is_active) VALUES (1, 1, TRUE);
