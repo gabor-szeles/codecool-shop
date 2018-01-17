@@ -46,9 +46,6 @@ public class ProductController {
         LOGGER.debug("Program finished processing request on loading target supplier data and ready to send back to client" +
                     "with the following data: {}", data);
 
-        OrderController.checkAndCreateOrder(req.session().attribute("userId"));
-        System.out.println(Order.getActiveOrder(userId));
-
         return Utils.renderTemplate(data, "product/index");
     }
 
