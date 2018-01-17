@@ -45,7 +45,7 @@ public class OrderDaoJdbc implements ProductAttributeDao<Order> {
             if(result.next()) {
                 return result.getInt("order_id");
             }
-            return null;
+            return generateNextOrderId();
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -94,7 +94,9 @@ public class OrderDaoJdbc implements ProductAttributeDao<Order> {
             statement.setBoolean(3, true);
             statement.setInt(4, lineItem.getItem().getId());
             statement.setInt(5, lineItem.getQuantity());
-            logger.debug("Lineitem added to database");
+            ConnectionDetails connectionDetails = new ConnectionDetails(connection, statement);
+            db_handler.modifyQuery(connectionDetails);
+            logger.info("Lineitem added to database");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -108,6 +110,8 @@ public class OrderDaoJdbc implements ProductAttributeDao<Order> {
             statement.setInt(1, lineItem.getQuantity());
             statement.setInt(2, orderId);
             statement.setInt(3, lineItem.getItem().getId());
+            ConnectionDetails connectionDetails = new ConnectionDetails(connection, statement);
+            db_handler.modifyQuery(connectionDetails);
             logger.debug("Lineitem updated");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -121,6 +125,8 @@ public class OrderDaoJdbc implements ProductAttributeDao<Order> {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setBoolean(1, false);
             statement.setInt(2, orderId);
+            ConnectionDetails connectionDetails = new ConnectionDetails(connection, statement);
+            db_handler.modifyQuery(connectionDetails);
             logger.debug("Lineitem deactivade");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -134,10 +140,16 @@ public class OrderDaoJdbc implements ProductAttributeDao<Order> {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, orderId);
             statement.setInt(2, lineItem.getItem().getId());
+            ConnectionDetails connectionDetails = new ConnectionDetails(connection, statement);
+            db_handler.modifyQuery(connectionDetails);
             logger.debug("Lineitem deleted");
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static int generateNextOrderId() {
+        return 10;
     }
 
     @Override
