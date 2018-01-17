@@ -1,6 +1,7 @@
 package com.codecool.shop.controller;
 
 import com.codecool.shop.Utils;
+import com.codecool.shop.Validator;
 import com.codecool.shop.dao.UserDao;
 import com.codecool.shop.dao.implementation.Db.UserDaoJdbc;
 import com.codecool.shop.model.User;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
+import javax.rmi.CORBA.Util;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,21 +51,35 @@ public class UserController {
      * @return empty string required for thymeleaf
      */
     public static String registration(Request req, Response res) {
-        String saltedPassword = BCrypt.hashpw(req.queryParams("password"), BCrypt.gensalt());
-        User user = new User(req.queryParams("name"), req.queryParams("email"), saltedPassword);
-        boolean success = userDaoDb.add(user);
+        Map<String, String> regData = new HashMap<>();
 
-        if (success) {
+        regData.put("name", req.queryParams("name"));
+        regData.put("password", req.queryParams("password"));
+        regData.put("email", req.queryParams("email"));
 
-            LOGGER.info("Registration successful");
+        Validator validator = Validator.getInstance();
 
-            EmailSender emailSender = new EmailSender(user.getEmail());
-            emailSender.send();
-            req.session().attribute("username", user.getName());
-            res.redirect("/");
+        if (validator.validateRegistration(regData)) {
+            String saltedPassword = BCrypt.hashpw(req.queryParams("password"), BCrypt.gensalt());
+            User user = new User(req.queryParams("name"), req.queryParams("email"), saltedPassword);
+            boolean success = userDaoDb.add(user);
+
+            if (success) {
+
+                LOGGER.info("Registration successful");
+
+                EmailSender emailSender = new EmailSender(user.getEmail());
+                emailSender.send();
+                req.session().attribute("username", user.getName());
+                res.redirect("/");
+            } else {
+                System.out.println("Username is invalid or already in use");
+                req.session().attribute("message", "Username is invalid or already in use.");
+                res.redirect("/login");
+            }
         } else {
-            System.out.println("Username already in use");
-            req.session().attribute("message", "Username already in use.");
+            System.out.println("Registration data is invalid");
+            req.session().attribute("message", "Invalid registration data!");
             res.redirect("/login");
         }
 

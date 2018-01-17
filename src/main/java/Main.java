@@ -1,12 +1,7 @@
 import com.codecool.shop.controller.ProductController;
 import com.codecool.shop.controller.UserController;
 import com.codecool.shop.model.Order;
-import com.codecool.shop.model.Product;
-import com.codecool.shop.model.ProductCategory;
-import com.codecool.shop.model.Supplier;
 import org.slf4j.impl.SimpleLogger;
-
-import java.util.Arrays;
 
 import static spark.Spark.*;
 import static spark.debug.DebugScreen.enableDebugScreen;
