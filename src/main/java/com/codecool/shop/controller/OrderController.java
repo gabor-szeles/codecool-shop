@@ -48,11 +48,8 @@ public class OrderController {
         LOGGER.info("Line-item selected by id ({}) from order request: {}", productId, product);
         int userId = req.session().attribute("userId");
         int orderId = OrderDaoJdbc.checkActiveOrder(userId);
-        System.out.println(userId);
-        System.out.println(orderId);
 
         if (!isLineItem(product, req)) {
-            System.out.println("WATCH THIS");
             LineItem newLineItem = new LineItem(product, product.getDefaultPrice(), userId);
             Order.getActiveOrder(userId).add(newLineItem);
             OrderDaoJdbc.addLineItem(newLineItem, orderId,userId);

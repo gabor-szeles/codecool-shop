@@ -70,7 +70,7 @@ public class OrderDaoJdbc implements ProductAttributeDao<Order> {
     }
 
     private static List<LineItem> getLineItemData(Integer orderId) {
-        String query = "SELECT * FROM order_detail WHERE order_id = ?";
+        String query = "SELECT * FROM order_detail INNER JOIN product ON order_detail.product_id = product.id WHERE order_id = ? ORDER BY product.name ASC";
         try {
             Connection connection = db_handler.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
