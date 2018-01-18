@@ -21,8 +21,6 @@ import java.util.Objects;
 public class OrderController {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
-    private static SupplierDaoJdbc supplierDaoJdbc = SupplierDaoJdbc.getInstance();
-    private static ProductCategoryDaoJdbc productCategoryDaoJdbc = ProductCategoryDaoJdbc.getInstance();
     private static ProductDaoJdbc productDaoJdbc = ProductDaoJdbc.getInstance();
 
     public static Order checkAndCreateOrder (Integer userId) {
@@ -200,5 +198,9 @@ public class OrderController {
         LOGGER.debug("Response with shopping cart data: {}", response);
 
         return response;
+    }
+
+    public static String loadShoppingCartForClientSide (Request request, Response response) {
+        return Utils.toJson(getShoppingCartData(request));
     }
 }
