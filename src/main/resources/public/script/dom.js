@@ -97,10 +97,10 @@ $(document).ready(function () {
 
         payPalConfirmationEvent: function(event) {
             event.preventDefault();
-            let emailAddress = $('#paypalEmail').val();
-            let password = $('#paypalPassword').val();
-            let data = {"email": emailAddress, "password": password};
-            ajax.getCartData(responseHandler.updateOrder)
+            let data = {
+                "email": $('#paypalEmail').val(),
+                "password": $('#paypalPassword').val()
+            };
             ajax.insertPayPalData(data, responseHandler.thankPurchase);
         },
 
@@ -152,6 +152,107 @@ $(document).ready(function () {
 
     const elementBuilder = {
 
+        createErrorsForCreditCardData: function (response) {
+            console.log(response.responseJSON);
+            if (response.responseJSON.cardHolderName) {
+                $('#cardHolderNameMessage')
+                    .text(response.responseJSON.cardHolderName);
+            } else {
+                $('#cardHolderNameMessage')
+                    .text("");
+            }
+            if (response.responseJSON.cardNumber) {
+                $('#cardNumberMessage')
+                    .text(response.responseJSON.cardNumber);
+            } else {
+                $('#cardNumberMessage')
+                    .text("");
+            }
+            if (response.responseJSON.cardExpMonth) {
+                $('#expirationMessage')
+                    .text(response.responseJSON.cardExpMonth);
+            } else {
+                if (response.responseJSON.cardExpYear) {
+                    $('#expirationMessage')
+                        .text(response.responseJSON.cardExpYear);
+                } else {
+                    $('#expirationMessage')
+                        .text("");
+                }
+            }
+            if (response.responseJSON.cardCsc) {
+                $('#cscNumberMessage')
+                    .text(response.responseJSON.cardCsc);
+            } else {
+                $('#cscNumberMessage')
+                    .text("");
+            }
+        },
+
+        createErrorsForPayPalData: function (response) {
+            console.log(response.responseJSON);
+            if (response.responseJSON.email) {
+                $('#paypalEmailMessage')
+                    .text(response.responseJSON.email);
+            } else {
+                $('#paypalEmailMessage')
+                    .text("");
+            }
+            if (response.responseJSON.password) {
+                $('#paypalPasswordMessage')
+                    .text(response.responseJSON.password);
+            } else {
+                $('#paypalPasswordMessage')
+                    .text("");
+            }
+        },
+
+        createErrorsForUserData: function (response) {
+            console.log(response.responseJSON);
+            if (response.responseJSON.username) {
+                $('#userNameMessage')
+                    .text(response.responseJSON.username);
+            } else {
+                $('#userNameMessage')
+                    .text("");
+            }
+            if (response.responseJSON.country) {
+                $('#countryNameMessage')
+                    .text(response.responseJSON.country);
+            } else {
+                $('#countryNameMessage')
+                    .text("");
+            }
+            if (response.responseJSON.zipCode) {
+                $('#zipCodeMessage')
+                    .text(response.responseJSON.zipCode);
+            } else {
+                $('#zipCodeMessage')
+                    .text("");
+            }
+            if (response.responseJSON.address) {
+                $('#addressMessage')
+                    .text(response.responseJSON.address);
+            } else {
+                $('#addressMessage')
+                    .text("");
+            }
+            if (response.responseJSON.phoneNumber) {
+                $('#phoneNumberMessage')
+                    .text(response.responseJSON.phoneNumber);
+            } else {
+                $('#phoneNumberMessage')
+                    .text("");
+            }
+            if (response.responseJSON.email) {
+                $('#emailAddressMessage')
+                    .text(response.responseJSON.email);
+            } else {
+                $('#emailAddressMessage')
+                    .text("");
+            }
+        },
+
         productInOrder: function(name, quantity, price, prodId) {
             let wrapper = $('<div/>', {"class": "row product-in-cart", "data-prod-id": prodId});
             let nameParagraph = $('<p/>', {"class": "col-8"}).text(name);
@@ -172,7 +273,7 @@ $(document).ready(function () {
         creditCardCredentialsForm: function() {
             let form = $('<form/>', {});
             let nameInput = $('<input/>', {
-                id: "cardHoledName",
+                id: "cardHolderName",
                 name: "cardHolder",
                 placeholder: "Enter Card Holder Name",
             });
@@ -204,10 +305,10 @@ $(document).ready(function () {
                 .text("Confirm Credit Card Credentials")
                 .click(event.creditCardConfirmationEvent);
             form
-                .append(nameInput).append("<br>")
-                .append(cardNumber).append("<br>")
-                .append(expirationMonth).append(expirationYear).append("<br>")
-                .append(cscNumber).append("<br>")
+                .append(nameInput).append("<p id='cardHolderNameMessage' class='errorMessage'>").append("<br>")
+                .append(cardNumber).append("<p id='cardNumberMessage' class='errorMessage'>").append("<br>")
+                .append(expirationMonth).append(expirationYear).append("<p id='expirationMessage' class='errorMessage'>").append("<br>")
+                .append(cscNumber).append("<p id='cscNumberMessage' class='errorMessage'>").append("<br>")
                 .append(creditCardconfirmationButton);
 
             return form;
@@ -231,8 +332,8 @@ $(document).ready(function () {
                 .text("Confirm PayPal Credentials")
                 .click(event.payPalConfirmationEvent);
             form
-                .append(paypalEmail).append("<br>")
-                .append(paypalPassword).append("<br>")
+                .append(paypalEmail).append("<p id='paypalEmailMessage' class='errorMessage'>").append("<br>")
+                .append(paypalPassword).append("<p id='paypalPasswordMessage' class='errorMessage'>").append("<br>")
                 .append(payPalconfirmationButton);
 
             return form;
@@ -277,12 +378,12 @@ $(document).ready(function () {
                 .text("Pay")
                 .click(event.proceedToPayment);
             form
-                .append(nameInput).append("<br>")
-                .append(countryName).append("<br>")
-                .append(zipCode).append("<br>")
-                .append(address).append("<br>")
-                .append(phoneNumber).append("<br>")
-                .append(emailAddress).append("<br>")
+                .append(nameInput).append("<p id='userNameMessage' class='errorMessage'>").append("<br>")
+                .append(countryName).append("<p id='countryNameMessage' class='errorMessage'>").append("<br>")
+                .append(zipCode).append("<p id='zipCodeMessage' class='errorMessage'>").append("<br>")
+                .append(address).append("<p id='addressMessage' class='errorMessage'>").append("<br>")
+                .append(phoneNumber).append("<p id='phoneNumberMessage' class='errorMessage'>").append("<br>")
+                .append(emailAddress).append("<p id='emailAddressMessage' class='errorMessage'>").append("<br>")
                 .append(paymentButton);
 
             return form;
@@ -379,8 +480,6 @@ $(document).ready(function () {
         },
 
         thankPurchase: function() {
-            //let paymentConfirmationText = $('<p/>', {"class": "offset-1"}).text("Thank you for your purchase");
-            //$('#cart').empty().append(paymentConfirmationText);
             $('#cart').empty();
             alert("Thank you for your purchase");
             ajax.getCartData(responseHandler.updateOrder);
@@ -439,7 +538,6 @@ $(document).ready(function () {
                 success: responseHandler
             });
         },
-
         insertUserData: function (data, responseHandler) {
             $.ajax({
                 type: "POST",
@@ -447,7 +545,8 @@ $(document).ready(function () {
                 data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json",
-                success: responseHandler
+                success: responseHandler,
+                error: elementBuilder.createErrorsForUserData
             });
         },
 
@@ -458,7 +557,8 @@ $(document).ready(function () {
                 data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json",
-                success: responseHandler
+                success: responseHandler,
+                error: elementBuilder.createErrorsForCreditCardData
             });
         },
 
@@ -469,7 +569,8 @@ $(document).ready(function () {
                 data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json",
-                success: responseHandler
+                success: responseHandler,
+                error: elementBuilder.createErrorsForPayPalData
             });
         }
     };

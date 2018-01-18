@@ -1,6 +1,7 @@
 package com.codecool.shop.controller;
 
 import com.codecool.shop.Utils;
+import com.codecool.shop.Validator;
 import com.codecool.shop.dao.implementation.Db.OrderDaoJdbc;
 import com.codecool.shop.dao.implementation.Db.ProductCategoryDaoJdbc;
 import com.codecool.shop.dao.implementation.Db.ProductDaoJdbc;
@@ -22,6 +23,7 @@ public class OrderController {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
     private static ProductDaoJdbc productDaoJdbc = ProductDaoJdbc.getInstance();
+    private static Validator validator = Validator.getInstance();
 
     public static Order checkAndCreateOrder (Integer userId) {
         Order userOrder = null;
@@ -69,15 +71,27 @@ public class OrderController {
      * @return a confirmation that the update for the order has been processed
      */
     public static String addUserData(Request request, Response response) {
-        Map<String, String> userData = Utils.parseJson(request);
 
-        int userId = request.session().attribute("userId");
-        Order.getActiveOrder(userId).setUserData(userData);
+        Map<String, String> userData = Utils.parseJson(request);
+        Map<String, String> res = new HashMap<>();
 
         LOGGER.debug("Userdata to jasonify after reading the request data in: {}", userData);
         LOGGER.debug("order updated with user data");
 
-        return Utils.toJson("OK");
+
+        int userId = request.session().attribute("userId");
+
+        if (validator.validateUserData(userData, res)) {
+            Order.getActiveOrder(userId).setUserData(userData);
+
+            LOGGER.debug("Userdata to JSONify after reading the request data in: {}", userData);
+            LOGGER.debug("order updated with user data");
+
+            return Utils.toJson("OK");
+        } else {
+            response.status(400);
+            return Utils.toJson(res);
+        }
     }
 
     /**
@@ -87,17 +101,28 @@ public class OrderController {
      * @return a confirmation that the update for the order has been processed
      */
     public static String addPaymentData(Request request, Response response) {
+        System.out.println("im here!");
         Map<String, String> userData = Utils.parseJson(request);
         Integer userId = request.session().attribute("userId");
         int orderId = OrderDaoJdbc.checkActiveOrder(userId);
-
         Order.getActiveOrder(userId).setPaymentData(userData);
-        LOGGER.debug("Payment data to jasonify after reading the request data in: {}", userData);
-        LOGGER.info("Order updated with payment data");
-        LOGGER.debug("order updated with payment data");
-        OrderDaoJdbc.deactivateLineItem(orderId);
-        OrderController.checkAndCreateOrder(request.session().attribute("userId"));
-        return Utils.toJson("OK");
+        Map<String, String> res = new HashMap<>();
+        System.out.println("im not here");
+        if (validator.validatePaymentData(userData, res)) {
+            System.out.println("Am i here?");
+            LOGGER.debug("Payment data to JSONify after reading the request data in: {}", userData);
+
+            LOGGER.info("Order updated with payment data");
+            LOGGER.debug("order updated with payment data");
+            OrderDaoJdbc.deactivateLineItem(orderId);
+            OrderController.checkAndCreateOrder(userId);
+            return Utils.toJson("OK");
+
+        } else {
+            System.out.println("im in the false");
+            response.status(400);
+            return Utils.toJson(res);
+        }
     }
 
     /**
@@ -138,7 +163,7 @@ public class OrderController {
         List<LineItem> lineItems = Order.getActiveOrder(userId).getAddedItems();
         LineItem targetLineItem = null;
         for (LineItem lineItem : lineItems) {
-            if (lineItem.getItem().getId() == Integer.parseInt(data.get("Id"))) {
+            if (lineItem.getItem().getId() == Integer.parseInt(data.get("Id"))) { /* TODO: check if NaN error, if NaN return with error message */
                 targetLineItem = lineItem;
                 break;
             }
@@ -154,7 +179,6 @@ public class OrderController {
             Order.getActiveOrder(userId).changeTotalPrice();
 
             LOGGER.info("Total price changed");
-
         } else {
             if (targetLineItem != null && targetLineItem.getQuantity() > 0) {
 

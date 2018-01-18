@@ -1,6 +1,7 @@
 import com.codecool.shop.controller.OrderController;
 import com.codecool.shop.controller.ProductController;
 import com.codecool.shop.controller.UserController;
+import com.codecool.shop.model.Order;
 import org.slf4j.impl.SimpleLogger;
 
 import static spark.Spark.*;
@@ -18,7 +19,7 @@ public class Main {
         port(5000);
 
         before((request, response) -> {
-            System.out.println(request.requestMethod() + " @ " + request);
+            System.out.println(request.requestMethod() + " @ " + request.url());
         });
 
 
@@ -48,6 +49,10 @@ public class Main {
         get("/api/user/logout", UserController::logOut);
 
         get("/api/get-cart-data", OrderController::loadShoppingCartForClientSide);
+
+        exception(NumberFormatException.class, (exception, request, response) -> {
+            response.redirect("400", 400);
+        });
 
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
