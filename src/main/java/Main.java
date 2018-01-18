@@ -1,12 +1,7 @@
+import com.codecool.shop.controller.OrderController;
 import com.codecool.shop.controller.ProductController;
 import com.codecool.shop.controller.UserController;
-import com.codecool.shop.model.Order;
-import com.codecool.shop.model.Product;
-import com.codecool.shop.model.ProductCategory;
-import com.codecool.shop.model.Supplier;
 import org.slf4j.impl.SimpleLogger;
-
-import java.util.Arrays;
 
 import static spark.Spark.*;
 import static spark.debug.DebugScreen.enableDebugScreen;
@@ -23,11 +18,9 @@ public class Main {
         port(5000);
 
         before((request, response) -> {
-            System.out.println(request.requestMethod() + " @ " + request.url());
+            System.out.println(request.requestMethod() + " @ " + request);
         });
 
-        // populate some data for the memory storage
-        populateData();
 
         // routes
         get("/", ProductController::renderProducts);
@@ -36,15 +29,15 @@ public class Main {
 
         get("/api/get-category-products/:id", ProductController::getProductsByCategory);
 
-        get("/api/add-product/:id", ProductController::handleOrder);
+        get("/api/add-product/:id", OrderController::handleOrder);
 
-        post("/api/change-quantity/", ProductController::changeQuantity);
+        post("/api/change-quantity/", OrderController::changeQuantity);
 
-        post("/api/add-user-data", ProductController::addUserData);
+        post("/api/add-user-data", OrderController::addUserData);
 
-        post("/api/add-credit-card-data", ProductController::addPaymentData);
+        post("/api/add-credit-card-data", OrderController::addPaymentData);
 
-        post("/api/add-pay-pal-data", ProductController::addPaymentData);
+        post("/api/add-pay-pal-data", OrderController::addPaymentData);
 
         get("/login", UserController::renderLogin);
 
@@ -54,12 +47,10 @@ public class Main {
 
         get("/api/user/logout", UserController::logOut);
 
+        get("/api/get-cart-data", OrderController::loadShoppingCartForClientSide);
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
-    }
-
-    private static void populateData() {
-        Order shoppingCart = new Order();
     }
 
 }

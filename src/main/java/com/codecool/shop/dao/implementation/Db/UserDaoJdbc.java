@@ -1,5 +1,6 @@
 package com.codecool.shop.dao.implementation.Db;
 
+import com.codecool.shop.ConnectionDetails;
 import com.codecool.shop.Db_handler;
 import com.codecool.shop.dao.UserDao;
 import com.codecool.shop.model.User;
@@ -7,6 +8,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.rowset.CachedRowSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,8 +30,8 @@ public class UserDaoJdbc implements UserDao {
     }
 
     @Override
-    public boolean add(User user) {
-        String query = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+    public Integer add(User user) {
+        String query = "INSERT INTO users (name, email, password) VALUES (?, ?, ?) RETURNING id";
 
         try {
             Connection connection = db_handler.getConnection();
@@ -37,21 +39,25 @@ public class UserDaoJdbc implements UserDao {
             statement.setString(1, user.getName());
             statement.setString(2, user.getEmail());
             statement.setString(3, user.getPassword());
-            statement.execute();
-
+            ConnectionDetails connectionDetails = new ConnectionDetails(connection, statement);
+            CachedRowSet result = db_handler.fetchQuery(connectionDetails);
+            if (result.next()) {
+                Integer id = result.getInt("id");
+                return id;
+            }
             logger.debug("User added to database");
-            return true;
+            return null;
         } catch (SQLException e) {
             e.printStackTrace();
 
-            return false;
+            return null;
         }
 
     }
 
     @Override
     public User find(String username) {
-        String query = "SELECT name, password FROM users WHERE name = ?";
+        String query = "SELECT id, name, password FROM users WHERE name = ?";
 
         try {
             Connection connection = db_handler.getConnection();
@@ -59,7 +65,7 @@ public class UserDaoJdbc implements UserDao {
             statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
             if(resultSet.next()) {
-                User user = new User(resultSet.getString("name"), resultSet.getString("password"));
+                User user = new User(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("password"));
                 logger.debug("User found in database");
                 return user;
             }
