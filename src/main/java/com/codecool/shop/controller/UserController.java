@@ -62,21 +62,24 @@ public class UserController {
         if (validator.validateRegistration(regData, response)) {
             String saltedPassword = BCrypt.hashpw(req.queryParams("password"), BCrypt.gensalt());
             User user = new User(req.queryParams("name"), req.queryParams("email"), saltedPassword);
-            boolean success = userDaoDb.add(user);
+            Integer userId = userDaoDb.add(user);
 
-            if (success) {
+            if (userId != null) {
 
                 LOGGER.info("Registration successful");
 
                 EmailSender emailSender = new EmailSender(user.getEmail());
                 emailSender.send();
                 req.session().attribute("username", user.getName());
+                req.session().attribute("userId", userId);
+
                 res.redirect("/");
             } else {
                 System.out.println("Username is invalid or already in use");
                 req.session().attribute("message", "Username is invalid or already in use.");
                 res.redirect("/login");
             }
+
         } else {
             System.out.println("Registration data is invalid");
             String errorMessage = createErrorMessage(response);
@@ -127,8 +130,9 @@ public class UserController {
                 if (BCrypt.checkpw(user.getPassword(), selectedUser.getPassword())) {
 
                     LOGGER.info("Password matches after check");
-
+                    req.session().attribute("userId", selectedUser.getId());
                     req.session().attribute("username", selectedUser.getName());
+                    OrderController.checkAndCreateOrder(req.session().attribute("userId"));
                     res.redirect("/");
                 } else {
 
@@ -137,6 +141,7 @@ public class UserController {
                     req.session().attribute("message", "Wrong password.");
                     res.redirect("/login");
                 }
+
             } else {
 
                 LOGGER.debug("Did not find user");
@@ -144,6 +149,7 @@ public class UserController {
                 req.session().attribute("message", "User doesn't exist.");
                 res.redirect("/login");
             }
+
         } else {
             String errorMessage = createErrorMessage(response);
             req.session().attribute("message", errorMessage);
@@ -174,7 +180,7 @@ public class UserController {
      * @param res response sent after processing the request
      */
     public static void ensureUserIsLoggedIn(Request req, Response res) {
-
+        
         LOGGER.info("User is not logged in, redirecting to login page");
 
         if (req.session().attribute("username") == null) {

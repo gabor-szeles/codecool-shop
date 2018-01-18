@@ -9,27 +9,30 @@ $(document).ready(function () {
             eventApplier.addEventsToCategoryButtons();
             eventApplier.addEventToSupplierToggle();
             eventApplier.addEventToCategoryToggle();
+            eventApplier.addEventToUserSettingButton();
+            $(window).load(ajax.getCartData(responseHandler.updateOrder));
         }
 
     };
 
     const event = {
 
+        toggleUserSettings: function() {
+            let position = $(this).position();
+            $('#navUserSettingsMenu')
+                .css({"top": position.top + 20, "left": position.left + 25})
+                .slideToggle('slow');
+        },
+
         proceedToPayment: function (event) {
             event.preventDefault();
-            let userName = $('#userName').val();
-            let country = $('#countryName').val();
-            let zipCode = $('#zipCode').val();
-            let address = $('#address').val();
-            let phoneNumber = $('#phoneNumber').val();
-            let emailAddress = $('#emailAddress').val();
             let data = {
-                "userName": userName,
-                "country": country,
-                "zipcode": zipCode,
-                "address": address,
-                "phoneNumber": phoneNumber,
-                "emailAddress": emailAddress
+                "userName": $('#userName').val(),
+                "country": $('#countryName').val(),
+                "zipcode": $('#zipCode').val(),
+                "address": $('#address').val(),
+                "phoneNumber": $('#phoneNumber').val(),
+                "emailAddress": $('#emailAddress').val()
             };
             ajax.insertUserData(data, responseHandler.initializePaymentPage);
         },
@@ -71,150 +74,47 @@ $(document).ready(function () {
         },
 
         addCheckoutForm: function () {
-            let form = $('<form/>', {});
-            let nameInput = $('<input/>', {
-                id: "userName",
-                name: "name",
-                placeholder: "Name",
-            });
-            let countryName = $('<input/>', {
-                id: "countryName",
-                name: "country",
-                placeholder: "Country",
-            });
-            let zipCode = $('<input/>', {
-                id: "zipCode",
-                name: "zipcode",
-                placeholder: "Zip-code",
-                pattern: "[0-9]{4,}"
-            });
-            let address = $('<input/>', {
-                id: "address",
-                name: "address",
-                placeholder: "Address",
-            });
-            let phoneNumber = $('<input/>', {
-                id: "phoneNumber",
-                name: "phoneNumber",
-                placeholder: "Telephone Number",
-                pattern: "[0+]+[0-9]{9,}",
-            });
-            let emailAddress = $('<input/>', {
-                id: "emailAddress",
-                name: "emailAddress",
-                placeholder: "E-mail",
-                pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$",
-            });
-            let paymentButton = $('<button/>', {id: "checkout", "class": "btn btn-primary", type: "submit"})
-                .text("Pay")
-                .click(event.proceedToPayment);
-            $('#cart').empty();
-            form
-                .append(nameInput).append("<p id='userNameMessage' class='errorMessage'>").append("<br>")
-                .append(countryName).append("<p id='countryNameMessage' class='errorMessage'>").append("<br>")
-                .append(zipCode).append("<p id='zipCodeMessage' class='errorMessage'>").append("<br>")
-                .append(address).append("<p id='addressMessage' class='errorMessage'>").append("<br>")
-                .append(phoneNumber).append("<p id='phoneNumberMessage' class='errorMessage'>").append("<br>")
-                .append(emailAddress).append("<p id='emailAddressMessage' class='errorMessage'>").append("<br>")
-                .append(paymentButton);
-            $('#cart').append(form);
+            let form = elementBuilder.checkoutForm();
+            $('#cart').empty().append(form);
         },
+
         addCreditCardCredentialsInputForm: function () {
-            let form = $('<form/>', {});
-            let nameInput = $('<input/>', {
-                id: "cardHolderName",
-                name: "cardHolder",
-                placeholder: "Enter Card Holder Name",
-            });
-            let cardNumber = $('<input/>', {
-                id: "cardNumber",
-                name: "cardNumber",
-                placeholder: "Enter card number",
-                pattern: "[0-9-]{19,19}",
-            });
-            let expirationMonth = $('<input/>', {
-                id: "expirationMonth",
-                name: "expirationMonth",
-                placeholder: "MM",
-                pattern: "[0-9]{2,2}",
-            });
-            let expirationYear = $('<input/>', {
-                id: "expirationYear",
-                name: "expirationYear",
-                placeholder: "YY",
-                pattern: "[0-9]{2,2}",
-            });
-            let cscNumber = $('<input/>', {
-                id: "cscNumber",
-                name: "cscNumber",
-                placeholder: "Enter CSC number",
-                pattern: "[0-9]{3,3}",
-            });
-            let creditCardconfirmationButton = $('<button/>', {id: "creditCardConfirmationButton", "class": "btn btn-primary"})
-                .text("Confirm Credit Card Credentials");
-            $('#cart').empty();
-            $('#cart').append(form)
-                .append(nameInput).append("<p id='cardHolderNameMessage' class='errorMessage'>").append("<br>")
-                .append(cardNumber).append("<p id='cardNumberMessage' class='errorMessage'>").append("<br>")
-                .append(expirationMonth).append(expirationYear).append("<p id='expirationMessage' class='errorMessage'>").append("<br>")
-                .append(cscNumber).append("<p id='cscNumberMessage' class='errorMessage'>").append("<br>")
-                .append(creditCardconfirmationButton);
-            eventApplier.addEventToCreditCardConfirmation();
+            let form = elementBuilder.creditCardCredentialsForm();
+            $('#cart').empty().append(form);
         },
-        creditCardConfirmationEvent: function () {
-            let cardHolderName = $('#cardHolderName').val();
-            let cardNumberData = $('#cardNumber').val();
-            let expMonth = $('#expirationMonth').val();
-            let expYear = $('#expirationYear').val();
-            let cscNum = $('#cscNumber').val();
+
+        creditCardConfirmationEvent: function (event) {
+            event.preventDefault();
             let data = {
-                "cardHolderName": cardHolderName,
-                "cardNumber": cardNumberData,
-                "expMonth": expMonth,
-                "expYear": expYear,
-                "cscNumber": cscNum
+                "cardHolderName": $('#cardHolderName').val(),
+                "cardNumber": $('#cardNumber').val(),
+                "expMonth": $('#expirationMonth').val(),
+                "expYear": $('#expirationYear').val(),
+                "cscNumber": $('#cscNumber').val()
             };
-            ajax.insertCreditCardData(data, function () {
-                $('#cart').empty();
-                let paymentConfirmationText = $('<p/>', {"class": "offset-1"}).text("Thank you for your purchase");
-                $('#cart').append(paymentConfirmationText)
-            });
+            ajax.insertCreditCardData(data, responseHandler.thankPurchase);
         },
+
+        payPalConfirmationEvent: function(event) {
+            event.preventDefault();
+            let data = {
+                "email": $('#paypalEmail').val(),
+                "password": $('#paypalPassword').val()
+            };
+            ajax.insertPayPalData(data, responseHandler.thankPurchase);
+        },
+
         addPayPalCredentialsInputForm: function () {
-            let form = $('<form/>', {});
-            let paypalEmail = $('<input/>', {
-                id: "paypalEmail",
-                name: "paypalEmail",
-                placeholder: "Enter e-mail address",
-                pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$",
-            });
-            let paypalPassword = $('<input/>', {
-                id: "paypalPassword",
-                name: "paypalPassword",
-                placeholder: "Enter password",
-                type: "password",
-            });
-            let payPalconfirmationButton = $('<button/>', {id: "payPalPayment", "class": "btn btn-primary"})
-                .text("Confirm PayPal Credentials")
-            payPalconfirmationButton.click(function () {
-                let emailAddress = $('#paypalEmail').val();
-                let password = $('#paypalPassword').val();
-                let data = {"email": emailAddress, "password": password};
-                ajax.insertPayPalData(data, function () {
-                    $('#cart').empty();
-                    let paymentConfirmationText = $('<p/>', {"class": "offset-1"}).text("Thank you for your purchase");
-                    $('#cart').append(paymentConfirmationText)
-                });
-            });
-            $('#cart').empty();
-            $('#cart').append(form)
-                .append(paypalEmail).append("<p id='paypalEmailMessage' class='errorMessage'>").append("<br>")
-                .append(paypalPassword).append("<p id='paypalPasswordMessage' class='errorMessage'>").append("<br>")
-                .append(payPalconfirmationButton);
+            let form = elementBuilder.payPalCredentialsForm();
+            $('#cart').empty().append(form);
         }
     };
 
     const eventApplier = {
+
+        addEventToUserSettingButton: function() {
+            $('#toggleUserSettings').click(event.toggleUserSettings);
+        },
 
         addEventsToSupplierButtons: function () {
             let buttons = $("button[id*='supplier']");
@@ -223,7 +123,6 @@ $(document).ready(function () {
 
         addEventsToCategoryButtons: function () {
             let buttons = $("button[id*='category']");
-            console.log(buttons);
             buttons.click(event.sortByCategory);
         },
 
@@ -242,9 +141,6 @@ $(document).ready(function () {
         },
         addEventToChangeQuantity: function () {
             $(".quantity-changer").click(event.changeQuantity);
-        },
-        addEventToCreditCardConfirmation: function () {
-            $("#creditCardConfirmationButton").click(event.creditCardConfirmationEvent)
         },
         addEventToCreditCardPaymentOptionButton: function () {
             $("#creditCardPaymentOption").click(event.addCreditCardCredentialsInputForm);
@@ -374,6 +270,125 @@ $(document).ready(function () {
             return wrapper;
         },
 
+        creditCardCredentialsForm: function() {
+            let form = $('<form/>', {});
+            let nameInput = $('<input/>', {
+                id: "cardHolderName",
+                name: "cardHolder",
+                placeholder: "Enter Card Holder Name",
+            });
+            let cardNumber = $('<input/>', {
+                id: "cardNumber",
+                name: "cardNumber",
+                placeholder: "Enter card number",
+                pattern: "[0-9-]{19,19}",
+            });
+            let expirationMonth = $('<input/>', {
+                id: "expirationMonth",
+                name: "expirationMonth",
+                placeholder: "MM",
+                pattern: "[0-9]{2,2}",
+            });
+            let expirationYear = $('<input/>', {
+                id: "expirationYear",
+                name: "expirationYear",
+                placeholder: "YY",
+                pattern: "[0-9]{2,2}",
+            });
+            let cscNumber = $('<input/>', {
+                id: "cscNumber",
+                name: "cscNumber",
+                placeholder: "Enter CSC number",
+                pattern: "[0-9]{3,3}",
+            });
+            let creditCardconfirmationButton = $('<button/>', {id: "creditCardConfirmationButton", "class": "btn btn-primary"})
+                .text("Confirm Credit Card Credentials")
+                .click(event.creditCardConfirmationEvent);
+            form
+                .append(nameInput).append("<p id='cardHolderNameMessage' class='errorMessage'>").append("<br>")
+                .append(cardNumber).append("<p id='cardNumberMessage' class='errorMessage'>").append("<br>")
+                .append(expirationMonth).append(expirationYear).append("<p id='expirationMessage' class='errorMessage'>").append("<br>")
+                .append(cscNumber).append("<p id='cscNumberMessage' class='errorMessage'>").append("<br>")
+                .append(creditCardconfirmationButton);
+
+            return form;
+        },
+
+        payPalCredentialsForm: function() {
+            let form = $('<form/>', {});
+            let paypalEmail = $('<input/>', {
+                id: "paypalEmail",
+                name: "paypalEmail",
+                placeholder: "Enter e-mail address",
+                pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$",
+            });
+            let paypalPassword = $('<input/>', {
+                id: "paypalPassword",
+                name: "paypalPassword",
+                placeholder: "Enter password",
+                type: "password",
+            });
+            let payPalconfirmationButton = $('<button/>', {id: "payPalPayment", "class": "btn btn-primary"})
+                .text("Confirm PayPal Credentials")
+                .click(event.payPalConfirmationEvent);
+            form
+                .append(paypalEmail).append("<p id='paypalEmailMessage' class='errorMessage'>").append("<br>")
+                .append(paypalPassword).append("<p id='paypalPasswordMessage' class='errorMessage'>").append("<br>")
+                .append(payPalconfirmationButton);
+
+            return form;
+        },
+
+        checkoutForm: function() {
+            let form = $('<form/>', {});
+            let nameInput = $('<input/>', {
+                id: "userName",
+                name: "name",
+                placeholder: "Name",
+            });
+            let countryName = $('<input/>', {
+                id: "countryName",
+                name: "country",
+                placeholder: "Country",
+            });
+            let zipCode = $('<input/>', {
+                id: "zipCode",
+                name: "zipcode",
+                placeholder: "Zip-code",
+                pattern: "[0-9]{4,}"
+            });
+            let address = $('<input/>', {
+                id: "address",
+                name: "address",
+                placeholder: "Address",
+            });
+            let phoneNumber = $('<input/>', {
+                id: "phoneNumber",
+                name: "phoneNumber",
+                placeholder: "Telephone Number",
+                pattern: "[0+]+[0-9]{9,}",
+            });
+            let emailAddress = $('<input/>', {
+                id: "emailAddress",
+                name: "emailAddress",
+                placeholder: "E-mail",
+                pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$",
+            });
+            let paymentButton = $('<button/>', {id: "checkout", "class": "btn btn-primary", type: "submit"})
+                .text("Pay")
+                .click(event.proceedToPayment);
+            form
+                .append(nameInput).append("<p id='userNameMessage' class='errorMessage'>").append("<br>")
+                .append(countryName).append("<p id='countryNameMessage' class='errorMessage'>").append("<br>")
+                .append(zipCode).append("<p id='zipCodeMessage' class='errorMessage'>").append("<br>")
+                .append(address).append("<p id='addressMessage' class='errorMessage'>").append("<br>")
+                .append(phoneNumber).append("<p id='phoneNumberMessage' class='errorMessage'>").append("<br>")
+                .append(emailAddress).append("<p id='emailAddressMessage' class='errorMessage'>").append("<br>")
+                .append(paymentButton);
+
+            return form;
+        },
+
         checkoutButton: function () {
             return $('<button/>', {id: "checkout", "class": "btn btn-primary"})
                 .text("Checkout")
@@ -425,9 +440,14 @@ $(document).ready(function () {
             for (let i = 0; i < products.length; i++) {
                 cart.append(elementBuilder.productInOrder(products[i].name, products[i].quantity, products[i].price, products[i].prodId));
             }
+            if (response.itemsNumber === "0") {
+                let cartEmpty = $('<p/>', {"class": "col-8"}).text("No items in the cart yet.");
+                cart.append(cartEmpty);
+            } else {
+                cart.append(elementBuilder.checkoutButton());
+                eventApplier.addEventToChangeQuantity();
+            }
 
-            cart.append(elementBuilder.checkoutButton());
-            eventApplier.addEventToChangeQuantity();
         },
 
         updateProducts: function (response) {
@@ -457,6 +477,12 @@ $(document).ready(function () {
                 .append(payPalPaymentOptionButton);
             eventApplier.addEventToCreditCardPaymentOptionButton();
             eventApplier.addEventToPayPalPaymentOptionButton()
+        },
+
+        thankPurchase: function() {
+            $('#cart').empty();
+            alert("Thank you for your purchase");
+            ajax.getCartData(responseHandler.updateOrder);
         }
     };
 
@@ -486,6 +512,16 @@ $(document).ready(function () {
             $.ajax({
                 type: "GET",
                 url: "/api/add-product/" + id,
+                dataType: "json",
+                contentType: "application/json",
+                success: responseHandler
+            });
+        },
+
+        getCartData: function (responseHandler) {
+            $.ajax({
+                type: "GET",
+                url: "/api/get-cart-data",
                 dataType: "json",
                 contentType: "application/json",
                 success: responseHandler
@@ -538,13 +574,6 @@ $(document).ready(function () {
             });
         }
     };
-    
-    $('#toggleUserSettings').click(function() {
-        let position = $(this).position();
-        $('#navUserSettingsMenu')
-            .css({"top": position.top + 20, "left": position.left + 25})
-            .slideToggle('slow');
-    });
 
     dom.init();
 
