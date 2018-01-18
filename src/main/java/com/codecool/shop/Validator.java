@@ -42,9 +42,19 @@ public class Validator {
     public boolean validatePaymentData(Map<String, String> paymentData, Map<String, String> res) {
         if (paymentData != null) {
             if (paymentData.get("email") != null) {
-                return validateEMailAddress(paymentData.get("email"), res) && validatePassword(paymentData.get("password"), res);
+                boolean validEmail = validateEMailAddress(paymentData.get("email"), res);
+                boolean validPassword = validatePassword(paymentData.get("password"), res);
+                return validEmail && validPassword;
             } else {
-                return paymentData.get("cardNumber") != null && validateCardNumber(paymentData.get("cardNumber"), res) && validateCardCsc(paymentData.get("cscNumber"), res) && validateCardExpMonth(paymentData.get("expMonth"), res) && validateCardExpYear(paymentData.get("expYear"), res);
+                if (paymentData.get("cardNumber") != null) {
+                    boolean validCardHolderName = validateCardHolderName(paymentData.get("cardHolderName"), res);
+                    boolean validCardNumber =  validateCardNumber(paymentData.get("cardNumber"), res);
+                    boolean validCardCsc = validateCardCsc(paymentData.get("cscNumber"), res);
+                    boolean validCardExpMonth = validateCardExpMonth(paymentData.get("expMonth"), res);
+                    boolean validCardExpYear = validateCardExpYear(paymentData.get("expYear"), res);
+                    return validCardCsc && validCardExpMonth && validCardNumber && validCardExpYear && validCardHolderName;
+                }
+                return false;
             }
         } else return false;
     }
@@ -144,6 +154,17 @@ public class Validator {
         Matcher cardExpYearMatcher = cardExpYearPattern.matcher(expYear);
         if (!cardExpYearMatcher.find()) {
             res.put("cardExpYear", "Invalid card expiry year.");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private boolean validateCardHolderName(String name, Map<String, String> res){
+        Pattern cardCSCPattern = Pattern.compile("^[a-zA-Z]+[ ][a-zA-Z]+[ ]?[a-zA-Z]*$");
+        Matcher cardCSCMatcher = cardCSCPattern.matcher(name);
+        if (!cardCSCMatcher.find()) {
+            res.put("cardHolderName", "Invalid card holder name.");
             return false;
         } else {
             return true;

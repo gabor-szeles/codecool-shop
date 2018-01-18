@@ -122,8 +122,8 @@ $(document).ready(function () {
         addCreditCardCredentialsInputForm: function () {
             let form = $('<form/>', {});
             let nameInput = $('<input/>', {
-                id: "cardHoledName",
-                name: "cardHoler",
+                id: "cardHolderName",
+                name: "cardHolder",
                 placeholder: "Enter Card Holder Name",
             });
             let cardNumber = $('<input/>', {
@@ -154,10 +154,10 @@ $(document).ready(function () {
                 .text("Confirm Credit Card Credentials");
             $('#cart').empty();
             $('#cart').append(form)
-                .append(nameInput).append("<br>")
-                .append(cardNumber).append("<br>")
-                .append(expirationMonth).append(expirationYear).append("<br>")
-                .append(cscNumber).append("<br>")
+                .append(nameInput).append("<p id='cardHolderNameMessage' class='errorMessage'>").append("<br>")
+                .append(cardNumber).append("<p id='cardNumberMessage' class='errorMessage'>").append("<br>")
+                .append(expirationMonth).append(expirationYear).append("<p id='expirationMessage' class='errorMessage'>").append("<br>")
+                .append(cscNumber).append("<p id='cscNumberMessage' class='errorMessage'>").append("<br>")
                 .append(creditCardconfirmationButton);
             eventApplier.addEventToCreditCardConfirmation();
         },
@@ -208,8 +208,8 @@ $(document).ready(function () {
             });
             $('#cart').empty();
             $('#cart').append(form)
-                .append(paypalEmail).append("<br>")
-                .append(paypalPassword).append("<br>")
+                .append(paypalEmail).append("<p id='paypalEmailMessage' class='errorMessage'>").append("<br>")
+                .append(paypalPassword).append("<p id='paypalPasswordMessage' class='errorMessage'>").append("<br>")
                 .append(payPalconfirmationButton);
         }
     };
@@ -255,6 +255,61 @@ $(document).ready(function () {
     };
 
     const elementBuilder = {
+
+        createErrorsForCreditCardData: function (response) {
+            console.log(response.responseJSON);
+            if (response.responseJSON.cardHolderName) {
+                $('#cardHolderNameMessage')
+                    .text(response.responseJSON.cardHolderName);
+            } else {
+                $('#cardHolderNameMessage')
+                    .text("");
+            }
+            if (response.responseJSON.cardNumber) {
+                $('#cardNumberMessage')
+                    .text(response.responseJSON.cardNumber);
+            } else {
+                $('#cardNumberMessage')
+                    .text("");
+            }
+            if (response.responseJSON.cardExpMonth) {
+                $('#expirationMessage')
+                    .text(response.responseJSON.cardExpMonth);
+            } else {
+                if (response.responseJSON.cardExpYear) {
+                    $('#expirationMessage')
+                        .text(response.responseJSON.cardExpYear);
+                } else {
+                    $('#expirationMessage')
+                        .text("");
+                }
+            }
+            if (response.responseJSON.cardCsc) {
+                $('#cscNumberMessage')
+                    .text(response.responseJSON.cardCsc);
+            } else {
+                $('#cscNumberMessage')
+                    .text("");
+            }
+        },
+
+        createErrorsForPayPalData: function (response) {
+            console.log(response.responseJSON);
+            if (response.responseJSON.email) {
+                $('#paypalEmailMessage')
+                    .text(response.responseJSON.email);
+            } else {
+                $('#paypalEmailMessage')
+                    .text("");
+            }
+            if (response.responseJSON.password) {
+                $('#paypalPasswordMessage')
+                    .text(response.responseJSON.password);
+            } else {
+                $('#paypalPasswordMessage')
+                    .text("");
+            }
+        },
 
         createErrorsForUserData: function (response) {
             console.log(response.responseJSON);
@@ -423,11 +478,7 @@ $(document).ready(function () {
                 url: "/api/get-category-products/" + id,
                 dataType: "json",
                 contentType: "application/json",
-                success: responseHandler,
-                error: function (xhr, ajaxOptions, thrownError) {
-                    alert(xhr.status);
-                    alert(thrownError);
-                }
+                success: responseHandler
             });
         },
 
@@ -470,7 +521,8 @@ $(document).ready(function () {
                 data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json",
-                success: responseHandler
+                success: responseHandler,
+                error: elementBuilder.createErrorsForCreditCardData
             });
         },
 
@@ -481,7 +533,8 @@ $(document).ready(function () {
                 data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json",
-                success: responseHandler
+                success: responseHandler,
+                error: elementBuilder.createErrorsForPayPalData
             });
         }
     };
