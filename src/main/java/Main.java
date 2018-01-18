@@ -47,6 +47,8 @@ public class Main {
 
         get("/api/user/logout", UserController::logOut);
 
+        get("/api/get-cart-data", OrderController::loadShoppingCartForClientSide);
+
         // Add this line to your project to enable the debug screen
         enableDebugScreen();
     }
