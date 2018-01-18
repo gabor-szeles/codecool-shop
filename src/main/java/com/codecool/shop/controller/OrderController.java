@@ -89,13 +89,14 @@ public class OrderController {
     public static String addPaymentData(Request request, Response response) {
         Map<String, String> userData = Utils.parseJson(request);
         Integer userId = request.session().attribute("userId");
+        int orderId = OrderDaoJdbc.checkActiveOrder(userId);
+
         Order.getActiveOrder(userId).setPaymentData(userData);
-
         LOGGER.debug("Payment data to jasonify after reading the request data in: {}", userData);
-
         LOGGER.info("Order updated with payment data");
         LOGGER.debug("order updated with payment data");
-        //new Order();
+        OrderDaoJdbc.deactivateLineItem(orderId);
+        OrderController.checkAndCreateOrder(request.session().attribute("userId"));
         return Utils.toJson("OK");
     }
 

@@ -118,7 +118,7 @@ public class OrderDaoJdbc implements ProductAttributeDao<Order> {
         }
     }
 
-    public static void deactivateLineItem(LineItem lineItem, int orderId) {
+    public static void deactivateLineItem(int orderId) {
         String query = "UPDATE order_detail SET is_active = ? WHERE order_id = ?";
         try {
             Connection connection = db_handler.getConnection();
@@ -127,7 +127,7 @@ public class OrderDaoJdbc implements ProductAttributeDao<Order> {
             statement.setInt(2, orderId);
             ConnectionDetails connectionDetails = new ConnectionDetails(connection, statement);
             db_handler.modifyQuery(connectionDetails);
-            logger.debug("Lineitem deactivade");
+            logger.debug("Lineitem deactivated");
         } catch (SQLException e) {
             e.printStackTrace();
         }

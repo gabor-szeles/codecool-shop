@@ -63,7 +63,7 @@ public class UserController {
             req.session().attribute("userId", userId);
             res.redirect("/");
         } else {
-            System.out.println("Username already in use");
+            LOGGER.info("Username already in use");
             req.session().attribute("message", "Username already in use.");
             res.redirect("/login");
         }

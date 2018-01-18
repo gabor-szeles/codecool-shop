@@ -31,7 +31,6 @@ public class ProductController {
      */
     public static String renderProducts(Request req, Response res) {
         UserController.ensureUserIsLoggedIn(req, res);
-        int userId = req.session().attribute("userId");
         int supplierId = 1;
         Supplier supplier = supplierDaoJdbc.find(supplierId);
         List<Product> products = productDaoJdbc.getBySupplier(supplierId);

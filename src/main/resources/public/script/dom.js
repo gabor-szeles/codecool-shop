@@ -100,6 +100,7 @@ $(document).ready(function () {
             let emailAddress = $('#paypalEmail').val();
             let password = $('#paypalPassword').val();
             let data = {"email": emailAddress, "password": password};
+            ajax.getCartData(responseHandler.updateOrder)
             ajax.insertPayPalData(data, responseHandler.thankPurchase);
         },
 
@@ -338,9 +339,7 @@ $(document).ready(function () {
             for (let i = 0; i < products.length; i++) {
                 cart.append(elementBuilder.productInOrder(products[i].name, products[i].quantity, products[i].price, products[i].prodId));
             }
-            console.log(response.itemsNumber)
             if (response.itemsNumber === "0") {
-                console.log(response.ite)
                 let cartEmpty = $('<p/>', {"class": "col-8"}).text("No items in the cart yet.");
                 cart.append(cartEmpty);
             } else {
@@ -380,8 +379,11 @@ $(document).ready(function () {
         },
 
         thankPurchase: function() {
-            let paymentConfirmationText = $('<p/>', {"class": "offset-1"}).text("Thank you for your purchase");
-            $('#cart').empty().append(paymentConfirmationText);
+            //let paymentConfirmationText = $('<p/>', {"class": "offset-1"}).text("Thank you for your purchase");
+            //$('#cart').empty().append(paymentConfirmationText);
+            $('#cart').empty();
+            alert("Thank you for your purchase");
+            ajax.getCartData(responseHandler.updateOrder);
         }
     };
 
