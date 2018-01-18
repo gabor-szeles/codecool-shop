@@ -10,6 +10,7 @@ $(document).ready(function () {
             eventApplier.addEventToSupplierToggle();
             eventApplier.addEventToCategoryToggle();
             eventApplier.addEventToUserSettingButton();
+            $(window).load(ajax.getCartData(responseHandler.updateOrder));
         }
 
     };
@@ -337,9 +338,16 @@ $(document).ready(function () {
             for (let i = 0; i < products.length; i++) {
                 cart.append(elementBuilder.productInOrder(products[i].name, products[i].quantity, products[i].price, products[i].prodId));
             }
+            console.log(response.itemsNumber)
+            if (response.itemsNumber === "0") {
+                console.log(response.ite)
+                let cartEmpty = $('<p/>', {"class": "col-8"}).text("No items in the cart yet.");
+                cart.append(cartEmpty);
+            } else {
+                cart.append(elementBuilder.checkoutButton());
+                eventApplier.addEventToChangeQuantity();
+            }
 
-            cart.append(elementBuilder.checkoutButton());
-            eventApplier.addEventToChangeQuantity();
         },
 
         updateProducts: function (response) {
@@ -403,6 +411,16 @@ $(document).ready(function () {
             $.ajax({
                 type: "GET",
                 url: "/api/add-product/" + id,
+                dataType: "json",
+                contentType: "application/json",
+                success: responseHandler
+            });
+        },
+
+        getCartData: function (responseHandler) {
+            $.ajax({
+                type: "GET",
+                url: "/api/get-cart-data",
                 dataType: "json",
                 contentType: "application/json",
                 success: responseHandler
